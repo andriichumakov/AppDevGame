@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace AppDevGame
 {
@@ -7,70 +8,44 @@ namespace AppDevGame
     {
         public int Lives { get; set; }
         public Inventory Inventory { get; private set; }
-        public Weapon EquippedWeapon { get; set; }
+        public Weapon EquippedWeapon { get; private set; }
 
-        public Character(Vector2 position, Vector2 velocity, int health, int lives, Animation animation)
-            : base(position, velocity, health, animation)
+        public Character(Vector2 position, Vector2 velocity, int health, int lives)
+            : base(position, velocity, health)
         {
             Lives = lives;
-            Inventory = new Inventory(2); // Example with 2 inventory slots
+            Inventory = new Inventory(10); // Example size of inventory
+            EquippedWeapon = new Weapon(0, 0.0f); // Default weapon with no damage and fire rate
         }
 
-        public override void Update(GameTime gameTime)
+        public virtual void Move(Vector2 direction)
         {
-            Position += Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Animation.Update(gameTime);
+            Position += direction;
+            Console.WriteLine($"Character moved to {Position}");
         }
 
-        public void Move(Vector2 direction)
+        public virtual void PickUp(Item item)
         {
-            Velocity = direction;
+            if (Inventory.AddItem(item))
+            {
+                Console.WriteLine("Character picked up an item");
+            }
+            else
+            {
+                Console.WriteLine("Inventory is full, cannot pick up item");
+            }
         }
 
-        public void Attack()
+        public virtual void Attack(Character target)
         {
             if (EquippedWeapon != null)
             {
-                // Attack logic here using EquippedWeapon.DamageOutput
+                target.Health -= EquippedWeapon.DamageOutput;
+                Console.WriteLine($"Attacked {target} with {EquippedWeapon.DamageOutput} damage");
             }
             else
             {
                 Console.WriteLine("No weapon equipped");
-            }
-        }
-
-        public void PickUp(Item item)
-        {
-            Inventory.AddItem(item);
-            item.PickUp(this);
-        }
-
-        public void UseItem(int slot)
-        {
-            var item = Inventory.GetItem(slot);
-            if (!(item is EmptyItem))
-            {
-                item.Use(this);
-                // Optionally, remove the item after use if that's the game design
-                // Inventory.RemoveItem(item);
-            }
-            else
-            {
-                Console.WriteLine("No usable item in the selected slot");
-            }
-        }
-
-        public void DropItem(Item item)
-        {
-            Item droppedItem = Inventory.RemoveItem(item);
-            if (!(droppedItem is EmptyItem))
-            {
-                Console.WriteLine($"Dropped item: {droppedItem}");
-                // Handle the dropped item (e.g., place it in the game world)
-            }
-            else
-            {
-                Console.WriteLine("Item not found in inventory, cannot drop");
             }
         }
     }

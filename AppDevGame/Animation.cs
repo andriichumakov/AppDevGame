@@ -11,6 +11,7 @@ namespace AppDevGame
         public int CurrentFrame { get; private set; }
         public double FrameTime { get; private set; } // Time each frame is displayed
         private double timeCounter; // Time since last frame update
+        public bool IsFlipped { get; private set; } // Indicates if the frame is flipped
 
         public Animation(List<Texture2D> frames, double frameTime)
         {
@@ -18,9 +19,10 @@ namespace AppDevGame
             FrameTime = frameTime;
             CurrentFrame = 0;
             timeCounter = 0.0;
+            IsFlipped = false;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Vector2 velocity)
         {
             timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -29,11 +31,22 @@ namespace AppDevGame
                 CurrentFrame = (CurrentFrame + 1) % Frames.Count;
                 timeCounter -= FrameTime;
             }
+
+            // Check velocity to determine if flipping is needed
+            IsFlipped = velocity.X < 0; // Flip if moving left
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
-            spriteBatch.Draw(Frames[CurrentFrame], position, Color.White);
+            Texture2D currentTexture = Frames[CurrentFrame];
+            SpriteEffects effects = IsFlipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            spriteBatch.Draw(currentTexture, position, null, Color.White, 0f, Vector2.Zero, 1f, effects, 0);
+        }
+
+
+        public void FlipFrame()
+        {
+            IsFlipped = !IsFlipped;
         }
     }
 }

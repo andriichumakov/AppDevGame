@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using AppDevGame;
 
@@ -9,10 +9,9 @@ namespace AppDevGame
         [STAThread]
         static void Main()
         {
-            Console.WriteLine("something here");
-            using (var game = new Game1())
+            Console.WriteLine("Starting the Game");
+            using (var game = new MainApp())
                 game.Run();
-             Console.WriteLine("we still alive question");
         }
     }
 }

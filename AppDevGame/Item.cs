@@ -4,14 +4,6 @@ namespace AppDevGame
 {
     public class Item
     {
-        public bool IsPickedUp { get; set; }
-
-        public virtual void PickUp(Character character)
-        {
-            IsPickedUp = true;
-            Console.WriteLine("Item picked up by character");
-        }
-
         public virtual void Use(Character character)
         {
             Console.WriteLine("Item used by character");
@@ -28,89 +20,61 @@ namespace AppDevGame
         }
     }
 
-public class Weapon : Item
-{
-    public string Type { get; set; }
-    public int AmmoCount { get; set; }
-    public int Durability { get; set; }
-
-    public override void Use(Character character)
+    public class InventoryItem : Item
     {
-        base.Use(character);
-        Console.WriteLine($"Weapon used with {DamageOutput} damage and {FireRate} fire rate");
+        public bool IsInInventory { get; set; }
+
+        public override void Draw()
+        {
+            base.Draw();
+            Console.WriteLine("Drawing inventory item");
+        }
     }
 
-    public void Reload(int ammoToAdd)
+    public class Weapon : InventoryItem
     {
-        AmmoCount += ammoToAdd;
-        Console.WriteLine($"Reloaded weapon with {ammoToAdd} ammo");
-    }
+        public int DamageOutput { get; set; }
+        public float FireRate { get; set; }
 
-    public override void Draw()
-    {
-        base.Draw();
-        Console.WriteLine("Drawing weapon");
-    }
-
-    public override void Update()
-    {
-        base.Update();
-        Console.WriteLine("Updating weapon");
-    }
-}
-
-public class Heart : Item
-{
-    public int HealAmount { get; set; }
-    public int UsesRemaining { get; set; }
-    public TimeSpan Cooldown { get; set; }
-
-    public override void Use(Character character)
-    {
-        if (UsesRemaining > 0)
+        public override void Use(Character character)
         {
             base.Use(character);
-            Console.WriteLine($"Heart used to heal character by {HealAmount} health");
-            UsesRemaining--;
+            Console.WriteLine($"Weapon used with {DamageOutput} damage and {FireRate} fire rate");
         }
-        else
+
+        public override void Draw()
         {
-            Console.WriteLine("Heart is exhausted and cannot be used.");
+            base.Draw();
+            Console.WriteLine("Drawing weapon");
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            Console.WriteLine("Updating weapon");
         }
     }
 
-    public override void Draw()
+    public class Potion : InventoryItem
     {
-        base.Draw();
-        Console.WriteLine("Drawing heart");
-    }
+        public int HealAmount { get; set; }
 
-    public override void Update()
-    {
-        base.Update();
-        Console.WriteLine("Updating heart");
-    }
-}
+        public override void Use(Character character)
+        {
+            base.Use(character);
+            Console.WriteLine($"Potion used to heal character by {HealAmount} health");
+        }
 
-public class Coin : Item
-{
-    public int Value { get; set; }
+        public override void Draw()
+        {
+            base.Draw();
+            Console.WriteLine("Drawing potion");
+        }
 
-    public override void Use(Character character)
-    {
-        base.Use(character);
-        Console.WriteLine($"Coin worth {Value} used to increase character's wealth");
-    }
-
-    public override void Draw()
-    {
-        base.Draw();
-        Console.WriteLine("Drawing coin");
-    }
-
-    public override void Update()
-    {
-        base.Update();
-        Console.WriteLine("Updating coin");
+        public override void Update()
+        {
+            base.Update();
+            Console.WriteLine("Updating potion");
+        }
     }
 }

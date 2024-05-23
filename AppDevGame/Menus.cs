@@ -12,9 +12,16 @@ namespace AppDevGame
         public override void Setup()
         {
             base.Setup();
+            int buttonWidth = 200;
+            int buttonHeight = 50;
+            int buttonSpacing = 10;
             // Add buttons to the main menu
-            AddButton(new Button(new Rectangle(100, 100, 200, 50), Color.Green, Color.White, "Start", null));
-            AddButton(new Button(new Rectangle(100, 200, 200, 50), Color.Green, Color.White, "Quit", new QuitCommand()));
+            Vector2 buttonPos = CalcButtonPosition(2, buttonWidth, buttonHeight, buttonSpacing);
+            int x = (int)buttonPos.X;
+            int y = (int)buttonPos.Y;
+
+            AddButton(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, "Start", null));
+            AddButton(new Button(new Rectangle(x, (y + buttonHeight + buttonSpacing), buttonWidth, buttonHeight), Color.Green, Color.White, "Quit", new QuitCommand()));
         }
     }
 }

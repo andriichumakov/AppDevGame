@@ -30,5 +30,10 @@ namespace AppDevGame
         {
             // do nothing
         }
+
+        public virtual void Clear()
+        {
+            _texture.Dispose();
+        }
     }
 }

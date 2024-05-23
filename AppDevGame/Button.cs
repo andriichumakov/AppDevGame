@@ -1,9 +1,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace AppDevGame
 {
-    public class Button : UIElement
+    public class Button : UIElement, IClickable
     {
         protected ICommand _onClick;
         
@@ -33,10 +34,13 @@ namespace AppDevGame
         {
             // Handle button updates here
         }
-        
-        public void OnClick()
+
+        public void HandleClick(Point mousePosition)
         {
-            _onClick.Execute();
+            if (_bounds.Contains(mousePosition))
+            {
+                _onClick.Execute();
+            }
         }
     }
 }

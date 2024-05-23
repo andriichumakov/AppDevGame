@@ -20,7 +20,7 @@ namespace AppDevGame
             int x = (int)buttonPos.X;
             int y = (int)buttonPos.Y;
 
-            AddButton(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, "Start", null));
+            AddButton(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, "Start", new LoadWindowCommand(new Level1(800, 600, 1200, 800, MainApp.GetInstance()._imageLoader.GetResource("BackgroundLvl1")))));
             AddButton(new Button(new Rectangle(x, (y + buttonHeight + buttonSpacing), buttonWidth, buttonHeight), Color.Green, Color.White, "Quit", new QuitCommand()));
         }
     }

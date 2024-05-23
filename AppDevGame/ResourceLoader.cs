@@ -17,6 +17,6 @@ namespace AppDevGame
             _allowedTypes = allowedFileTypes;
         }
 
-        public abstract void LoadContent(ContentManager content);
+        public abstract void LoadContent();
     }
 }

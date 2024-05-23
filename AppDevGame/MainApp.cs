@@ -1,8 +1,6 @@
-using AppDevGame;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.IO;
 
 namespace AppDevGame
 {
@@ -13,9 +11,12 @@ namespace AppDevGame
         private static MainApp _instance; // singleton; we need global access to this instance to better integrate the UI and the game engine.
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private ImageLoader _imageLoader;
+        
         private WindowManager _windowManager;
         private Texture2D _backgroundTexture;
+
+        internal FontLoader _fontLoader;
+        internal ImageLoader _imageLoader;
 
         private const bool _isDebugMode = true;
 
@@ -54,15 +55,17 @@ namespace AppDevGame
         {
             _windowManager = WindowManager.GetInstance();
             _imageLoader = new ImageLoader(GraphicsDevice);
+            _fontLoader = new FontLoader(Content);
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            FileStream fileStream = new FileStream("./Content/PlaceholderBackground.jpg", FileMode.Open);
-            _backgroundTexture = Texture2D.FromStream(GraphicsDevice, fileStream);
-            fileStream.Dispose();
+            _imageLoader.LoadContent();
+            _fontLoader.LoadContent();
+            _backgroundTexture = _imageLoader.GetResource("PlaceholderBackground");
+            _windowManager.LoadWindow(new MainMenu(800, 600, _backgroundTexture));
             base.LoadContent();
         }
 
@@ -76,7 +79,7 @@ namespace AppDevGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_backgroundTexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
+            //_spriteBatch.Draw(_backgroundTexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
 
             _windowManager.Draw(_spriteBatch);
             _spriteBatch.End();

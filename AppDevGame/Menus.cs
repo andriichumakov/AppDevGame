@@ -13,8 +13,8 @@ namespace AppDevGame
         {
             base.Setup();
             // Add buttons to the main menu
-            AddButton(new Button(new Rectangle(100, 100, 200, 50), Color.Green, Color.Black, "Start", null));
-            AddButton(new Button(new Rectangle(100, 200, 200, 50), Color.Green, Color.Black, "Exit", null));
+            AddButton(new Button(new Rectangle(100, 100, 200, 50), Color.Green, Color.White, "Start", null));
+            AddButton(new Button(new Rectangle(100, 200, 200, 50), Color.Green, Color.White, "Quit", new QuitCommand()));
         }
     }
 }

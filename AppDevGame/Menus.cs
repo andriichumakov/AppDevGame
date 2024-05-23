@@ -63,7 +63,7 @@ namespace AppDevGame
 
             AddElement(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, "Language Menu", new LoadWindowCommand(_windowManager, MainApp.GetInstance().LanguageMenu)));
             AddElement(new Button(new Rectangle(x, (y + buttonHeight + buttonSpacing), buttonWidth, buttonHeight), Color.Green, Color.White, "Sound Menu", new LoadWindowCommand(_windowManager, MainApp.GetInstance().SoundMenu)));
-            AddElement(new Button(new Rectangle(x, (y + 2 * (buttonHeight + buttonSpacing)), buttonWidth, buttonHeight), Color.Green, Color.White, "Mod Menu", null));
+            AddElement(new Button(new Rectangle(x, (y + 2 * (buttonHeight + buttonSpacing)), buttonWidth, buttonHeight), Color.Green, Color.White, "Mod Menu", new LoadWindowCommand(_windowManager, MainApp.GetInstance().ModMenu)));
 
             // Position the "Apply Changes" button in the bottom-right corner
             int applyButtonX = _width - buttonWidth - 10;
@@ -120,6 +120,9 @@ namespace AppDevGame
         private Slider masterVolumeSlider;
         private Slider musicSlider;
         private Slider soundEffectsSlider;
+        private Label masterVolumeLabel;
+        private Label musicLabel;
+        private Label soundEffectsLabel;
 
         public SoundMenu(int width, int height, Texture2D background, WindowManager windowManager) : base(width, height, background)
         {
@@ -138,32 +141,27 @@ namespace AppDevGame
             int sliderWidth = 300;
             int sliderHeight = 20;
             int sliderSpacing = 50;
+            int labelOffset = 150;
 
-            int centerX = _width / 2;
-            int startY = 150; // Adjusted starting position for the sliders
-
-            Vector2 masterVolumeLabelPos = new Vector2(centerX - sliderWidth / 2 - 100, startY);
-            Vector2 masterVolumePos = new Vector2(centerX - sliderWidth / 2, startY);
+            Vector2 masterVolumePos = new Vector2(300, 150);
             masterVolumeSlider = new Slider(new Rectangle((int)masterVolumePos.X, (int)masterVolumePos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Master Volume", 0.5f);
+            masterVolumeLabel = new Label(new Rectangle((int)masterVolumePos.X - labelOffset, (int)masterVolumePos.Y, 150, sliderHeight), Color.Transparent, Color.Black, "Master Volume");
 
-            Vector2 musicLabelPos = new Vector2(centerX - sliderWidth / 2 - 100, startY + sliderSpacing);
-            Vector2 musicPos = new Vector2(centerX - sliderWidth / 2, startY + sliderSpacing);
+            Vector2 musicPos = new Vector2(300, 150 + sliderSpacing);
             musicSlider = new Slider(new Rectangle((int)musicPos.X, (int)musicPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Music", 0.5f);
+            musicLabel = new Label(new Rectangle((int)musicPos.X - labelOffset, (int)musicPos.Y, 150, sliderHeight), Color.Transparent, Color.Black, "Music");
 
-            Vector2 soundEffectsLabelPos = new Vector2(centerX - sliderWidth / 2 - 100, startY + 2 * sliderSpacing);
-            Vector2 soundEffectsPos = new Vector2(centerX - sliderWidth / 2, startY + 2 * sliderSpacing);
+            Vector2 soundEffectsPos = new Vector2(300, 150 + 2 * sliderSpacing);
             soundEffectsSlider = new Slider(new Rectangle((int)soundEffectsPos.X, (int)soundEffectsPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Sound Effects", 0.5f);
-
-            AddElement(new Label(new Rectangle((int)masterVolumeLabelPos.X, (int)masterVolumeLabelPos.Y, 0, 0), Color.Transparent, Color.Black, "Master Volume"));
-            AddElement(masterVolumeSlider);
-
-            AddElement(new Label(new Rectangle((int)musicLabelPos.X, (int)musicLabelPos.Y, 0, 0), Color.Transparent, Color.Black, "Music"));
-            AddElement(musicSlider);
-
-            AddElement(new Label(new Rectangle((int)soundEffectsLabelPos.X, (int)soundEffectsLabelPos.Y, 0, 0), Color.Transparent, Color.Black, "Sound Effects"));
-            AddElement(soundEffectsSlider);
+            soundEffectsLabel = new Label(new Rectangle((int)soundEffectsPos.X - labelOffset, (int)soundEffectsPos.Y, 150, sliderHeight), Color.Transparent, Color.Black, "Sound Effects");
 
             AddElement(backButton);
+            AddElement(masterVolumeSlider);
+            AddElement(masterVolumeLabel);
+            AddElement(musicSlider);
+            AddElement(musicLabel);
+            AddElement(soundEffectsSlider);
+            AddElement(soundEffectsLabel);
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
@@ -171,8 +169,71 @@ namespace AppDevGame
             base.LoadContent(graphicsDevice, content);
             backButton.LoadContent(graphicsDevice, content);
             masterVolumeSlider.LoadContent(graphicsDevice, content);
+            masterVolumeLabel.LoadContent(graphicsDevice, content);
             musicSlider.LoadContent(graphicsDevice, content);
+            musicLabel.LoadContent(graphicsDevice, content);
             soundEffectsSlider.LoadContent(graphicsDevice, content);
+            soundEffectsLabel.LoadContent(graphicsDevice, content);
+        }
+    }
+
+    public class ModMenu : MenuWindow
+    {
+        private WindowManager _windowManager;
+        private Button backButton;
+        private Button chooseWeaponButton;
+        private Button chooseCharacterButton;
+        private Button applyButton;
+        private Label chooseWeaponLabel;
+        private Label chooseCharacterLabel;
+
+        public ModMenu(int width, int height, Texture2D background, WindowManager windowManager) : base(width, height, background)
+        {
+            _windowManager = windowManager;
+        }
+
+        public override void Setup()
+        {
+            base.Setup();
+            int buttonWidth = 200;
+            int buttonHeight = 50;
+            int buttonSpacing = 20;
+            int labelOffset = 150;
+
+            // Move labels left from buttons
+            Vector2 backButtonPos = new Vector2(10, 10);
+            backButton = new Button(new Rectangle((int)backButtonPos.X, (int)backButtonPos.Y, buttonWidth, buttonHeight), Color.Green, Color.White, "Go Back", new LoadWindowCommand(_windowManager, MainApp.GetInstance().SettingsMenu));
+
+            Vector2 chooseWeaponPos = new Vector2(300, 150);
+            chooseWeaponButton = new Button(new Rectangle((int)chooseWeaponPos.X, (int)chooseWeaponPos.Y, buttonWidth, buttonHeight), Color.Gray, Color.White, "Open File", null);
+            chooseWeaponLabel = new Label(new Rectangle((int)chooseWeaponPos.X - labelOffset, (int)chooseWeaponPos.Y, 150, buttonHeight), Color.Transparent, Color.Black, "Choose Weapon");
+
+            Vector2 chooseCharacterPos = new Vector2(300, 150 + buttonHeight + buttonSpacing);
+            chooseCharacterButton = new Button(new Rectangle((int)chooseCharacterPos.X, (int)chooseCharacterPos.Y, buttonWidth, buttonHeight), Color.Gray, Color.White, "Open File", null);
+            chooseCharacterLabel = new Label(new Rectangle((int)chooseCharacterPos.X - labelOffset, (int)chooseCharacterPos.Y, 150, buttonHeight), Color.Transparent, Color.Black, "Choose Main Character");
+
+            // Position the "Apply Changes" button in the bottom-right corner
+            int applyButtonX = _width - buttonWidth - 10;
+            int applyButtonY = _height - buttonHeight - 10;
+            applyButton = new Button(new Rectangle(applyButtonX, applyButtonY, buttonWidth, buttonHeight), Color.Green, Color.White, "Apply Changes", new LoadWindowCommand(_windowManager, MainApp.GetInstance().MainMenu));
+
+            AddElement(backButton);
+            AddElement(chooseWeaponButton);
+            AddElement(chooseWeaponLabel);
+            AddElement(chooseCharacterButton);
+            AddElement(chooseCharacterLabel);
+            AddElement(applyButton);
+        }
+
+        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        {
+            base.LoadContent(graphicsDevice, content);
+            backButton.LoadContent(graphicsDevice, content);
+            chooseWeaponButton.LoadContent(graphicsDevice, content);
+            chooseWeaponLabel.LoadContent(graphicsDevice, content);
+            chooseCharacterButton.LoadContent(graphicsDevice, content);
+            chooseCharacterLabel.LoadContent(graphicsDevice, content);
+            applyButton.LoadContent(graphicsDevice, content);
         }
     }
 }

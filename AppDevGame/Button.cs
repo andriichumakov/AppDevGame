@@ -1,19 +1,23 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace AppDevGame
 {
     public class Button : UIElement, IClickable
     {
         protected ICommand _onClick;
-        
+        private TimeSpan _lastClickTime;
+        private static readonly TimeSpan DebounceTime = TimeSpan.FromMilliseconds(500);
+
         public Button(Rectangle bounds, Color backgroundColor, Color textColor, string text, ICommand onClick) 
             : base(bounds, new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1), backgroundColor, textColor, text)
         {
             _texture = new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1);
             _texture.SetData(new[] { backgroundColor });
             _onClick = onClick;
+            _lastClickTime = TimeSpan.Zero;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -39,7 +43,26 @@ namespace AppDevGame
         {
             if (_bounds.Contains(mousePosition))
             {
-                _onClick.Execute();
+                var currentTime = MainApp.GetInstance().GameTime.TotalGameTime;
+                if (currentTime - _lastClickTime > DebounceTime)
+                {
+                    _lastClickTime = currentTime;
+                    if (_onClick != null)
+                    {
+                        try
+                        {
+                            _onClick.Execute();
+                        }
+                        catch (Exception ex)
+                        {
+                            MainApp.Log($"Error executing button command: {ex.Message}");
+                        }
+                    }
+                    else
+                    {
+                        MainApp.Log("Error: Button click command is null.");
+                    }
+                }
             }
         }
     }

@@ -1,14 +1,15 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace AppDevGame
 {
     public class MainApp : Game
     {
-        // main class for the game, controls all framework-level functionality
+        // Main class for the game, controls all framework-level functionality
 
-        private static MainApp _instance; // singleton; we need global access to this instance to better integrate the UI and the game engine.
+        private static MainApp _instance; // Singleton; global access to this instance for better integration of UI and game engine.
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         
@@ -20,9 +21,13 @@ namespace AppDevGame
 
         private const bool _isDebugMode = true;
 
+        public MainMenu MainMenu { get; private set; }
+        public SettingsMenu SettingsMenu { get; private set; }
+        public GameTime GameTime { get; private set; }
+
         private MainApp()
         {
-            // private constructor, so that no one can create a new instance of this class.
+            // Private constructor, so that no one can create a new instance of this class.
             Log("Starting Application...");
             this._graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -32,7 +37,7 @@ namespace AppDevGame
 
         public static MainApp GetInstance()
         {
-            // the only way to get an instance of this class is to call this method.
+            // The only way to get an instance of this class is to call this method.
             if (_instance == null)
             {
                 _instance = new MainApp();
@@ -40,8 +45,10 @@ namespace AppDevGame
             return _instance;
         }
 
-        public static void Log(string message) {
-            if (_isDebugMode) {
+        public static void Log(string message)
+        {
+            if (_isDebugMode)
+            {
                 Console.WriteLine(message);
             }
         }
@@ -65,12 +72,18 @@ namespace AppDevGame
             _imageLoader.LoadContent();
             _fontLoader.LoadContent();
             _backgroundTexture = _imageLoader.GetResource("PlaceholderBackground");
-            _windowManager.LoadWindow(new MainMenu(800, 600, _backgroundTexture));
+
+            // Initialize the MainMenu and SettingsMenu
+            SettingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager);
+            MainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, SettingsMenu);
+
+            _windowManager.LoadWindow(MainMenu);
             base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
         {
+            GameTime = gameTime; // Store the game time to be accessible by other classes
             _windowManager.Update(gameTime);
             base.Update(gameTime);
         }
@@ -79,8 +92,6 @@ namespace AppDevGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
-            //_spriteBatch.Draw(_backgroundTexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
-
             _windowManager.Draw(_spriteBatch);
             _spriteBatch.End();
             base.Draw(gameTime);

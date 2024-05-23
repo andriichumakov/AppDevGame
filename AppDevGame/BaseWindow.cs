@@ -1,9 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
-
-using AppDevGame;
+using Microsoft.Xna.Framework.Content;
+using System.Collections.Generic;
 
 namespace AppDevGame
 {
@@ -15,8 +14,7 @@ namespace AppDevGame
         protected List<UIElement> _elements = new List<UIElement>(); 
         protected MouseState _previousMouseState;
 
-
-        public BaseWindow(int width, int height, Texture2D background=null)
+        public BaseWindow(int width, int height, Texture2D background = null)
         {
             this._width = width;
             this._height = height;
@@ -43,6 +41,14 @@ namespace AppDevGame
             this._elements.Remove(element);
         }
 
+        public virtual void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        {
+            foreach (var element in _elements)
+            {
+                element.LoadContent(graphicsDevice, content);
+            }
+        }
+
         public virtual void Update(GameTime gameTime)
         {
             MouseState currentMouseState = Mouse.GetState();
@@ -53,15 +59,16 @@ namespace AppDevGame
 
                 foreach (UIElement element in _elements)
                 {
-                    if (element is IClickable button)
+                    if (element is IClickable clickable)
                     {
-                        button.HandleClick(mousePosition);
+                        clickable.HandleClick(mousePosition);
                     }
                 }
             }
 
             _previousMouseState = currentMouseState;
         }
+
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             if (_background != null)

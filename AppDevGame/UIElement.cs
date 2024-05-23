@@ -1,11 +1,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
-using AppDevGame;
+using Microsoft.Xna.Framework.Content;
 
 namespace AppDevGame
 {
-    public abstract class UIElement : IDrawable {
+    public abstract class UIElement
+    {
         protected Rectangle _bounds { get; set; }
         protected Texture2D _texture { get; set; }
         protected Color _backgroundColor { get; set; }
@@ -21,14 +21,16 @@ namespace AppDevGame
             _text = text;
         }
 
+        public virtual void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        {
+            // Default implementation to load content for UI elements
+        }
+
+        public abstract void Update(GameTime gameTime);
+
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_texture, _bounds, _backgroundColor);
-        }
-
-        public virtual void Update(GameTime gameTime)
-        {
-            // do nothing
         }
 
         public virtual void Clear()

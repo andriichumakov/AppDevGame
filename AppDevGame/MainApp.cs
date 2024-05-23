@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace AppDevGame
@@ -23,6 +22,7 @@ namespace AppDevGame
 
         public MainMenu MainMenu { get; private set; }
         public SettingsMenu SettingsMenu { get; private set; }
+        public LanguageMenu LanguageMenu { get; private set; }
         public GameTime GameTime { get; private set; }
 
         private MainApp()
@@ -73,7 +73,8 @@ namespace AppDevGame
             _fontLoader.LoadContent();
             _backgroundTexture = _imageLoader.GetResource("PlaceholderBackground");
 
-            // Initialize the MainMenu and SettingsMenu
+            // Initialize the MainMenu, SettingsMenu, and LanguageMenu
+            LanguageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager);
             SettingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager);
             MainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, SettingsMenu);
 

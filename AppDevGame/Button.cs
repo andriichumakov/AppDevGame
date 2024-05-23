@@ -39,11 +39,11 @@ namespace AppDevGame
             // Handle button updates here
         }
 
-        public void HandleClick(Point mousePosition)
+        public void HandleClick(Point mousePosition, GameTime gameTime)
         {
             if (_bounds.Contains(mousePosition))
             {
-                var currentTime = MainApp.GetInstance().GameTime.TotalGameTime;
+                var currentTime = gameTime.TotalGameTime;
                 if (currentTime - _lastClickTime > DebounceTime)
                 {
                     _lastClickTime = currentTime;

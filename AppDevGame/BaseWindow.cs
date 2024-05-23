@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace AppDevGame
 {
+    // BaseWindow class
     public abstract class BaseWindow 
     {
         protected int _width;
@@ -61,9 +62,14 @@ namespace AppDevGame
                 {
                     if (element is IClickable clickable)
                     {
-                        clickable.HandleClick(mousePosition);
+                        clickable.HandleClick(mousePosition, gameTime);
                     }
                 }
+            }
+
+            foreach (UIElement element in _elements)
+            {
+                element.Update(gameTime);
             }
 
             _previousMouseState = currentMouseState;

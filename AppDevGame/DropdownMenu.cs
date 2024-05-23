@@ -55,7 +55,7 @@ namespace AppDevGame
             // Handle updates here if necessary
         }
 
-        public void HandleClick(Point mousePosition)
+        public void HandleClick(Point mousePosition, GameTime gameTime)
         {
             if (_bounds.Contains(mousePosition))
             {

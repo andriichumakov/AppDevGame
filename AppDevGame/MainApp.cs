@@ -6,30 +6,27 @@ namespace AppDevGame
 {
     public class MainApp : Game
     {
-        // Main class for the game, controls all framework-level functionality
-
-        private static MainApp _instance; // Singleton; global access to this instance for better integration of UI and game engine.
+        private static MainApp _instance; // Singleton instance
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        
         private WindowManager _windowManager;
         private Texture2D _backgroundTexture;
 
         internal FontLoader _fontLoader;
         internal ImageLoader _imageLoader;
 
-        private const bool _isDebugMode = true;
+        private MainMenu _mainMenu;
+        private SettingsMenu _settingsMenu;
+        private LanguageMenu _languageMenu;
+        private SoundMenu _soundMenu;
 
-        public MainMenu MainMenu { get; private set; }
-        public SettingsMenu SettingsMenu { get; private set; }
-        public LanguageMenu LanguageMenu { get; private set; }
-        public GameTime GameTime { get; private set; }
+        private const bool _isDebugMode = true;
 
         private MainApp()
         {
-            // Private constructor, so that no one can create a new instance of this class.
+            // Private constructor for singleton pattern
             Log("Starting Application...");
-            this._graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Log("Setup complete.");
@@ -37,7 +34,7 @@ namespace AppDevGame
 
         public static MainApp GetInstance()
         {
-            // The only way to get an instance of this class is to call this method.
+            // Singleton instance accessor
             if (_instance == null)
             {
                 _instance = new MainApp();
@@ -58,6 +55,11 @@ namespace AppDevGame
             return _graphics;
         }
 
+        public MainMenu MainMenu => _mainMenu;
+        public SettingsMenu SettingsMenu => _settingsMenu;
+        public LanguageMenu LanguageMenu => _languageMenu;
+        public SoundMenu SoundMenu => _soundMenu;
+
         protected override void Initialize()
         {
             _windowManager = WindowManager.GetInstance();
@@ -73,18 +75,19 @@ namespace AppDevGame
             _fontLoader.LoadContent();
             _backgroundTexture = _imageLoader.GetResource("PlaceholderBackground");
 
-            // Initialize the MainMenu, SettingsMenu, and LanguageMenu
-            LanguageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager);
-            SettingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager);
-            MainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, SettingsMenu);
+            // Initialize menus
+            _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager);
+            _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager);
+            _soundMenu = new SoundMenu(800, 600, _backgroundTexture, _windowManager);
+            _mainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, _settingsMenu);
 
-            _windowManager.LoadWindow(MainMenu);
+            _windowManager.LoadWindow(_mainMenu);
+
             base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            GameTime = gameTime; // Store the game time to be accessible by other classes
             _windowManager.Update(gameTime);
             base.Update(gameTime);
         }
@@ -93,6 +96,7 @@ namespace AppDevGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
+
             _windowManager.Draw(_spriteBatch);
             _spriteBatch.End();
             base.Draw(gameTime);

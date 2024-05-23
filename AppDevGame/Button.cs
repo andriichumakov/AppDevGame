@@ -9,7 +9,7 @@ namespace AppDevGame
     {
         protected ICommand _onClick;
         private TimeSpan _lastClickTime;
-        private static readonly TimeSpan DebounceTime = TimeSpan.FromMilliseconds(500);
+        private static readonly TimeSpan DebounceTime = TimeSpan.FromMilliseconds(300);
 
         public Button(Rectangle bounds, Color backgroundColor, Color textColor, string text, ICommand onClick) 
             : base(bounds, new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1), backgroundColor, textColor, text)

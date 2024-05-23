@@ -1,15 +1,11 @@
-using System.ComponentModel;
-using AppDevGame;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace AppDevGame 
 {
-    public class MainApp: Game
+    public class MainApp : Game
     {
-        private static MainApp _instance; // singleton (thank god for software quality)
+        private static MainApp _instance; // Singleton
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private WindowManager _windowManager;
@@ -17,10 +13,10 @@ namespace AppDevGame
 
         private MainApp() 
         {
-            this._graphics = new GraphicsDeviceManager(this);
-            this._windowManager = WindowManager.GetInstance();
-            this._spriteBatch = new SpriteBatch(this.GraphicsDevice);
-            this._imageLoader = new ImageLoader(this.GraphicsDevice, "backup.png");
+            _graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
+            _windowManager = WindowManager.GetInstance();
+            _imageLoader = new ImageLoader(GraphicsDevice, "backup.png");
         }
 
         public static MainApp GetInstance() 
@@ -34,17 +30,31 @@ namespace AppDevGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-        
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            this._imageLoader.LoadContent();
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _imageLoader.LoadContent();
         }
 
-        protected Texture2D GetTexture(string key) {
-            return this._imageLoader.GetResource(key);
+        protected override void Update(GameTime gameTime)
+        {
+            // TODO: Add your update logic here
+            base.Update(gameTime);
+        }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            _windowManager.Draw(_spriteBatch);
+            base.Draw(gameTime);
+        }
+
+        public Texture2D GetTexture(string key) 
+        {
+            return _imageLoader.GetResource(key);
         }
     }
 }

@@ -1,14 +1,13 @@
-using AppDevGame;
-
 namespace AppDevGame
 {
     public class WindowManager
     {
-        private static WindowManager _instance { get; private set; }
-        public BaseWindow _window { get; private set; }
+        private static WindowManager _instance;
+        private BaseWindow _window;
 
-        private WindowManager() {
-            this._window = null;
+        private WindowManager() 
+        {
+            _window = null;
         }
 
         public static WindowManager GetInstance()
@@ -23,14 +22,24 @@ namespace AppDevGame
         public void LoadWindow(BaseWindow window) 
         {
             this.Clear();
-            this._window = window;
-            this._window.Setup();
+            _window = window;
+            _window.Setup();
         }
 
         public void Clear() 
         {
-            this._window.Clear();
-            this._window = null;
+            _window?.Clear();
+            _window = null;
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            _window?.Draw(spriteBatch);
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            _window?.Update(gameTime);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace AppDevGame
 {
     public class Inventory
     {
-        public List<Item> Slots { get; private set; }
+        public List<Item> Slots { get; set; }
         private int maxSlots;
 
         public Inventory(int size)
@@ -24,6 +24,7 @@ namespace AppDevGame
             {
                 Console.WriteLine("Inventory is full, cannot add more items");
             }
+        }
 
         public Item RemoveItem(Item item)
         {

@@ -1,60 +1,86 @@
+using AppDevGame;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.IO;
 
-namespace AppDevGame 
+namespace AppDevGame
 {
     public class MainApp : Game
     {
-        private static MainApp _instance; // Singleton
+        // main class for the game, controls all framework-level functionality
+
+        private static MainApp _instance; // singleton; we need global access to this instance to better integrate the UI and the game engine.
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private WindowManager _windowManager;
         private ImageLoader _imageLoader;
+        private WindowManager _windowManager;
+        private Texture2D _backgroundTexture;
 
-        private MainApp() 
+        private const bool _isDebugMode = true;
+
+        private MainApp()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            // private constructor, so that no one can create a new instance of this class.
+            Log("Starting Application...");
+            this._graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            _windowManager = WindowManager.GetInstance();
-            _imageLoader = new ImageLoader(GraphicsDevice, "backup.png");
+            IsMouseVisible = true;
+            Log("Setup complete.");
         }
 
-        public static MainApp GetInstance() 
+        public static MainApp GetInstance()
         {
-            if (_instance == null) {
+            // the only way to get an instance of this class is to call this method.
+            if (_instance == null)
+            {
                 _instance = new MainApp();
             }
             return _instance;
         }
 
+        public static void Log(string message) {
+            if (_isDebugMode) {
+                Console.WriteLine(message);
+            }
+        }
+
+        public GraphicsDeviceManager GetGraphicsManager()
+        {
+            return _graphics;
+        }
+
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            _windowManager = WindowManager.GetInstance();
+            _imageLoader = new ImageLoader(GraphicsDevice);
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _imageLoader.LoadContent();
+            FileStream fileStream = new FileStream("./Content/PlaceholderBackground.jpg", FileMode.Open);
+            _backgroundTexture = Texture2D.FromStream(GraphicsDevice, fileStream);
+            fileStream.Dispose();
+            base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
+            _windowManager.Update(gameTime);
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            _windowManager.Draw(_spriteBatch);
-            base.Draw(gameTime);
-        }
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(_backgroundTexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
 
-        public Texture2D GetTexture(string key) 
-        {
-            return _imageLoader.GetResource(key);
+            _windowManager.Draw(_spriteBatch);
+            _spriteBatch.End();
+            base.Draw(gameTime);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace AppDevGame
         static void Main()
         {
             Console.WriteLine("Starting the Game");
-            using (var game = new MainApp())
+            using (var game = MainApp.GetInstance())
                 game.Run();
         }
     }

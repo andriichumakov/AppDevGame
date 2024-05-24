@@ -22,9 +22,9 @@ namespace AppDevGame
             if (entityTexture != null)
             {
                 // Add entities at specified positions
-                AddEntity(new Entity(this, entityTexture, new Vector2(100, 100)));
-                AddEntity(new Entity(this, entityTexture, new Vector2(200, 200)));
-                AddEntity(new Entity(this, entityTexture, new Vector2(300, 300)));
+               AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(500, 100), maxHealth: 100, damage: 1));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(300, 300), maxHealth: 100, damage: 1));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(700, 450), maxHealth: 100, damage: 1));
             }
 
             if (playerTexture != null)

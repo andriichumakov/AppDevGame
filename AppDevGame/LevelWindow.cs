@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace AppDevGame
 {
@@ -12,8 +13,11 @@ namespace AppDevGame
         protected Rectangle _frameSize;
         protected Rectangle _actualSize;
         private int _margin = 50; // Distance from the frame border to start moving the frame
+        public List<Entity> Entities => _entities;
 
         public Rectangle ActualSize => _actualSize;
+
+        public Player Player => _player;
 
         public LevelWindow(int frameWidth, int frameHeight, int actualWidth, int actualHeight, Texture2D background = null)
             : base(frameWidth, frameHeight, background)
@@ -43,23 +47,32 @@ namespace AppDevGame
         {
             if (_player != null)
             {
+                // Calculate the new frame position based on the player's position
+                int newFrameX = _frameSize.X;
+                int newFrameY = _frameSize.Y;
+
+                // Adjust the frame horizontally based on the player's position
                 if (_player.Position.X < _frameSize.X + _margin)
                 {
-                    _frameSize.X = (int) Math.Max(0, _player.Position.X - _margin);
+                    newFrameX = (int)Math.Max(0, _player.Position.X - _margin);
                 }
                 else if (_player.Position.X + _player.Hitbox.Width > _frameSize.X + _frameSize.Width - _margin)
                 {
-                    _frameSize.X = (int) Math.Min(_actualSize.Width - _frameSize.Width, _player.Position.X + _player.Hitbox.Width - _frameSize.Width + _margin);
+                    newFrameX = (int)Math.Min(_actualSize.Width - _frameSize.Width, _player.Position.X + _player.Hitbox.Width - _frameSize.Width + _margin);
                 }
 
+                // Adjust the frame vertically based on the player's position
                 if (_player.Position.Y < _frameSize.Y + _margin)
                 {
-                    _frameSize.Y = (int) Math.Max(0, _player.Position.Y - _margin);
+                    newFrameY = (int)Math.Max(0, _player.Position.Y - _margin);
                 }
                 else if (_player.Position.Y + _player.Hitbox.Height > _frameSize.Y + _frameSize.Height - _margin)
                 {
-                    _frameSize.Y = (int) Math.Min(_actualSize.Height - _frameSize.Height, _player.Position.Y + _player.Hitbox.Height - _frameSize.Height + _margin);
+                    newFrameY = (int)Math.Min(_actualSize.Height - _frameSize.Height, _player.Position.Y + _player.Hitbox.Height - _frameSize.Height + _margin);
                 }
+
+                // Move the frame by the calculated deltas
+                MoveFrame(newFrameX - _frameSize.X, newFrameY - _frameSize.Y);
             }
         }
 
@@ -75,7 +88,7 @@ namespace AppDevGame
             _player?.Update(gameTime);
             AdjustFrame(); // Adjust the frame based on the player's position
 
-            foreach (var entity in _entities)
+            foreach (var entity in _entities.ToList()) // Use ToList() to avoid modifying the collection while iterating
             {
                 if (_frameSize.Contains(entity.Hitbox) || _frameSize.Intersects(entity.Hitbox))
                 {
@@ -84,6 +97,9 @@ namespace AppDevGame
             }
 
             CheckCollisions();
+
+            // Remove dead enemies
+            _entities.RemoveAll(entity => entity is Enemy enemy && enemy.IsDead());
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -91,10 +107,18 @@ namespace AppDevGame
             // Draw the visible portion of the background
             if (_background != null)
             {
+                // Calculate the source rectangle based on the frame's position
+                Rectangle sourceRectangle = new Rectangle(
+                    _frameSize.X, _frameSize.Y,
+                    Math.Min(_frameSize.Width, _background.Width - _frameSize.X),
+                    Math.Min(_frameSize.Height, _background.Height - _frameSize.Y)
+                );
+
+                // Draw the background texture to fit the entire frame
                 spriteBatch.Draw(
                     _background,
-                    destinationRectangle: new Rectangle(0, 0, _frameSize.Width, _frameSize.Height),
-                    sourceRectangle: _frameSize,
+                    destinationRectangle: new Rectangle(0, 0, sourceRectangle.Width, sourceRectangle.Height),
+                    sourceRectangle: sourceRectangle,
                     color: Color.White
                 );
             }
@@ -103,6 +127,7 @@ namespace AppDevGame
             {
                 if (_frameSize.Contains(entity.Hitbox) || _frameSize.Intersects(entity.Hitbox))
                 {
+                    // Offset the entity's drawing position by the frame's position
                     entity.Draw(spriteBatch, new Vector2(_frameSize.X, _frameSize.Y));
                 }
             }
@@ -126,6 +151,23 @@ namespace AppDevGame
                     }
                 }
             }
+        }
+
+        public List<Entity> GetEntitiesInRange(Vector2 position, int range)
+        {
+            List<Entity> entitiesInRange = new List<Entity>();
+            float rangeSquared = range * range;
+
+            foreach (var entity in _entities)
+            {
+                float distanceSquared = Vector2.DistanceSquared(position, entity.Position);
+                if (distanceSquared <= rangeSquared)
+                {
+                    entitiesInRange.Add(entity);
+                }
+            }
+
+            return entitiesInRange;
         }
 
         public void SetFrameSize(int width, int height)

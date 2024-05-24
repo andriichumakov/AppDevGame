@@ -10,28 +10,31 @@ namespace AppDevGame
         protected ICommand _onClick;
         private TimeSpan _lastClickTime;
         private static readonly TimeSpan DebounceTime = TimeSpan.FromMilliseconds(300);
+        private SpriteFont _font;
 
-        public Button(Rectangle bounds, Color backgroundColor, Color textColor, string text, ICommand onClick) 
+        public Button(Rectangle bounds, Color backgroundColor, Color textColor, string text, ICommand onClick, SpriteFont font) 
             : base(bounds, new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1), backgroundColor, textColor, text)
         {
             _texture = new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1);
             _texture.SetData(new[] { backgroundColor });
             _onClick = onClick;
             _lastClickTime = TimeSpan.Zero;
+            _font = font;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_texture, _bounds, _backgroundColor);
-            var font = MainApp.GetInstance()._fontLoader.GetResource("Default"); // Assuming a font named Default is loaded
-            if (font == null)
+            if (_font != null)
             {
-                MainApp.Log("Error: Font 'Default' not found.");
-                return;
+                var textSize = _font.MeasureString(_text);
+                var textPosition = new Vector2(_bounds.X + (_bounds.Width - textSize.X) / 2, _bounds.Y + (_bounds.Height - textSize.Y) / 2);
+                spriteBatch.DrawString(_font, _text, textPosition, _textColor);
             }
-            var textSize = font.MeasureString(_text);
-            var textPosition = new Vector2(_bounds.X + (_bounds.Width - textSize.X) / 2, _bounds.Y + (_bounds.Height - textSize.Y) / 2);
-            spriteBatch.DrawString(font, _text, textPosition, _textColor);
+            else
+            {
+                MainApp.Log("Error: Font not loaded.");
+            }
         }
 
         public override void Update(GameTime gameTime)

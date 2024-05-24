@@ -19,7 +19,7 @@ namespace AppDevGame
         private SettingsMenu _settingsMenu;
         private LanguageMenu _languageMenu;
         private SoundMenu _soundMenu;
-        private ModMenu _modMenu; // Add ModMenu here
+        private ModMenu _modMenu;
 
         private const bool _isDebugMode = true;
 
@@ -60,7 +60,7 @@ namespace AppDevGame
         public SettingsMenu SettingsMenu => _settingsMenu;
         public LanguageMenu LanguageMenu => _languageMenu;
         public SoundMenu SoundMenu => _soundMenu;
-        public ModMenu ModMenu => _modMenu; // Add getter for ModMenu
+        public ModMenu ModMenu => _modMenu;
 
         protected override void Initialize()
         {
@@ -81,7 +81,7 @@ namespace AppDevGame
             _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager);
             _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager);
             _soundMenu = new SoundMenu(800, 600, _backgroundTexture, _windowManager);
-            _modMenu = new ModMenu(800, 600, _backgroundTexture, _windowManager); // Initialize ModMenu here
+            _modMenu = new ModMenu(800, 600, _backgroundTexture, _windowManager);
             _mainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, _settingsMenu);
 
             _windowManager.LoadWindow(_mainMenu);

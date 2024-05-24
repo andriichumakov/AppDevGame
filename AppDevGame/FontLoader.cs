@@ -11,7 +11,7 @@ namespace AppDevGame
         private Dictionary<string, SpriteFont> _fonts;
 
         public FontLoader(ContentManager content)
-            : base("", new List<string> { ".spritefont" })
+            : base("", new List<string> { ".spritefont" }) // Ensure subfolder is set correctly
         {
             _content = content;
             _fonts = new Dictionary<string, SpriteFont>();
@@ -19,8 +19,17 @@ namespace AppDevGame
 
         public override void LoadContent()
         {
-            MainApp.Log("Loading fonts from: " + Path.Combine("Content", _subfolder));
-            string[] files = Directory.GetFiles(Path.Combine("Content", _subfolder));
+            string path = Path.Combine(_content.RootDirectory, _subfolder);
+            MainApp.Log("Loading fonts from: " + path);
+
+            // Check if directory exists before trying to load
+            if (!Directory.Exists(path))
+            {
+                MainApp.Log("Font directory not found: " + path);
+                return;
+            }
+
+            string[] files = Directory.GetFiles(path);
             foreach (string file in files)
             {
                 MainApp.Log(file);

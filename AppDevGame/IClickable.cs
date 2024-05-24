@@ -2,8 +2,8 @@ using Microsoft.Xna.Framework;
 
 namespace AppDevGame
 {
-    public interface IClickable 
+    public interface IClickable
     {
-        public void HandleClick(Point mousePosition);
+        void HandleClick(Point mousePosition, GameTime gameTime);
     }
 }

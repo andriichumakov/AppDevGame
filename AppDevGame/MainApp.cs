@@ -6,25 +6,28 @@ namespace AppDevGame
 {
     public class MainApp : Game
     {
-        // main class for the game, controls all framework-level functionality
-
-        private static MainApp _instance; // singleton; we need global access to this instance to better integrate the UI and the game engine.
+        private static MainApp _instance; // Singleton instance
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        
         private WindowManager _windowManager;
         private Texture2D _backgroundTexture;
 
         internal FontLoader _fontLoader;
         internal ImageLoader _imageLoader;
 
+        private MainMenu _mainMenu;
+        private SettingsMenu _settingsMenu;
+        private LanguageMenu _languageMenu;
+        private SoundMenu _soundMenu;
+        private ModMenu _modMenu; // Add ModMenu here
+
         private const bool _isDebugMode = true;
 
         private MainApp()
         {
-            // private constructor, so that no one can create a new instance of this class.
+            // Private constructor for singleton pattern
             Log("Starting Application...");
-            this._graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Log("Setup complete.");
@@ -32,7 +35,7 @@ namespace AppDevGame
 
         public static MainApp GetInstance()
         {
-            // the only way to get an instance of this class is to call this method.
+            // Singleton instance accessor
             if (_instance == null)
             {
                 _instance = new MainApp();
@@ -40,8 +43,10 @@ namespace AppDevGame
             return _instance;
         }
 
-        public static void Log(string message) {
-            if (_isDebugMode) {
+        public static void Log(string message)
+        {
+            if (_isDebugMode)
+            {
                 Console.WriteLine(message);
             }
         }
@@ -50,6 +55,12 @@ namespace AppDevGame
         {
             return _graphics;
         }
+
+        public MainMenu MainMenu => _mainMenu;
+        public SettingsMenu SettingsMenu => _settingsMenu;
+        public LanguageMenu LanguageMenu => _languageMenu;
+        public SoundMenu SoundMenu => _soundMenu;
+        public ModMenu ModMenu => _modMenu; // Add getter for ModMenu
 
         protected override void Initialize()
         {
@@ -65,7 +76,16 @@ namespace AppDevGame
             _imageLoader.LoadContent();
             _fontLoader.LoadContent();
             _backgroundTexture = _imageLoader.GetResource("PlaceholderBackground");
-            _windowManager.LoadWindow(new MainMenu(800, 600, _backgroundTexture));
+
+            // Initialize menus
+            _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager);
+            _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager);
+            _soundMenu = new SoundMenu(800, 600, _backgroundTexture, _windowManager);
+            _modMenu = new ModMenu(800, 600, _backgroundTexture, _windowManager); // Initialize ModMenu here
+            _mainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, _settingsMenu);
+
+            _windowManager.LoadWindow(_mainMenu);
+
             base.LoadContent();
         }
 
@@ -79,7 +99,6 @@ namespace AppDevGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin();
-            //_spriteBatch.Draw(_backgroundTexture, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), Color.White);
 
             _windowManager.Draw(_spriteBatch);
             _spriteBatch.End();

@@ -1,9 +1,8 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using System;
-using System.Diagnostics;
 
 namespace AppDevGame
 {
@@ -51,7 +50,6 @@ namespace AppDevGame
             if (_isDebugMode)
             {
                 Console.WriteLine(message);
-                Debug.WriteLine(message); // Added Debug output
             }
         }
 
@@ -79,25 +77,16 @@ namespace AppDevGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _imageLoader.LoadContent();
             _fontLoader.LoadContent();
-            
-            // Load the background texture
             _backgroundTexture = _imageLoader.GetResource("PlaceholderBackground");
 
-            if (_backgroundTexture == null)
-            {
-                Log("Error: Background texture not loaded.");
-            }
-            else
-            {
-                Log("Background texture loaded successfully.");
-            }
+            var font = _fontLoader.GetResource("Default");
 
             // Initialize menus
-            _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager, _fontLoader.GetResource("Default"));
-            _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager, _fontLoader.GetResource("Default"));
-            _soundMenu = new SoundMenu(800, 600, _backgroundTexture, _windowManager, _fontLoader.GetResource("Default"));
-            _modMenu = new ModMenu(800, 600, _backgroundTexture, _windowManager, _fontLoader.GetResource("Default"));
-            _mainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, _settingsMenu, _fontLoader.GetResource("Default"));
+            _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager, font);
+            _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager, font);
+            _soundMenu = new SoundMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);
+            _modMenu = new ModMenu(800, 600, _backgroundTexture, _windowManager, font);
+            _mainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, _settingsMenu, font);
 
             _windowManager.LoadWindow(_mainMenu);
 

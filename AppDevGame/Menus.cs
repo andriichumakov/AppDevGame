@@ -129,12 +129,14 @@ namespace AppDevGame
         private Slider musicSlider;
         private Slider soundEffectsSlider;
         private SpriteFont _font;
+        private GraphicsDevice _graphicsDevice;
 
-        public SoundMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font) 
+        public SoundMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font, GraphicsDevice graphicsDevice) 
             : base(width, height, background)
         {
             _windowManager = windowManager;
             _font = font;
+            _graphicsDevice = graphicsDevice;
         }
 
         public override void Setup()
@@ -149,18 +151,17 @@ namespace AppDevGame
             Vector2 backButtonPos = new Vector2(10, 10);
             backButton = new Button(new Rectangle((int)backButtonPos.X, (int)backButtonPos.Y, buttonWidth, buttonHeight), Color.Green, Color.White, "Go Back", new LoadWindowCommand(_windowManager, MainApp.GetInstance().SettingsMenu), _font);
 
-            Vector2 masterVolumePos = new Vector2(300, 150);
-            masterVolumeSlider = new Slider(new Rectangle((int)masterVolumePos.X, (int)masterVolumePos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Master Volume", 0.5f, _font);
+            int centerX = _width / 2;
+            int startY = _height / 2 - sliderSpacing;
 
-            Vector2 musicPos = new Vector2(300, 150 + sliderSpacing);
-            musicSlider = new Slider(new Rectangle((int)musicPos.X, (int)musicPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Music", 0.5f, _font);
+            Vector2 masterVolumePos = new Vector2(centerX - sliderWidth / 2, startY);
+            masterVolumeSlider = new Slider(_graphicsDevice, new Rectangle((int)masterVolumePos.X, (int)masterVolumePos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Master Volume", 0.5f, _font);
 
-            Vector2 soundEffectsPos = new Vector2(300, 150 + 2 * sliderSpacing);
-            soundEffectsSlider = new Slider(new Rectangle((int)soundEffectsPos.X, (int)soundEffectsPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Sound Effects", 0.5f, _font);
+            Vector2 musicPos = new Vector2(centerX - sliderWidth / 2, startY + sliderSpacing);
+            musicSlider = new Slider(_graphicsDevice, new Rectangle((int)musicPos.X, (int)musicPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Music", 0.5f, _font);
 
-            AddElement(new Label(new Rectangle((int)masterVolumePos.X - 150, (int)masterVolumePos.Y, 150, buttonHeight), Color.Transparent, Color.Black, "Master Volume", _font));
-            AddElement(new Label(new Rectangle((int)musicPos.X - 150, (int)musicPos.Y, 150, buttonHeight), Color.Transparent, Color.Black, "Music", _font));
-            AddElement(new Label(new Rectangle((int)soundEffectsPos.X - 150, (int)soundEffectsPos.Y, 150, buttonHeight), Color.Transparent, Color.Black, "Sound Effects", _font));
+            Vector2 soundEffectsPos = new Vector2(centerX - sliderWidth / 2, startY + 2 * sliderSpacing);
+            soundEffectsSlider = new Slider(_graphicsDevice, new Rectangle((int)soundEffectsPos.X, (int)soundEffectsPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Sound Effects", 0.5f, _font);
 
             AddElement(backButton);
             AddElement(masterVolumeSlider);
@@ -186,6 +187,7 @@ namespace AppDevGame
             soundEffectsSlider.Value = Math.Min(soundEffectsSlider.Value, masterVolume);
         }
     }
+
 
     public class ModMenu : MenuWindow
     {

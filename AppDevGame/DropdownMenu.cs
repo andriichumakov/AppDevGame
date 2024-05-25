@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace AppDevGame
@@ -11,6 +12,8 @@ namespace AppDevGame
         private bool _isOpen;
         private SpriteFont _font;
         private Texture2D _backgroundTexture;
+        private TimeSpan _lastClickTime;
+        private static readonly TimeSpan DebounceTime = TimeSpan.FromMilliseconds(300);
 
         public DropdownMenu(GraphicsDevice graphicsDevice, Rectangle bounds, Color backgroundColor, Color foregroundColor, string defaultItem, List<string> items, SpriteFont font)
             : base(bounds, null, backgroundColor, foregroundColor, defaultItem)
@@ -22,6 +25,8 @@ namespace AppDevGame
 
             _backgroundTexture = new Texture2D(graphicsDevice, 1, 1);
             _backgroundTexture.SetData(new[] { backgroundColor });
+
+            _lastClickTime = TimeSpan.Zero;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -63,20 +68,25 @@ namespace AppDevGame
 
         public void HandleClick(Point clickPosition, GameTime gameTime)
         {
-            if (_bounds.Contains(clickPosition))
+            if (gameTime.TotalGameTime - _lastClickTime > DebounceTime)
             {
-                _isOpen = !_isOpen;
-            }
-            else if (_isOpen)
-            {
-                for (int i = 0; i < _items.Count; i++)
+                _lastClickTime = gameTime.TotalGameTime;
+
+                if (_bounds.Contains(clickPosition))
                 {
-                    Rectangle itemBounds = new Rectangle(_bounds.X, _bounds.Y + (i + 1) * _bounds.Height, _bounds.Width, _bounds.Height);
-                    if (itemBounds.Contains(clickPosition))
+                    _isOpen = !_isOpen;
+                }
+                else if (_isOpen)
+                {
+                    for (int i = 0; i < _items.Count; i++)
                     {
-                        _selectedIndex = i;
-                        _isOpen = false;
-                        break;
+                        Rectangle itemBounds = new Rectangle(_bounds.X, _bounds.Y + (i + 1) * _bounds.Height, _bounds.Width, _bounds.Height);
+                        if (itemBounds.Contains(clickPosition))
+                        {
+                            _selectedIndex = i;
+                            _isOpen = false;
+                            break;
+                        }
                     }
                 }
             }

@@ -4,11 +4,9 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/../bin/Debug/net6.0/Content/Default.spritefont</File>
     <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Default.spritefont</File>
   </SourceFiles>
   <DestFiles>
-    <File>Default.spritefont</File>
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>

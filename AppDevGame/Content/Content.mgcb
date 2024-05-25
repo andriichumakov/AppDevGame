@@ -1,6 +1,4 @@
-
 #----------------------------- Global Properties ----------------------------#
-
 /outputDir:bin/$(Platform)
 /intermediateDir:obj/$(Platform)
 /platform:DesktopGL
@@ -10,27 +8,10 @@
 
 #-------------------------------- References --------------------------------#
 
-
 #---------------------------------- Content ---------------------------------#
-
-#begin ../bin/Debug/net6.0/Content/Default.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:../bin/Debug/net6.0/Content/Default.spritefont;Default.spritefont
-
 #begin Default.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Default.spritefont
-
-#begin Default.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:Default.spritefont
-

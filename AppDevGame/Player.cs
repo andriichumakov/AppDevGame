@@ -25,7 +25,6 @@ namespace AppDevGame
             _healthBarTexture.SetData(new[] { Color.White });
         }
 
-        public Vector2 Position => _position;
         public int CurrentHealth => _currentHealth;
         public int MaxHealth => _maxHealth;
 

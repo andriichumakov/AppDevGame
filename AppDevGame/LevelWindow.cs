@@ -17,7 +17,6 @@ namespace AppDevGame
 
         public Rectangle ActualSize => _actualSize;
         public List<Entity> Entities => _entities;
-        public Rectangle ActualSize => _actualSize;
         public Player Player => _player;
 
         public LevelWindow(int frameWidth, int frameHeight, int actualWidth, int actualHeight, Texture2D background = null)

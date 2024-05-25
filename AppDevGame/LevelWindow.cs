@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System;
+
 using System.Linq;
 
 namespace AppDevGame
@@ -13,10 +14,10 @@ namespace AppDevGame
         protected Rectangle _frameSize;
         protected Rectangle _actualSize;
         private int _margin = 50; // Distance from the frame border to start moving the frame
-        public List<Entity> Entities => _entities;
 
         public Rectangle ActualSize => _actualSize;
-
+        public List<Entity> Entities => _entities;
+        public Rectangle ActualSize => _actualSize;
         public Player Player => _player;
 
         public LevelWindow(int frameWidth, int frameHeight, int actualWidth, int actualHeight, Texture2D background = null)
@@ -87,7 +88,6 @@ namespace AppDevGame
             base.Update(gameTime);
             _player?.Update(gameTime);
             AdjustFrame(); // Adjust the frame based on the player's position
-
             foreach (var entity in _entities.ToList()) // Use ToList() to avoid modifying the collection while iterating
             {
                 if (_frameSize.Contains(entity.Hitbox) || _frameSize.Intersects(entity.Hitbox))
@@ -97,7 +97,6 @@ namespace AppDevGame
             }
 
             CheckCollisions();
-
             // Remove dead enemies
             _entities.RemoveAll(entity => entity is Enemy enemy && enemy.IsDead());
         }

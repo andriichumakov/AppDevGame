@@ -38,32 +38,4 @@ namespace AppDevGame
             _texture.Dispose();
         }
     }
-
-    public class Label : UIElement
-    {
-        public Label(Rectangle bounds, Color backgroundColor, Color textColor, string text) 
-            : base(bounds, new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1), backgroundColor, textColor, text)
-        {
-            _texture = new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1);
-            _texture.SetData(new[] { backgroundColor });
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            // No update logic needed for labels
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            var font = MainApp.GetInstance()._fontLoader.GetResource("Default");
-            if (font == null)
-            {
-                MainApp.Log("Error: Font 'Default' not found.");
-                return;
-            }
-            var textSize = font.MeasureString(_text);
-            var textPosition = new Vector2(_bounds.X, _bounds.Y + (_bounds.Height - textSize.Y) / 2);
-            spriteBatch.DrawString(font, _text, textPosition, _textColor);
-        }
-    }
 }

@@ -19,8 +19,16 @@ namespace AppDevGame
 
         public override void LoadContent()
         {
-            MainApp.Log("Loading fonts from: " + Path.Combine("Content", _subfolder));
-            string[] files = Directory.GetFiles(Path.Combine("Content", _subfolder));
+            string path = Path.Combine(_content.RootDirectory, _subfolder);
+            MainApp.Log("Loading fonts from: " + path);
+
+            if (!Directory.Exists(path))
+            {
+                MainApp.Log("Font directory not found: " + path);
+                return;
+            }
+
+            string[] files = Directory.GetFiles(path);
             foreach (string file in files)
             {
                 MainApp.Log(file);

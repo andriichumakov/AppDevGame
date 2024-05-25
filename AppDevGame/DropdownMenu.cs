@@ -12,7 +12,7 @@ namespace AppDevGame
         private SpriteFont _font;
         private Texture2D _backgroundTexture;
 
-        public DropdownMenu(Rectangle bounds, Color backgroundColor, Color foregroundColor, string defaultItem, List<string> items, SpriteFont font)
+        public DropdownMenu(GraphicsDevice graphicsDevice, Rectangle bounds, Color backgroundColor, Color foregroundColor, string defaultItem, List<string> items, SpriteFont font)
             : base(bounds, null, backgroundColor, foregroundColor, defaultItem)
         {
             _items = items;
@@ -20,7 +20,7 @@ namespace AppDevGame
             _selectedIndex = items.IndexOf(defaultItem);
             _isOpen = false;
 
-            _backgroundTexture = new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1);
+            _backgroundTexture = new Texture2D(graphicsDevice, 1, 1);
             _backgroundTexture.SetData(new[] { backgroundColor });
         }
 
@@ -80,6 +80,11 @@ namespace AppDevGame
                     }
                 }
             }
+        }
+
+        public string GetSelectedItem()
+        {
+            return _items[_selectedIndex];
         }
     }
 }

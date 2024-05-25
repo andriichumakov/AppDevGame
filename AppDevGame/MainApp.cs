@@ -1,7 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using System;
 
 namespace AppDevGame
@@ -83,7 +82,7 @@ namespace AppDevGame
 
             // Initialize menus
             _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager, font);
-            _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager, font);
+            _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);
             _soundMenu = new SoundMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);
             _modMenu = new ModMenu(800, 600, _backgroundTexture, _windowManager, font);
             _mainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, _settingsMenu, font);

@@ -89,12 +89,14 @@ namespace AppDevGame
         private Button backButton;
         private DropdownMenu languageDropdown;
         private SpriteFont _font;
+        private GraphicsDevice _graphicsDevice;
 
-        public LanguageMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font) 
+        public LanguageMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font, GraphicsDevice graphicsDevice)
             : base(width, height, background)
         {
             _windowManager = windowManager;
             _font = font;
+            _graphicsDevice = graphicsDevice;
         }
 
         public override void Setup()
@@ -102,12 +104,14 @@ namespace AppDevGame
             base.Setup();
             int buttonWidth = 200;
             int buttonHeight = 50;
+            int dropdownWidth = 300;
+            int dropdownHeight = 50;
 
             Vector2 backButtonPos = new Vector2(10, 10);
             backButton = new Button(new Rectangle((int)backButtonPos.X, (int)backButtonPos.Y, buttonWidth, buttonHeight), Color.Green, Color.White, "Go Back", new LoadWindowCommand(_windowManager, MainApp.GetInstance().SettingsMenu), _font);
 
-            Vector2 dropdownPos = new Vector2(300, 200);
-            languageDropdown = new DropdownMenu(new Rectangle((int)dropdownPos.X, (int)dropdownPos.Y, buttonWidth, buttonHeight), Color.Green, Color.White, "English (UK)", new List<string> { "English", "Dutch" }, _font);
+            Vector2 dropdownPos = new Vector2((_width - dropdownWidth) / 2, (_height - dropdownHeight) / 2);
+            languageDropdown = new DropdownMenu(_graphicsDevice, new Rectangle((int)dropdownPos.X, (int)dropdownPos.Y, dropdownWidth, dropdownHeight), Color.Green, Color.White, "English", new List<string> { "English", "Dutch" }, _font);
 
             AddElement(backButton);
             AddElement(languageDropdown);
@@ -118,6 +122,17 @@ namespace AppDevGame
             base.LoadContent(graphicsDevice, content);
             backButton.LoadContent(graphicsDevice, content);
             languageDropdown.LoadContent(graphicsDevice, content);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            MouseState mouseState = Mouse.GetState();
+            if (mouseState.LeftButton == ButtonState.Pressed)
+            {
+                languageDropdown.HandleClick(new Point(mouseState.X, mouseState.Y), gameTime);
+            }
         }
     }
 
@@ -187,7 +202,6 @@ namespace AppDevGame
             soundEffectsSlider.Value = Math.Min(soundEffectsSlider.Value, masterVolume);
         }
     }
-
 
     public class ModMenu : MenuWindow
     {

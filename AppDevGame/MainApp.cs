@@ -31,6 +31,13 @@ namespace AppDevGame
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+
+            // Set the game to fullscreen
+            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            _graphics.IsFullScreen = true;
+            _graphics.ApplyChanges();
+
             Log("Setup complete.");
         }
 
@@ -65,47 +72,89 @@ namespace AppDevGame
 
         protected override void Initialize()
         {
-            _windowManager = WindowManager.GetInstance();
-            _imageLoader = new ImageLoader(GraphicsDevice);
-            _fontLoader = new FontLoader(Content);
-            base.Initialize();
+            try
+            {
+                Log($"Fullscreen: {_graphics.IsFullScreen}");
+                Log($"Screen Width: {_graphics.PreferredBackBufferWidth}");
+                Log($"Screen Height: {_graphics.PreferredBackBufferHeight}");
+
+                _windowManager = WindowManager.GetInstance();
+                _imageLoader = new ImageLoader(GraphicsDevice);
+                _fontLoader = new FontLoader(Content);
+
+                base.Initialize();
+            }
+            catch (Exception ex)
+            {
+                Log($"Exception during Initialize: {ex.Message}");
+                throw;
+            }
         }
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _imageLoader.LoadContent();
-            _fontLoader.LoadContent();
-            _backgroundTexture = _imageLoader.GetResource("PlaceholderBackground");
+            try
+            {
+                _spriteBatch = new SpriteBatch(GraphicsDevice);
+                _imageLoader.LoadContent();
+                _fontLoader.LoadContent();
+                _backgroundTexture = _imageLoader.GetResource("PlaceholderBackground");
 
-            var font = _fontLoader.GetResource("Default");
+                var font = _fontLoader.GetResource("Default");
 
-            // Initialize menus
-            _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager, font);
-            _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);
-            _soundMenu = new SoundMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);
-            _modMenu = new ModMenu(800, 600, _backgroundTexture, _windowManager, font);
-            _mainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, _settingsMenu, font);
+                // Initialize menus
+                _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager, font);
+                _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);
+                _soundMenu = new SoundMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);
+                _modMenu = new ModMenu(800, 600, _backgroundTexture, _windowManager, font);
+                _mainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, _settingsMenu, font);
 
-            _windowManager.LoadWindow(_mainMenu);
+                _windowManager.LoadWindow(_mainMenu);
 
-            base.LoadContent();
+                // Additional logging
+                Log($"LoadContent called. Fullscreen: {_graphics.IsFullScreen}");
+                Log($"Screen Width: {_graphics.PreferredBackBufferWidth}");
+                Log($"Screen Height: {_graphics.PreferredBackBufferHeight}");
+
+                base.LoadContent();
+            }
+            catch (Exception ex)
+            {
+                Log($"Exception during LoadContent: {ex.Message}");
+                throw;
+            }
         }
 
         protected override void Update(GameTime gameTime)
         {
-            _windowManager.Update(gameTime);
-            base.Update(gameTime);
+            try
+            {
+                _windowManager.Update(gameTime);
+                base.Update(gameTime);
+            }
+            catch (Exception ex)
+            {
+                Log($"Exception during Update: {ex.Message}");
+                throw;
+            }
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            _spriteBatch.Begin();
+            try
+            {
+                GraphicsDevice.Clear(Color.CornflowerBlue);
+                _spriteBatch.Begin();
 
-            _windowManager.Draw(_spriteBatch);
-            _spriteBatch.End();
-            base.Draw(gameTime);
+                _windowManager.Draw(_spriteBatch);
+                _spriteBatch.End();
+                base.Draw(gameTime);
+            }
+            catch (Exception ex)
+            {
+                Log($"Exception during Draw: {ex.Message}");
+                throw;
+            }
         }
     }
 }

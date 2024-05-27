@@ -1,7 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -12,7 +11,7 @@ namespace AppDevGame
         private GraphicsDevice _graphics;
         private Dictionary<string, Texture2D> _textures;
 
-        public ImageLoader(GraphicsDevice graphics)
+        public ImageLoader(GraphicsDevice graphics) 
             : base("", new List<string> { ".png", ".jpg", ".jpeg" })
         {
             _graphics = graphics;
@@ -39,22 +38,6 @@ namespace AppDevGame
             }
         }
 
-        public void LoadSpecificResource(string path, string key)
-        {
-            try
-            {
-                using (FileStream stream = new FileStream(path, FileMode.Open))
-                {
-                    MainApp.Log("Loaded specific texture: " + key);
-                    _textures[key] = Texture2D.FromStream(_graphics, stream);
-                }
-            }
-            catch (FileNotFoundException ex)
-            {
-                MainApp.Log($"Error loading texture {key}: {ex.Message}");
-            }
-        }
-
         public Texture2D GetResource(string key)
         {
             if (_textures.ContainsKey(key))
@@ -62,6 +45,14 @@ namespace AppDevGame
                 return _textures[key];
             }
             return null;
+        }
+
+        public void LoadSpecificResource(string path, string key)
+        {
+            using (FileStream stream = new FileStream(path, FileMode.Open))
+            {
+                _textures[key] = Texture2D.FromStream(_graphics, stream);
+            }
         }
     }
 }

@@ -18,11 +18,12 @@ namespace AppDevGame
             // Example of adding entities to the level
             Texture2D entityTexture = MainApp.GetInstance()._imageLoader.GetResource("Frog");
             Texture2D playerTexture = MainApp.GetInstance()._imageLoader.GetResource("character");
+            Texture2D portalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalActive");
 
             if (entityTexture != null)
             {
                 // Add entities at specified positions
-               AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(500, 100), maxHealth: 100, damage: 1));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(500, 100), maxHealth: 100, damage: 1));
                 AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(300, 300), maxHealth: 100, damage: 1));
                 AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(700, 450), maxHealth: 100, damage: 1));
             }
@@ -31,6 +32,12 @@ namespace AppDevGame
             {
                 // Add player at the starting position
                 SetPlayer(new Player(this, playerTexture, new Vector2(50, 50)));
+            }
+
+            if (portalTexture != null)
+            {
+                // Add portal at the specified position with a scale of 2.0 (increase the size)
+                AddEntity(new Portal(this, portalTexture, new Vector2(400, 200), isActive: true, scale: 2.0f));
             }
         }
 

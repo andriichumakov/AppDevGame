@@ -4,8 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.IO;
 
-using AppDevGame;
-
 namespace AppDevGame
 {
     public class ImageLoader : ResourceLoader
@@ -22,8 +20,16 @@ namespace AppDevGame
 
         public override void LoadContent()
         {
-            MainApp.Log("Loading textures from: " + Path.Combine("Content", _subfolder));
-            string[] files = Directory.GetFiles(Path.Combine("Content", _subfolder));
+            string path = Path.Combine("Content", _subfolder);
+            MainApp.Log("Loading textures from: " + path);
+            
+            if (!Directory.Exists(path))
+            {
+                MainApp.Log("Texture directory not found: " + path);
+                return;
+            }
+
+            string[] files = Directory.GetFiles(path);
             foreach (string file in files)
             {
                 MainApp.Log(file);

@@ -1,8 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using AppDevGame;
-
 namespace AppDevGame
 {
     public class WindowManager

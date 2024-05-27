@@ -80,6 +80,9 @@ namespace AppDevGame
 
             var font = _fontLoader.GetResource("Default");
 
+            // Load the portal texture specifically
+            _imageLoader.LoadSpecificResource("Content/PortalActivate.png", "PortalActivate");
+
             // Initialize menus
             _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager, font);
             _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);

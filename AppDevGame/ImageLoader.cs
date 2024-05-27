@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -11,7 +12,7 @@ namespace AppDevGame
         private GraphicsDevice _graphics;
         private Dictionary<string, Texture2D> _textures;
 
-        public ImageLoader(GraphicsDevice graphics) 
+        public ImageLoader(GraphicsDevice graphics)
             : base("", new List<string> { ".png", ".jpg", ".jpeg" })
         {
             _graphics = graphics;
@@ -20,16 +21,8 @@ namespace AppDevGame
 
         public override void LoadContent()
         {
-            string path = Path.Combine("Content", _subfolder);
-            MainApp.Log("Loading textures from: " + path);
-            
-            if (!Directory.Exists(path))
-            {
-                MainApp.Log("Texture directory not found: " + path);
-                return;
-            }
-
-            string[] files = Directory.GetFiles(path);
+            MainApp.Log("Loading textures from: " + Path.Combine("Content", _subfolder));
+            string[] files = Directory.GetFiles(Path.Combine("Content", _subfolder));
             foreach (string file in files)
             {
                 MainApp.Log(file);
@@ -43,6 +36,22 @@ namespace AppDevGame
                         _textures[fileName] = Texture2D.FromStream(_graphics, stream);
                     }
                 }
+            }
+        }
+
+        public void LoadSpecificResource(string path, string key)
+        {
+            try
+            {
+                using (FileStream stream = new FileStream(path, FileMode.Open))
+                {
+                    MainApp.Log("Loaded specific texture: " + key);
+                    _textures[key] = Texture2D.FromStream(_graphics, stream);
+                }
+            }
+            catch (FileNotFoundException ex)
+            {
+                MainApp.Log($"Error loading texture {key}: {ex.Message}");
             }
         }
 

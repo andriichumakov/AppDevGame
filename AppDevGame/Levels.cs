@@ -36,8 +36,8 @@ namespace AppDevGame
 
             if (portalTexture != null)
             {
-                // Add portal at the specified position with a scale of 2.0 (increase the size)
-                AddEntity(new Portal(this, portalTexture, new Vector2(400, 200), isActive: true, scale: 2.0f));
+                // Add portal at the desired position (update the coordinates accordingly)
+                AddEntity(new Portal(this, portalTexture, new Vector2(550, 60), scale: 2.0f)); // Adjust the coordinates as needed
             }
         }
 

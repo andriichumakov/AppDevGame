@@ -4,8 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.IO;
 
-using AppDevGame;
-
 namespace AppDevGame
 {
     public class ImageLoader : ResourceLoader
@@ -47,6 +45,14 @@ namespace AppDevGame
                 return _textures[key];
             }
             return null;
+        }
+
+        public void LoadSpecificResource(string path, string key)
+        {
+            using (FileStream stream = new FileStream(path, FileMode.Open))
+            {
+                _textures[key] = Texture2D.FromStream(_graphics, stream);
+            }
         }
     }
 }

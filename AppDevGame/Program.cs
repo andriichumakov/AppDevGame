@@ -1,8 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
 
-using AppDevGame;
-
 namespace AppDevGame
 {
     public static class Program

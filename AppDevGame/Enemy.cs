@@ -9,6 +9,7 @@ namespace AppDevGame
         private int _currentHealth;
         private int _damage;
         private Texture2D _healthBarTexture;
+        private bool _hasDroppedCoin = false; // Track if coin has been dropped
 
         public Enemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage)
             : base(level, texture, position)
@@ -30,11 +31,15 @@ namespace AppDevGame
             if (_currentHealth <= 0)
             {
                 _currentHealth = 0;
-                DropCoins();
+                if (!_hasDroppedCoin)
+                {
+                    DropCoin();
+                    _hasDroppedCoin = true;
+                }
             }
         }
 
-        private void DropCoins()
+        private void DropCoin()
         {
             Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
             if (coinTexture != null)

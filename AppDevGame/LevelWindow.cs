@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System; // Add this
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +9,8 @@ namespace AppDevGame
     public abstract class LevelWindow : BaseWindow
     {
         protected List<Entity> _entities;
+        protected List<Entity> _entitiesToAdd;
+        protected List<Entity> _entitiesToRemove;
         protected Player _player;
         protected Rectangle _frameSize;
         protected Rectangle _actualSize;
@@ -22,18 +24,20 @@ namespace AppDevGame
             : base(frameWidth, frameHeight, background)
         {
             _entities = new List<Entity>();
+            _entitiesToAdd = new List<Entity>();
+            _entitiesToRemove = new List<Entity>();
             _frameSize = new Rectangle(0, 0, frameWidth, frameHeight);
             _actualSize = new Rectangle(0, 0, actualWidth, actualHeight);
         }
 
         public void AddEntity(Entity entity)
         {
-            _entities.Add(entity);
+            _entitiesToAdd.Add(entity);
         }
 
         public void RemoveEntity(Entity entity)
         {
-            _entities.Remove(entity);
+            _entitiesToRemove.Add(entity);
         }
 
         public void SetPlayer(Player player)
@@ -91,7 +95,18 @@ namespace AppDevGame
             }
 
             CheckCollisions();
+
             _entities.RemoveAll(entity => entity is Enemy enemy && enemy.IsDead());
+
+            // Add and remove entities
+            _entities.AddRange(_entitiesToAdd);
+            _entitiesToAdd.Clear();
+
+            foreach (var entity in _entitiesToRemove)
+            {
+                _entities.Remove(entity);
+            }
+            _entitiesToRemove.Clear();
         }
 
         public override void Draw(SpriteBatch spriteBatch)

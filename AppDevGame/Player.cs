@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System; // Add this
+using System;
 
 namespace AppDevGame
 {
@@ -114,6 +114,12 @@ namespace AppDevGame
 
         public override void OnCollision(Entity other)
         {
+            if (other is Coin)
+            {
+                CollectCoin();
+                _level.RemoveEntity(other);
+            }
+
             base.OnCollision(other);
         }
     }

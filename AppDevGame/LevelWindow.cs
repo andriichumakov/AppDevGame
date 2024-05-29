@@ -15,6 +15,7 @@ namespace AppDevGame
         protected Rectangle _frameSize;
         protected Rectangle _actualSize;
         private int _margin = 50;
+        private Random _random;
 
         public Rectangle ActualSize => _actualSize;
         public List<Entity> Entities => _entities;
@@ -28,6 +29,7 @@ namespace AppDevGame
             _entitiesToRemove = new List<Entity>();
             _frameSize = new Rectangle(0, 0, frameWidth, frameHeight);
             _actualSize = new Rectangle(0, 0, actualWidth, actualHeight);
+            _random = new Random();
         }
 
         public void AddEntity(Entity entity)
@@ -37,7 +39,10 @@ namespace AppDevGame
 
         public void RemoveEntity(Entity entity)
         {
-            _entitiesToRemove.Add(entity);
+            if (!_entitiesToRemove.Contains(entity))
+            {
+                _entitiesToRemove.Add(entity);
+            }
         }
 
         public void SetPlayer(Player player)
@@ -96,9 +101,7 @@ namespace AppDevGame
 
             CheckCollisions();
 
-            _entities.RemoveAll(entity => entity is Enemy enemy && enemy.IsDead());
-
-            // Add and remove entities
+            // Add and remove entities safely
             _entities.AddRange(_entitiesToAdd);
             _entitiesToAdd.Clear();
 
@@ -107,6 +110,8 @@ namespace AppDevGame
                 _entities.Remove(entity);
             }
             _entitiesToRemove.Clear();
+
+            _entities.RemoveAll(entity => entity is Enemy enemy && enemy.IsDead());
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -200,6 +205,28 @@ namespace AppDevGame
         {
             _actualSize.Width = width;
             _actualSize.Height = height;
+        }
+
+        // Method to generate random position within the level bounds
+        private Vector2 GenerateRandomPosition()
+        {
+            int x = _random.Next(0, _actualSize.Width);
+            int y = _random.Next(0, _actualSize.Height);
+            return new Vector2(x, y);
+        }
+
+        // Method to add coins at random positions
+        protected void AddCoins(int numberOfCoins)
+        {
+            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
+            if (coinTexture != null)
+            {
+                for (int i = 0; i < numberOfCoins; i++)
+                {
+                    Vector2 position = GenerateRandomPosition();
+                    AddEntity(new Coin(this, coinTexture, position));
+                }
+            }
         }
     }
 }

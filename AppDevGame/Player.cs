@@ -119,8 +119,6 @@ namespace AppDevGame
                 CollectCoin();
                 _level.RemoveEntity(other);
             }
-
-            base.OnCollision(other);
         }
     }
 }

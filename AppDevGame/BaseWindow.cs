@@ -28,7 +28,7 @@ namespace AppDevGame
             MainApp.Log("Setting up window...");
             MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth = this._width;
             MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferHeight = this._height;
-            MainApp.GetInstance().GetGraphicsManager().IsFullScreen = true;
+            // MainApp.GetInstance().GetGraphicsManager().IsFullScreen = true;
             MainApp.GetInstance().GetGraphicsManager().ApplyChanges();
         }
 

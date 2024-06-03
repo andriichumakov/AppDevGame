@@ -1,6 +1,5 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -49,9 +48,23 @@ namespace AppDevGame
 
         public void LoadSpecificResource(string path, string key)
         {
-            using (FileStream stream = new FileStream(path, FileMode.Open))
+            try
             {
-                _textures[key] = Texture2D.FromStream(_graphics, stream);
+                if (!File.Exists(path))
+                {
+                    throw new FileNotFoundException($"File not found: {path}");
+                }
+
+                using (FileStream stream = new FileStream(path, FileMode.Open))
+                {
+                    _textures[key] = Texture2D.FromStream(_graphics, stream);
+                    MainApp.Log($"Loaded texture: {key}");
+                }
+            }
+            catch (Exception ex)
+            {
+                MainApp.Log($"Error loading texture from {path}: {ex.Message}");
+                throw; // Re-throw the exception after logging it
             }
         }
     }

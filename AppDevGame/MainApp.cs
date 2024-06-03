@@ -1,7 +1,8 @@
+using System;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace AppDevGame
 {
@@ -23,6 +24,7 @@ namespace AppDevGame
         private ModMenu _modMenu;
 
         private const bool _isDebugMode = true;
+        private static readonly string LogFilePath = "game_log.txt";
 
         private MainApp()
         {
@@ -48,7 +50,18 @@ namespace AppDevGame
         {
             if (_isDebugMode)
             {
-                Console.WriteLine(message);
+                Console.WriteLine(message); // Log to console
+                try
+                {
+                    using (StreamWriter writer = new StreamWriter(LogFilePath, true))
+                    {
+                        writer.WriteLine($"{DateTime.Now}: {message}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to log message: {ex.Message}");
+                }
             }
         }
 

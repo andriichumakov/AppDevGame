@@ -36,7 +36,10 @@ namespace AppDevGame
         public virtual void OnCollision(Entity other)
         {
             // Handle collision logic here
-            ResolveCollision(other);
+            if (!(other is Heart))
+            {
+                ResolveCollision(other);
+            }
         }
 
         private void ResolveCollision(Entity other)

@@ -5,7 +5,6 @@ namespace AppDevGame
 {
     public class Coin : Entity
     {
-        private bool _isCollected;
         private float _scale;
 
         public Coin(LevelWindow level, Texture2D texture, Vector2 position, float scale = 2.0f)

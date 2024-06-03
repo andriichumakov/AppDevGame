@@ -29,6 +29,7 @@ namespace AppDevGame
 
             _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
+            SetCollidableTypes(EntityType.Item, EntityType.Obstacle, EntityType.Enemy, EntityType.Lantern);
         }
 
         public int CoinsCollected => _coinsCollected;

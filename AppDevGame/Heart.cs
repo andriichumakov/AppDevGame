@@ -5,19 +5,12 @@ namespace AppDevGame
 {
     public class Heart : Entity
     {
-        private bool _isCollected;
 
         public Heart(LevelWindow level, Texture2D texture, Vector2 position)
-            : base(level, texture, position)
+            : base(level, texture, position, EntityType.Item)
         {
             _hitbox = new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height);
-            _isCollected = false;
-        }
-
-        public bool IsCollected
-        {
-            get => _isCollected;
-            set => _isCollected = value;
+            SetCollidableTypes(EntityType.Player);
         }
 
         public override void Update(GameTime gameTime)

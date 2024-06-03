@@ -5,25 +5,17 @@ namespace AppDevGame
 {
     public class Coin : Entity
     {
-        private bool _isCollected;
 
         public Coin(LevelWindow level, Texture2D texture, Vector2 position)
-            : base(level, texture, position)
+            : base(level, texture, position, EntityType.Item)
         {
-            _isCollected = false;
-        }
-
-        public bool IsCollected
-        {
-            get => _isCollected;
-            set => _isCollected = value;
+            SetCollidableTypes(EntityType.Player);
         }
 
         public override void OnCollision(Entity other)
         {
-            if (other is Player player && !_isCollected)
+            if (other is Player player)
             {
-                _isCollected = true;
                 player.CollectCoin();
                 _level.RemoveEntity(this);
             }

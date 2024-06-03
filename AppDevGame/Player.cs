@@ -20,7 +20,7 @@ namespace AppDevGame
         private float _heartScale = 2.0f; // Scale factor for the hearts
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, float speed = 200f, int maxHealth = 100)
-            : base(level, texture, position, true)
+            : base(level, texture, position, EntityType.Player)
         {
             _speed = speed;
             _maxHealth = maxHealth;
@@ -28,6 +28,7 @@ namespace AppDevGame
 
             _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
+            SetCollidableTypes(EntityType.Obstacle, EntityType.Enemy, EntityType.Item);
         }
 
         public int CoinsCollected => _coinsCollected;
@@ -95,7 +96,8 @@ namespace AppDevGame
                 }
 
                 // Check for collision with hearts
-                var hearts = _level.GetEntitiesInRange(_position, _hitbox.Width).OfType<Heart>().ToList();
+                //var hearts = _level.GetEntitiesInRange(_position, _hitbox.Width).OfType<Heart>().ToList();
+                /*
                 foreach (var heart in hearts)
                 {
                     if (!heart.IsCollected)
@@ -107,6 +109,7 @@ namespace AppDevGame
                         MainApp.Log("Heart collected and removed");
                     }
                 }
+                 */
             }
             catch (Exception ex)
             {
@@ -160,21 +163,25 @@ namespace AppDevGame
             }
         }
 
-        public void ResolveCollision(Entity other)
+        public override void OnCollision(Entity other) 
+        {
+            base.OnCollision(other);
+        }
+
+        public override void ResolveCollision(Entity other)
         {
             try
             {
                 // Handle collision with hearts separately
-                if (other is Heart heart && !heart.IsCollected)
+                if (other is Heart)
                 {
                     Heal((int)(_maxHealth * 0.33));
-                    heart.IsCollected = true;
                     _level.RemoveEntity(other);
                     ((Level1)_level).DecrementHeartCount();
                     MainApp.Log("Heart collected and removed during collision");
                     return;
                 }
-                base.OnCollision(other);
+                base.ResolveCollision(other);
             }
             catch (Exception ex)
             {

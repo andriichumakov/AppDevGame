@@ -1,26 +1,41 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace AppDevGame
 {
+    public enum EntityType
+    {
+        Obstacle,
+        Player,
+        Enemy,
+        HiddenObstacle,
+        Item,
+    }
+
     public class Entity : Sprite
     {
         protected Rectangle _hitbox;
         protected LevelWindow _level;
 
         protected bool _movable;
+        protected EntityType _entityType;
+        protected HashSet<EntityType> _collidableTypes;
 
-        public Entity(LevelWindow level, Texture2D texture, Vector2 position, bool movable = false)
+        public Entity(LevelWindow level, Texture2D texture, Vector2 position, EntityType entityType, bool movable = false)
             : base(texture, position)
         {
             _level = level;
             _hitbox = new Rectangle(0, 0, texture.Width, texture.Height);
             _hitbox.Location = _position.ToPoint();
             _movable = movable;
+            _entityType = entityType;
+            _collidableTypes = new HashSet<EntityType>();
         }
 
         public Rectangle Hitbox => _hitbox;
         public Vector2 Position => _position;
+        public EntityType Type => _entityType;
 
         public override void Update(GameTime gameTime)
         {
@@ -36,11 +51,13 @@ namespace AppDevGame
 
         public virtual void OnCollision(Entity other)
         {
-            // Handle collision logic here
-            ResolveCollision(other);
+            if (_collidableTypes.Contains(other.Type))
+            {
+                ResolveCollision(other);
+            }
         }
 
-        protected virtual void ResolveCollision(Entity other)
+        public virtual void ResolveCollision(Entity other)
         {
             Rectangle intersection = Rectangle.Intersect(_hitbox, other.Hitbox);
             if (!_movable) {
@@ -73,6 +90,11 @@ namespace AppDevGame
 
             // Update the hitbox location after resolving collision
             _hitbox.Location = _position.ToPoint();
+        }
+
+        public void SetCollidableTypes(params EntityType[] types)
+        {
+            _collidableTypes = new HashSet<EntityType>(types);
         }
     }
 }

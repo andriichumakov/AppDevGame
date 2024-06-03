@@ -2,6 +2,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace AppDevGame
 {
@@ -10,10 +12,10 @@ namespace AppDevGame
         private float _speed;
         private int _maxHealth;
         private int _currentHealth;
-        private int _coinsCollected;
-        private int _attackDamage = 2;
-        private int _attackRange = 120;
-        private Texture2D _healthBarTexture;
+        private int _attackDamage = 2; // Damage dealt to enemies when attacking
+        private int _attackRange = 120; // Range of the player's attack
+        private Texture2D _healthFullTexture;
+        private Texture2D _healthEmptyTexture;
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, float speed = 200f, int maxHealth = 100)
             : base(level, texture, position)
@@ -21,9 +23,9 @@ namespace AppDevGame
             _speed = speed;
             _maxHealth = maxHealth;
             _currentHealth = maxHealth;
-            _coinsCollected = 0;
-            _healthBarTexture = new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1);
-            _healthBarTexture.SetData(new[] { Color.White });
+
+            _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
+            _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
         }
 
         public int CoinsCollected => _coinsCollected;
@@ -46,39 +48,64 @@ namespace AppDevGame
             }
         }
 
+        public void Heal(int amount)
+        {
+            _currentHealth = Math.Min(_currentHealth + amount, _maxHealth);
+        }
+
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
-            Vector2 movement = Vector2.Zero;
-            KeyboardState state = Keyboard.GetState();
-
-            if (state.IsKeyDown(Keys.W))
+            try
             {
-                movement.Y -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                base.Update(gameTime);
+
+                Vector2 movement = Vector2.Zero;
+                KeyboardState state = Keyboard.GetState();
+
+                if (state.IsKeyDown(Keys.W))
+                {
+                    movement.Y -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+                if (state.IsKeyDown(Keys.S))
+                {
+                    movement.Y += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+                if (state.IsKeyDown(Keys.A))
+                {
+                    movement.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+                if (state.IsKeyDown(Keys.D))
+                {
+                    movement.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+
+                _position += movement;
+                _hitbox.Location = _position.ToPoint();
+
+                // Ensure the player does not move out of the actual level bounds
+                _position.X = Math.Clamp(_position.X, 0, _level.ActualSize.Width - _hitbox.Width);
+                _position.Y = Math.Clamp(_position.Y, 0, _level.ActualSize.Height - _hitbox.Height);
+
+                // Handle attack logic
+                if (state.IsKeyDown(Keys.Space))
+                {
+                    AttackEnemies();
+                }
+
+                // Check for collision with hearts
+                var hearts = _level.GetEntitiesInRange(_position, _hitbox.Width).OfType<Heart>().ToList();
+                foreach (var heart in hearts)
+                {
+                    Heal((int)(_maxHealth * 0.33));
+                    _level.RemoveEntity(heart);
+                    ((Level1)_level).DecrementHeartCount(); // Use the method to decrement heart count
+                    MainApp.Log("Heart collected and removed");
+                }
             }
-            if (state.IsKeyDown(Keys.S))
+            catch (Exception ex)
             {
-                movement.Y += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-            if (state.IsKeyDown(Keys.A))
-            {
-                movement.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-            if (state.IsKeyDown(Keys.D))
-            {
-                movement.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-
-            _position += movement;
-            _hitbox.Location = _position.ToPoint();
-
-            _position.X = Math.Clamp(_position.X, 0, _level.ActualSize.Width - _hitbox.Width);
-            _position.Y = Math.Clamp(_position.Y, 0, _level.ActualSize.Height - _hitbox.Height);
-
-            if (state.IsKeyDown(Keys.Space))
-            {
-                AttackEnemies();
+                MainApp.Log($"Error during Player.Update: {ex.Message}");
+                throw;
             }
         }
 
@@ -97,53 +124,55 @@ namespace AppDevGame
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)
         {
-            base.Draw(spriteBatch, offset);
+            try
+            {
+                // Draw the player texture
+                base.Draw(spriteBatch, offset);
 
-            int barWidth = _hitbox.Width;
-            int barHeight = 10;
-            int barYOffset = 15;
+                // Draw health hearts in the top right corner
+                int heartWidth = _healthFullTexture.Width;
+                int heartHeight = _healthFullTexture.Height;
+                int spacing = 5;
+                int totalHearts = 3;
+                int heartsToDraw = (int)Math.Ceiling((_currentHealth / (float)_maxHealth) * totalHearts);
 
-            float healthPercentage = (float)_currentHealth / _maxHealth;
+                for (int i = 0; i < totalHearts; i++)
+                {
+                    Texture2D texture = i < heartsToDraw ? _healthFullTexture : _healthEmptyTexture;
+                    Vector2 position = new Vector2(
+                        MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
+                        spacing);
 
-            Vector2 healthBarPosition = _position - offset + new Vector2(0, -barYOffset);
-            Rectangle healthBarBackground = new Rectangle((int)healthBarPosition.X, (int)healthBarPosition.Y, barWidth, barHeight);
-            Rectangle healthBarForeground = new Rectangle((int)healthBarPosition.X, (int)healthBarPosition.Y, (int)(barWidth * healthPercentage), barHeight);
-
-            spriteBatch.Draw(_healthBarTexture, healthBarBackground, Color.Red);
-            spriteBatch.Draw(_healthBarTexture, healthBarForeground, Color.Yellow);
+                    spriteBatch.Draw(texture, position, Color.White);
+                }
+            }
+            catch (Exception ex)
+            {
+                MainApp.Log($"Error during Player.Draw: {ex.Message}");
+                throw;
+            }
         }
 
         public void ResolveCollision(Entity other)
         {
-            Rectangle intersection = Rectangle.Intersect(_hitbox, other.Hitbox);
-
-            if (intersection.Width > intersection.Height)
+            try
             {
-                // Vertical collision
-                if (_hitbox.Top < other.Hitbox.Top)
+                // Handle collision with hearts separately
+                if (other is Heart)
                 {
-                    _position.Y -= intersection.Height;
+                    Heal((int)(_maxHealth * 0.33));
+                    _level.RemoveEntity(other);
+                    ((Level1)_level).DecrementHeartCount();
+                    MainApp.Log("Heart collected and removed during collision");
+                    return;
                 }
-                else
-                {
-                    _position.Y += intersection.Height;
-                }
+                base.OnCollision(other);
             }
-            else
+            catch (Exception ex)
             {
-                // Horizontal collision
-                if (_hitbox.Left < other.Hitbox.Left)
-                {
-                    _position.X -= intersection.Width;
-                }
-                else
-                {
-                    _position.X += intersection.Width;
-                }
+                MainApp.Log($"Error during Player.OnCollision: {ex.Message}");
+                throw;
             }
-
-            // Update the hitbox location after resolving collision
-            _hitbox.Location = _position.ToPoint();
         }
     }
 }

@@ -33,7 +33,18 @@ namespace AppDevGame
 
         public virtual void OnCollision(Entity other)
         {
-            if (other is Player player)
+            // Handle collision logic here
+            if (!(other is Heart))
+            {
+                ResolveCollision(other);
+            }
+        }
+
+        private void ResolveCollision(Entity other)
+        {
+            Rectangle intersection = Rectangle.Intersect(_hitbox, other.Hitbox);
+
+            if (intersection.Width > intersection.Height)
             {
                 player.ResolveCollision(this);
             }

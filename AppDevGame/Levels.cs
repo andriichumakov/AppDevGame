@@ -7,6 +7,8 @@ namespace AppDevGame
     public class Level1 : TopDownLevel
     {
         private Portal _portal;
+        private int _maxHearts = 3;
+        private int _currentHeartCount = 0;
 
         public Level1(int frameWidth, int frameHeight, int actualWidth, int actualHeight, Texture2D background = null)
             : base(frameWidth, frameHeight, actualWidth, actualHeight, background)
@@ -23,6 +25,7 @@ namespace AppDevGame
             Texture2D playerTexture = MainApp.GetInstance()._imageLoader.GetResource("character");
             Texture2D activePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalActive");
             Texture2D inactivePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalInactive");
+            Texture2D heartTexture = MainApp.GetInstance()._imageLoader.GetResource("Heart");
 
             if (entityTexture != null)
             {
@@ -45,8 +48,30 @@ namespace AppDevGame
                 AddEntity(_portal);
             }
 
-            // Add 5 coins at random positions
-            AddCoins(5);
+            if (heartTexture != null)
+            {
+                // Add hearts at specified positions
+                AddHeart(heartTexture, new Vector2(400, 200));
+                AddHeart(heartTexture, new Vector2(600, 300));
+                AddHeart(heartTexture, new Vector2(800, 400));
+            }
+        }
+
+        private void AddHeart(Texture2D heartTexture, Vector2 position)
+        {
+            if (_currentHeartCount < _maxHearts)
+            {
+                AddEntity(new Heart(this, heartTexture, position));
+                _currentHeartCount++;
+            }
+        }
+
+        public void DecrementHeartCount()
+        {
+            if (_currentHeartCount > 0)
+            {
+                _currentHeartCount--;
+            }
         }
 
         public override void Update(GameTime gameTime)

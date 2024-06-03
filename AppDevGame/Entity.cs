@@ -8,12 +8,15 @@ namespace AppDevGame
         protected Rectangle _hitbox;
         protected LevelWindow _level;
 
-        public Entity(LevelWindow level, Texture2D texture, Vector2 position)
+        protected bool _movable;
+
+        public Entity(LevelWindow level, Texture2D texture, Vector2 position, bool movable = false)
             : base(texture, position)
         {
             _level = level;
             _hitbox = new Rectangle(0, 0, texture.Width, texture.Height);
             _hitbox.Location = _position.ToPoint();
+            _movable = movable;
         }
 
         public Rectangle Hitbox => _hitbox;
@@ -34,20 +37,42 @@ namespace AppDevGame
         public virtual void OnCollision(Entity other)
         {
             // Handle collision logic here
-            if (!(other is Heart))
-            {
-                ResolveCollision(other);
-            }
+            ResolveCollision(other);
         }
 
-        private void ResolveCollision(Entity other)
+        protected virtual void ResolveCollision(Entity other)
         {
             Rectangle intersection = Rectangle.Intersect(_hitbox, other.Hitbox);
-
+            if (!_movable) {
+                return;
+            }
             if (intersection.Width > intersection.Height)
             {
-                player.ResolveCollision(this);
+                // Vertical collision
+                if (_hitbox.Top < other.Hitbox.Top)
+                {
+                    _position.Y -= intersection.Height;
+                }
+                else
+                {
+                    _position.Y += intersection.Height;
+                }
             }
+            else
+            {
+                // Horizontal collision
+                if (_hitbox.Left < other.Hitbox.Left)
+                {
+                    _position.X -= intersection.Width;
+                }
+                else
+                {
+                    _position.X += intersection.Width;
+                }
+            }
+
+            // Update the hitbox location after resolving collision
+            _hitbox.Location = _position.ToPoint();
         }
     }
 }

@@ -12,13 +12,14 @@ namespace AppDevGame
         private float _speed;
         private int _maxHealth;
         private int _currentHealth;
+        private int _coinsCollected = 0;
         private int _attackDamage = 2; // Damage dealt to enemies when attacking
         private int _attackRange = 120; // Range of the player's attack
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, float speed = 200f, int maxHealth = 100)
-            : base(level, texture, position)
+            : base(level, texture, position, true)
         {
             _speed = speed;
             _maxHealth = maxHealth;
@@ -27,6 +28,7 @@ namespace AppDevGame
             _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
         }
+
 
         public int CoinsCollected => _coinsCollected;
 

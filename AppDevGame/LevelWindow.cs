@@ -35,14 +35,14 @@ namespace AppDevGame
 
         public void AddEntity(Entity entity)
         {
-            _entitiesToAdd.Add(entity);
+            _entities.Add(entity);
         }
 
         public void RemoveEntity(Entity entity)
         {
-            if (!_entitiesToRemove.Contains(entity))
+            if (!_entities.Contains(entity))
             {
-                _entitiesToRemove.Add(entity);
+                _entities.Add(entity);
             }
         }
 
@@ -127,6 +127,7 @@ namespace AppDevGame
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            base.Draw(spriteBatch);
             try
             {
                 // Draw the visible portion of the background

@@ -44,6 +44,9 @@ namespace AppDevGame
                 _portal = new Portal(this, activePortalTexture, inactivePortalTexture, new Vector2(550, 60), scale: 2.0f, isActive: false);
                 AddEntity(_portal);
             }
+
+            // Add 5 coins at random positions
+            AddCoins(5);
         }
 
         public override void Update(GameTime gameTime)

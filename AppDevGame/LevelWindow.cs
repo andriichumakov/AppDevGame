@@ -40,9 +40,9 @@ namespace AppDevGame
 
         public void RemoveEntity(Entity entity)
         {
-            if (!_entities.Contains(entity))
+            if (_entities.Contains(entity))
             {
-                _entities.Add(entity);
+                _entities.Remove(entity);
             }
         }
 

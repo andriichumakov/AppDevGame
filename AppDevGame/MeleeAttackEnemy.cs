@@ -12,8 +12,8 @@ namespace AppDevGame
         private Vector2 _randomMoveDirection;
         private const float RandomMoveInterval = 2f; // Time in seconds before changing direction
 
-        public MeleeAttackEnemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float speed = 100f)
-            : base(level, texture, position, maxHealth, damage)
+        public MeleeAttackEnemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float speed = 100f, float scale = 1.5f)
+            : base(level, texture, position, maxHealth, damage, scale)
         {
             _speed = speed;
             _random = new Random();

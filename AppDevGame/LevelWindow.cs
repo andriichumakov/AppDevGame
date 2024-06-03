@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace AppDevGame
@@ -9,31 +9,41 @@ namespace AppDevGame
     public abstract class LevelWindow : BaseWindow
     {
         protected List<Entity> _entities;
+        protected List<Entity> _entitiesToAdd;
+        protected List<Entity> _entitiesToRemove;
         protected Player _player;
         protected Rectangle _frameSize;
         protected Rectangle _actualSize;
-        private int _margin = 50; // Distance from the frame border to start moving the frame
+        private int _margin = 50;
+        private Random _random;
 
         public Rectangle ActualSize => _actualSize;
         public List<Entity> Entities => _entities;
         public Player Player => _player;
+        public List<Entity> EntitiesToRemove => _entitiesToRemove; // Added property
 
         public LevelWindow(int frameWidth, int frameHeight, int actualWidth, int actualHeight, Texture2D background = null)
             : base(frameWidth, frameHeight, background)
         {
             _entities = new List<Entity>();
+            _entitiesToAdd = new List<Entity>();
+            _entitiesToRemove = new List<Entity>();
             _frameSize = new Rectangle(0, 0, frameWidth, frameHeight);
             _actualSize = new Rectangle(0, 0, actualWidth, actualHeight);
+            _random = new Random();
         }
 
         public void AddEntity(Entity entity)
         {
-            _entities.Add(entity);
+            _entitiesToAdd.Add(entity);
         }
 
         public void RemoveEntity(Entity entity)
         {
-            _entities.Remove(entity);
+            if (!_entitiesToRemove.Contains(entity))
+            {
+                _entitiesToRemove.Add(entity);
+            }
         }
 
         public void SetPlayer(Player player)
@@ -152,6 +162,16 @@ namespace AppDevGame
                 MainApp.Log($"Error during LevelWindow.Draw: {ex.Message}");
                 throw;
             }
+
+            if (_player != null)
+            {
+                string coinText = "Coins: " + _player.CoinsCollected;
+                SpriteFont font = MainApp.GetInstance()._fontLoader.GetResource("Default");
+                if (font != null)
+                {
+                    spriteBatch.DrawString(font, coinText, new Vector2(10, 10), Color.Yellow);
+                }
+            }
         }
 
         private void CheckCollisions()
@@ -218,6 +238,28 @@ namespace AppDevGame
         {
             _actualSize.Width = width;
             _actualSize.Height = height;
+        }
+
+        // Method to generate random position within the level bounds
+        private Vector2 GenerateRandomPosition()
+        {
+            int x = _random.Next(0, _actualSize.Width);
+            int y = _random.Next(0, _actualSize.Height);
+            return new Vector2(x, y);
+        }
+
+        // Method to add coins at random positions
+        protected void AddCoins(int numberOfCoins)
+        {
+            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
+            if (coinTexture != null)
+            {
+                for (int i = 0; i < numberOfCoins; i++)
+                {
+                    Vector2 position = GenerateRandomPosition();
+                    AddEntity(new Coin(this, coinTexture, position));
+                }
+            }
         }
     }
 }

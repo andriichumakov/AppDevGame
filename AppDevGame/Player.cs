@@ -28,6 +28,14 @@ namespace AppDevGame
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
         }
 
+        public int CoinsCollected => _coinsCollected;
+
+        public void CollectCoin()
+        {
+            _coinsCollected++;
+            MainApp.Log("Coin collected. Total coins: " + _coinsCollected);
+        }
+
         public int CurrentHealth => _currentHealth;
         public int MaxHealth => _maxHealth;
 
@@ -36,7 +44,6 @@ namespace AppDevGame
             _currentHealth -= damage;
             if (_currentHealth <= 0)
             {
-                // Implement logic for player death (e.g., load main menu)
                 new LoadWindowCommand(WindowManager.GetInstance(), MainApp.GetInstance().MainMenu).Execute();
             }
         }
@@ -146,7 +153,7 @@ namespace AppDevGame
             }
         }
 
-        public override void OnCollision(Entity other)
+        public void ResolveCollision(Entity other)
         {
             try
             {

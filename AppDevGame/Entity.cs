@@ -29,8 +29,6 @@ namespace AppDevGame
         {
             Vector2 drawPosition = _position - offset;
             spriteBatch.Draw(_texture, drawPosition, Color.White);
-            // Draw hitbox for debugging purposes (optional)
-            //spriteBatch.Draw(_texture, _hitbox, Color.Red * 0.5f);
         }
 
         public virtual void OnCollision(Entity other)
@@ -48,31 +46,8 @@ namespace AppDevGame
 
             if (intersection.Width > intersection.Height)
             {
-                // Vertical collision
-                if (_hitbox.Top < other.Hitbox.Top)
-                {
-                    _position.Y -= intersection.Height;
-                }
-                else
-                {
-                    _position.Y += intersection.Height;
-                }
+                player.ResolveCollision(this);
             }
-            else
-            {
-                // Horizontal collision
-                if (_hitbox.Left < other.Hitbox.Left)
-                {
-                    _position.X -= intersection.Width;
-                }
-                else
-                {
-                    _position.X += intersection.Width;
-                }
-            }
-
-            // Update the hitbox location after resolving collision
-            _hitbox.Location = _position.ToPoint();
         }
     }
 }

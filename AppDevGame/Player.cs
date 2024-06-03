@@ -7,6 +7,14 @@ using System.Collections.Generic;
 
 namespace AppDevGame
 {
+    public enum Direction
+    {
+        Up,
+        Down,
+        Left,
+        Right
+    }
+
     public class Player : Entity
     {
         private float _speed;
@@ -19,6 +27,8 @@ namespace AppDevGame
         private Texture2D _healthEmptyTexture;
         private float _heartScale = 2.0f; // Scale factor for the hearts
         private float _playerScale = 0.5f; // Scale factor for the player
+
+        private Direction _lastDirection; // Last movement direction
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, float speed = 200f, int maxHealth = 100)
             : base(level, texture, position, EntityType.Player)
@@ -69,18 +79,22 @@ namespace AppDevGame
                 if (state.IsKeyDown(Keys.W))
                 {
                     movement.Y -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    _lastDirection = Direction.Up;
                 }
                 if (state.IsKeyDown(Keys.S))
                 {
                     movement.Y += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    _lastDirection = Direction.Down;
                 }
                 if (state.IsKeyDown(Keys.A))
                 {
                     movement.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    _lastDirection = Direction.Left;
                 }
                 if (state.IsKeyDown(Keys.D))
                 {
                     movement.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    _lastDirection = Direction.Right;
                 }
 
                 _position += movement;
@@ -96,23 +110,7 @@ namespace AppDevGame
                     AttackEnemies();
                 }
 
-                // Check for collision with hearts
-                //var hearts = _level.GetEntitiesInRange(_position, _hitbox.Width).OfType<Heart>().ToList();
-                /*
-                foreach (var heart in hearts)
-                {
-                    if (!heart.IsCollected)
-                    {
-                        Heal((int)(_maxHealth * 0.33));
-                        heart.IsCollected = true;
-                        _level.RemoveEntity(heart);
-                        ((Level1)_level).DecrementHeartCount(); // Use the method to decrement heart count
-                        MainApp.Log("Heart collected and removed");
-                    }
-                }
-                */
-
-                // Check for collision with lanterns
+                // Check for collision with hearts and lanterns
                 var lanterns = _level.GetEntitiesInRange(_position, _hitbox.Width).OfType<Lantern>().ToList();
                 foreach (var lantern in lanterns)
                 {
@@ -137,10 +135,27 @@ namespace AppDevGame
 
             foreach (var entity in entitiesInRange)
             {
-                if (entity is Enemy enemy)
+                if (entity is Enemy enemy && IsInAttackDirection(enemy))
                 {
                     enemy.TakeDamage(_attackDamage);
                 }
+            }
+        }
+
+        private bool IsInAttackDirection(Entity entity)
+        {
+            switch (_lastDirection)
+            {
+                case Direction.Up:
+                    return entity.Position.Y < _position.Y;
+                case Direction.Down:
+                    return entity.Position.Y > _position.Y;
+                case Direction.Left:
+                    return entity.Position.X < _position.X;
+                case Direction.Right:
+                    return entity.Position.X > _position.X;
+                default:
+                    return false;
             }
         }
 
@@ -175,6 +190,7 @@ namespace AppDevGame
                 throw;
             }
         }
+
         public override void OnCollision(Entity other) 
         {
             base.OnCollision(other);

@@ -26,13 +26,14 @@ namespace AppDevGame
             Texture2D activePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalActive");
             Texture2D inactivePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalInactive");
             Texture2D heartTexture = MainApp.GetInstance()._imageLoader.GetResource("Heart");
+            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
 
             if (entityTexture != null)
             {
                 // Add entities at specified positions
-                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(500, 100), maxHealth: 100, damage: 1));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(300, 300), maxHealth: 100, damage: 1));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(700, 450), maxHealth: 100, damage: 1));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(500, 100), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(300, 300), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(700, 450), maxHealth: 100, damage: 1, scale: 2.0f));
             }
 
             if (playerTexture != null)
@@ -44,7 +45,7 @@ namespace AppDevGame
             if (activePortalTexture != null && inactivePortalTexture != null)
             {
                 // Add inactive portal at the desired position (update the coordinates accordingly)
-                _portal = new Portal(this, activePortalTexture, inactivePortalTexture, new Vector2(550, 60), scale: 2.0f, isActive: false);
+                _portal = new Portal(this, activePortalTexture, inactivePortalTexture, new Vector2(535, 40), scale: 3.0f, isActive: false);
                 AddEntity(_portal);
             }
 
@@ -55,15 +56,28 @@ namespace AppDevGame
                 AddHeart(heartTexture, new Vector2(600, 300));
                 AddHeart(heartTexture, new Vector2(800, 400));
             }
+
+            if (coinTexture != null)
+            {
+                // Add coins at specified positions
+                AddCoin(coinTexture, new Vector2(200, 200));
+                AddCoin(coinTexture, new Vector2(500, 500));
+                AddCoin(coinTexture, new Vector2(700, 700));
+            }
         }
 
         private void AddHeart(Texture2D heartTexture, Vector2 position)
         {
             if (_currentHeartCount < _maxHearts)
             {
-                AddEntity(new Heart(this, heartTexture, position));
+                AddEntity(new Heart(this, heartTexture, position, scale: 2.0f)); // Ensure the scale value is provided
                 _currentHeartCount++;
             }
+        }
+
+        private void AddCoin(Texture2D coinTexture, Vector2 position)
+        {
+            AddEntity(new Coin(this, coinTexture, position, scale: 2.0f)); // Ensure the scale value is provided
         }
 
         public void DecrementHeartCount()

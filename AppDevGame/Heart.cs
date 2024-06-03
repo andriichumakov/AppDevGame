@@ -5,21 +5,14 @@ namespace AppDevGame
 {
     public class Heart : Entity
     {
-        private bool _isCollected;
         private float _scale;
 
         public Heart(LevelWindow level, Texture2D texture, Vector2 position, float scale = 2.0f)
-            : base(level, texture, position)
+            : base(level, texture, position, EntityType.Item)
         {
             _scale = scale;
             _hitbox = new Rectangle((int)position.X, (int)position.Y, (int)(texture.Width * scale), (int)(texture.Height * scale));
-            _isCollected = false;
-        }
-
-        public bool IsCollected
-        {
-            get => _isCollected;
-            set => _isCollected = value;
+            SetCollidableTypes(EntityType.Player);
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)

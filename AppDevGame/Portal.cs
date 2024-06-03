@@ -11,7 +11,7 @@ namespace AppDevGame
         private Texture2D _activeTexture;
 
         public Portal(LevelWindow level, Texture2D activeTexture, Texture2D inactiveTexture, Vector2 position, float scale = 1.5f, bool isActive = false)
-            : base(level, inactiveTexture, position)
+            : base(level, inactiveTexture, position, EntityType.Obstacle)
         {
             _activeTexture = activeTexture;
             _inactiveTexture = inactiveTexture;

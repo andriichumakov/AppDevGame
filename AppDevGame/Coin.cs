@@ -9,24 +9,17 @@ namespace AppDevGame
         private float _scale;
 
         public Coin(LevelWindow level, Texture2D texture, Vector2 position, float scale = 2.0f)
-            : base(level, texture, position)
+            : base(level, texture, position, EntityType.Item)
         {
-            _isCollected = false;
             _scale = scale;
             _hitbox = new Rectangle((int)position.X, (int)position.Y, (int)(texture.Width * scale), (int)(texture.Height * scale));
-        }
-
-        public bool IsCollected
-        {
-            get => _isCollected;
-            set => _isCollected = value;
+            SetCollidableTypes(EntityType.Player);
         }
 
         public override void OnCollision(Entity other)
         {
-            if (other is Player player && !_isCollected)
+            if (other is Player player)
             {
-                _isCollected = true;
                 player.CollectCoin();
                 _level.RemoveEntity(this);
             }

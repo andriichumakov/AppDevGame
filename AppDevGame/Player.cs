@@ -18,7 +18,7 @@ namespace AppDevGame
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
         private float _heartScale = 2.0f; // Scale factor for the hearts
-        private float _playerScale = 0.7f; // Scale factor for the player
+        private float _playerScale = 0.5f; // Scale factor for the player
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, float speed = 200f, int maxHealth = 100)
             : base(level, texture, position, EntityType.Player)
@@ -29,7 +29,6 @@ namespace AppDevGame
 
             _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
-            SetCollidableTypes(EntityType.Obstacle, EntityType.Enemy, EntityType.Item);
         }
 
         public int CoinsCollected => _coinsCollected;
@@ -110,7 +109,19 @@ namespace AppDevGame
                         MainApp.Log("Heart collected and removed");
                     }
                 }
-                 */
+                */
+
+                // Check for collision with lanterns
+                var lanterns = _level.GetEntitiesInRange(_position, _hitbox.Width).OfType<Lantern>().ToList();
+                foreach (var lantern in lanterns)
+                {
+                    if (!lantern.IsLit)
+                    {
+                        lantern.IsLit = true;
+                        ((Level1)_level).IncrementLitLanterns();
+                        MainApp.Log("Lantern lit up");
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -163,7 +174,6 @@ namespace AppDevGame
                 throw;
             }
         }
-
         public override void OnCollision(Entity other) 
         {
             base.OnCollision(other);

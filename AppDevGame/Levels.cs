@@ -9,6 +9,9 @@ namespace AppDevGame
         private Portal _portal;
         private int _maxHearts = 3;
         private int _currentHeartCount = 0;
+        private int _totalLanterns = 0;
+        private int _litLanterns = 0;
+        private SpriteFont _font;
 
         public Level1(int frameWidth, int frameHeight, int actualWidth, int actualHeight, Texture2D background = null)
             : base(frameWidth, frameHeight, actualWidth, actualHeight, background)
@@ -27,6 +30,9 @@ namespace AppDevGame
             Texture2D inactivePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalInactive");
             Texture2D heartTexture = MainApp.GetInstance()._imageLoader.GetResource("Heart");
             Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
+            Texture2D litLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternLit");
+            Texture2D unlitLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternUnlit");
+            _font = MainApp.GetInstance()._fontLoader.GetResource("Default");
 
             if (entityTexture != null)
             {
@@ -64,6 +70,14 @@ namespace AppDevGame
                 AddCoin(coinTexture, new Vector2(500, 500));
                 AddCoin(coinTexture, new Vector2(700, 700));
             }
+
+            if (litLanternTexture != null && unlitLanternTexture != null)
+            {
+                // Add lanterns at specified positions
+                AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(300, 150));
+                AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(600, 400));
+                AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(800, 200));
+            }
         }
 
         private void AddHeart(Texture2D heartTexture, Vector2 position)
@@ -80,6 +94,18 @@ namespace AppDevGame
             AddEntity(new Coin(this, coinTexture, position, scale: 2.0f)); // Ensure the scale value is provided
         }
 
+        private void AddLantern(Texture2D unlitTexture, Texture2D litTexture, Vector2 position)
+        {
+            AddEntity(new Lantern(this, litTexture, unlitTexture, position));
+            _totalLanterns++;
+        }
+
+        public void IncrementLitLanterns()
+        {
+            _litLanterns++;
+            CheckPortalActivation();
+        }
+
         public void DecrementHeartCount()
         {
             if (_currentHeartCount > 0)
@@ -88,16 +114,21 @@ namespace AppDevGame
             }
         }
 
+        private void CheckPortalActivation()
+        {
+            if (_entities.OfType<Enemy>().All(e => e.IsDead()) && _litLanterns >= _totalLanterns)
+            {
+                // Activate the portal if all enemies are dead and all lanterns are lit
+                _portal.IsActive = true;
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            // Check if all enemies are defeated
-            if (_entities.OfType<Enemy>().All(e => e.IsDead()))
-            {
-                // Activate the portal
-                _portal.IsActive = true;
-            }
+            // Check if the portal should be activated
+            CheckPortalActivation();
 
             // Update Level1 specific logic here
         }
@@ -106,6 +137,13 @@ namespace AppDevGame
         {
             base.Draw(spriteBatch);
             // Draw Level1 specific elements here
+
+            // Draw the UI for remaining lanterns
+            string lanternText = $"Lanterns: {_litLanterns} / {_totalLanterns}";
+            if (_font != null)
+            {
+                spriteBatch.DrawString(_font, lanternText, new Vector2(10, 40), Color.Yellow);
+            }
         }
     }
 }

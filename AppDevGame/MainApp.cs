@@ -32,6 +32,7 @@ namespace AppDevGame
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Log("Setup complete.");
+
         }
 
         public static MainApp GetInstance()
@@ -83,6 +84,9 @@ namespace AppDevGame
             // Load the portal textures specifically
             _imageLoader.LoadSpecificResource("Content/PortalActive.png", "PortalActive");
             _imageLoader.LoadSpecificResource("Content/PortalInactive.png", "PortalInactive");
+            
+            // Load the coin texture
+            _imageLoader.LoadSpecificResource("Content/coin.png", "Coin");
 
             // Initialize menus
             _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager, font);

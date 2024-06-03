@@ -18,6 +18,7 @@ namespace AppDevGame
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
         private float _heartScale = 2.0f; // Scale factor for the hearts
+        private float _playerScale = 0.7f; // Scale factor for the player
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, float speed = 200f, int maxHealth = 100)
             : base(level, texture, position, EntityType.Player)
@@ -136,7 +137,7 @@ namespace AppDevGame
             try
             {
                 // Draw the player texture
-                base.Draw(spriteBatch, offset);
+                spriteBatch.Draw(_texture, _position - offset, null, Color.White, 0f, Vector2.Zero, _playerScale, SpriteEffects.None, 0f);
 
                 // Draw health hearts in the top right corner
                 int heartWidth = (int)(_healthFullTexture.Width * _heartScale);

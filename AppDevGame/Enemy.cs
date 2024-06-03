@@ -10,13 +10,15 @@ namespace AppDevGame
         private int _damage;
         private Texture2D _healthBarTexture;
         private bool _hasDroppedCoin = false; // Track if coin has been dropped
+        private float _scale;
 
-        public Enemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage)
+        public Enemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float scale = 1.5f)
             : base(level, texture, position, EntityType.Enemy)
         {
             _maxHealth = maxHealth;
             _currentHealth = maxHealth;
             _damage = damage;
+            _scale = scale;
             _healthBarTexture = new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1);
             _healthBarTexture.SetData(new[] { Color.White });
             SetCollidableTypes(EntityType.Player, EntityType.Obstacle);
@@ -62,13 +64,13 @@ namespace AppDevGame
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)
         {
-            base.Draw(spriteBatch, offset);
+            spriteBatch.Draw(_texture, _position - offset, null, Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 0f);
             DrawHealthBar(spriteBatch, _position - offset);
         }
 
         protected void DrawHealthBar(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
-            int barWidth = _hitbox.Width;
+            int barWidth = (int)(_hitbox.Width * _scale);
             int barHeight = 5;
             int barYOffset = 10;
             float healthPercentage = (float)_currentHealth / _maxHealth;

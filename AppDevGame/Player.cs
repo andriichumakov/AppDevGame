@@ -17,6 +17,7 @@ namespace AppDevGame
         private int _attackRange = 120; // Range of the player's attack
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
+        private float _heartScale = 2.0f; // Scale factor for the hearts
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, float speed = 200f, int maxHealth = 100)
             : base(level, texture, position, true)
@@ -28,7 +29,6 @@ namespace AppDevGame
             _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
         }
-
 
         public int CoinsCollected => _coinsCollected;
 
@@ -98,10 +98,14 @@ namespace AppDevGame
                 var hearts = _level.GetEntitiesInRange(_position, _hitbox.Width).OfType<Heart>().ToList();
                 foreach (var heart in hearts)
                 {
-                    Heal((int)(_maxHealth * 0.33));
-                    _level.RemoveEntity(heart);
-                    ((Level1)_level).DecrementHeartCount(); // Use the method to decrement heart count
-                    MainApp.Log("Heart collected and removed");
+                    if (!heart.IsCollected)
+                    {
+                        Heal((int)(_maxHealth * 0.33));
+                        heart.IsCollected = true;
+                        _level.RemoveEntity(heart);
+                        ((Level1)_level).DecrementHeartCount(); // Use the method to decrement heart count
+                        MainApp.Log("Heart collected and removed");
+                    }
                 }
             }
             catch (Exception ex)
@@ -132,9 +136,9 @@ namespace AppDevGame
                 base.Draw(spriteBatch, offset);
 
                 // Draw health hearts in the top right corner
-                int heartWidth = _healthFullTexture.Width;
-                int heartHeight = _healthFullTexture.Height;
-                int spacing = 5;
+                int heartWidth = (int)(_healthFullTexture.Width * _heartScale);
+                int heartHeight = (int)(_healthFullTexture.Height * _heartScale);
+                int spacing = 10;
                 int totalHearts = 3;
                 int heartsToDraw = (int)Math.Ceiling((_currentHealth / (float)_maxHealth) * totalHearts);
 
@@ -145,7 +149,8 @@ namespace AppDevGame
                         MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
                         spacing);
 
-                    spriteBatch.Draw(texture, position, Color.White);
+                    // Draw heart
+                    spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
                 }
             }
             catch (Exception ex)
@@ -160,9 +165,10 @@ namespace AppDevGame
             try
             {
                 // Handle collision with hearts separately
-                if (other is Heart)
+                if (other is Heart heart && !heart.IsCollected)
                 {
                     Heal((int)(_maxHealth * 0.33));
+                    heart.IsCollected = true;
                     _level.RemoveEntity(other);
                     ((Level1)_level).DecrementHeartCount();
                     MainApp.Log("Heart collected and removed during collision");

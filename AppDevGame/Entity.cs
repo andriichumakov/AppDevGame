@@ -93,6 +93,12 @@ namespace AppDevGame
             _hitbox.Location = _position.ToPoint();
         }
 
+        public void MoveTo(Vector2 newPosition)
+        {
+            _position = newPosition;
+            _hitbox.Location = _position.ToPoint();
+        }
+
         public void SetCollidableTypes(params EntityType[] types)
         {
             _collidableTypes = new HashSet<EntityType>(types);

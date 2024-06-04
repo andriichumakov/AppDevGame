@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace AppDevGame
 {
@@ -21,17 +20,23 @@ namespace AppDevGame
         private int _maxHealth;
         private int _currentHealth;
         private int _coinsCollected = 0;
-        private int _attackDamage = 2; // Damage dealt to enemies when attacking
-        private int _attackRange = 120; // Range of the player's attack
+        private int _attackDamage = 2;
+        private int _attackRange = 120;
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
-        private float _heartScale = 2.0f; // Scale factor for the hearts
-        private float _playerScale = 0.8f; // Scale factor for the player
+        private float _heartScale = 2.0f;
+        private float _playerScale = 0.5f;
 
-        private Direction _lastDirection; // Last movement direction
+        private Direction _lastDirection;
+
+        private bool _isJumping;
+        private bool _isFalling;
+        private float _jumpVelocity;
+        private float _gravity = 50f;
+        private float _jumpStrength = 300f;
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, float speed = 200f, int maxHealth = 100)
-            : base(level, texture, position, EntityType.Player)
+            : base(level, texture, position, EntityType.Player, true)
         {
             _speed = speed;
             _maxHealth = maxHealth;
@@ -39,7 +44,7 @@ namespace AppDevGame
 
             _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
-            SetCollidableTypes(EntityType.Item, EntityType.Obstacle, EntityType.Enemy, EntityType.Lantern);
+            SetCollidableTypes(EntityType.Item, EntityType.Obstacle, EntityType.Enemy, EntityType.Lantern, EntityType.HiddenObstacle);
         }
 
         public int CoinsCollected => _coinsCollected;
@@ -76,41 +81,30 @@ namespace AppDevGame
                 Vector2 movement = Vector2.Zero;
                 KeyboardState state = Keyboard.GetState();
 
-                if (state.IsKeyDown(Keys.W))
+                if (_level is SideScrollerLevel)
                 {
-                    movement.Y -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    _lastDirection = Direction.Up;
+                    HandleSideScrollerMovement(gameTime, state, ref movement);
                 }
-                if (state.IsKeyDown(Keys.S))
+                else
                 {
-                    movement.Y += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    _lastDirection = Direction.Down;
-                }
-                if (state.IsKeyDown(Keys.A))
-                {
-                    movement.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    _lastDirection = Direction.Left;
-                }
-                if (state.IsKeyDown(Keys.D))
-                {
-                    movement.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    _lastDirection = Direction.Right;
+                    HandleTopDownMovement(gameTime, state, ref movement);
                 }
 
                 _position += movement;
                 _hitbox.Location = _position.ToPoint();
 
                 // Ensure the player does not move out of the actual level bounds
-                _position.X = Math.Clamp(_position.X, 0, _level.ActualSize.Width - _hitbox.Width);
-                _position.Y = Math.Clamp(_position.Y, 0, _level.ActualSize.Height - _hitbox.Height);
+                _position.X = Math.Clamp(_position.X, _level.FrameSize.X, _level.FrameSize.Right - _hitbox.Width);
+                _position.Y = Math.Clamp(_position.Y, _level.FrameSize.Y, _level.FrameSize.Bottom - _hitbox.Height);
 
                 // Handle attack logic
                 if (state.IsKeyDown(Keys.Space))
                 {
                     AttackEnemies();
+                    MainApp.Log("x: " + _position.X + ", y: " + _position.Y);
                 }
 
-                // Check for collision with hearts and lanterns
+                // Check for collision with lanterns
                 var lanterns = _level.GetEntitiesInRange(_position, _hitbox.Width).OfType<Lantern>().ToList();
                 foreach (var lantern in lanterns)
                 {
@@ -127,6 +121,82 @@ namespace AppDevGame
                 MainApp.Log($"Error during Player.Update: {ex.Message}");
                 throw;
             }
+        }
+
+        private void HandleTopDownMovement(GameTime gameTime, KeyboardState state, ref Vector2 movement)
+        {
+            if (state.IsKeyDown(Keys.W))
+            {
+                movement.Y -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _lastDirection = Direction.Up;
+            }
+            if (state.IsKeyDown(Keys.S))
+            {
+                movement.Y += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _lastDirection = Direction.Down;
+            }
+            if (state.IsKeyDown(Keys.A))
+            {
+                movement.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _lastDirection = Direction.Left;
+            }
+            if (state.IsKeyDown(Keys.D))
+            {
+                movement.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _lastDirection = Direction.Right;
+            }
+        }
+
+        private void HandleSideScrollerMovement(GameTime gameTime, KeyboardState state, ref Vector2 movement)
+        {
+            if (state.IsKeyDown(Keys.A))
+            {
+                movement.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _lastDirection = Direction.Left;
+            }
+            if (state.IsKeyDown(Keys.D))
+            {
+                movement.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _lastDirection = Direction.Right;
+            }
+
+            if (state.IsKeyDown(Keys.W) && IsStandingOnGround())
+            {
+                _isJumping = true;
+                _jumpVelocity = -_jumpStrength;
+            }
+
+            if (_isJumping || _isFalling)
+            {
+                float fallAmount = _jumpVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                movement.Y += fallAmount;
+                _jumpVelocity += _gravity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (_position.Y + movement.Y >= _level.ActualSize.Height - _hitbox.Height)
+                {
+                    _isJumping = false;
+                    _isFalling = false;
+                    movement.Y = 0;
+                    _position.Y = _level.ActualSize.Height - _hitbox.Height;
+                }
+                else
+                {
+                    _isFalling = !IsStandingOnGround();
+                    if (!_isFalling)
+                    {
+                        _isJumping = false;
+                    }
+                }
+            }
+        }
+
+        private bool IsStandingOnGround()
+        {
+            if (_level is SideScrollerLevel sideScrollerLevel)
+            {
+                return sideScrollerLevel.IsStandingOnObstacle(this) || _position.Y >= sideScrollerLevel.GroundLevel - _hitbox.Height;
+            }
+            return false;
         }
 
         private void AttackEnemies()
@@ -191,7 +261,7 @@ namespace AppDevGame
             }
         }
 
-        public override void OnCollision(Entity other) 
+        public override void OnCollision(Entity other)
         {
             base.OnCollision(other);
         }

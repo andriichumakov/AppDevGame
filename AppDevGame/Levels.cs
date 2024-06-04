@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace AppDevGame
@@ -13,9 +14,14 @@ namespace AppDevGame
         private int _litLanterns = 0;
         private SpriteFont _font;
 
+        private int _frameWidth, _frameHeight, _actualWidth, _actualHeight;
+
+        public BaseWindow nextLevel;
+
         public Level1(int frameWidth, int frameHeight, int actualWidth, int actualHeight, Texture2D background = null)
             : base(frameWidth, frameHeight, actualWidth, actualHeight, background)
         {
+            nextLevel = new Level2(frameWidth, frameHeight, actualHeight, actualWidth, MainApp.GetInstance()._imageLoader.GetResource("SideScrollerBackground"));
         }
 
         public override void Setup()
@@ -58,6 +64,9 @@ namespace AppDevGame
                 AddEntity(_portal);
             }
 
+            WindowManager.GetInstance().LoadWindow(nextLevel);
+
+            
             if (heartTexture != null)
             {
                 // Add hearts at specified positions
@@ -81,6 +90,9 @@ namespace AppDevGame
                 AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(1350, 600));
                 AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(1500, 800));
             }
+            
+            //AddEntity(new Obstacle(this, new Vector2(), new Vector2()));
+            AddEntity(new Obstacle(this, new Vector2(610, 285), new Vector2(60, 100)));
         }
 
         private void AddHeart(Texture2D heartTexture, Vector2 position)
@@ -147,6 +159,57 @@ namespace AppDevGame
             {
                 spriteBatch.DrawString(_font, lanternText, new Vector2(10, 40), Color.Yellow);
             }
+        }
+    }
+
+    public class Level2 : SideScrollerLevel
+    {
+        private Portal _portal;
+        private int _maxHearts = 3;
+        private int _currentHeartCount = 0;
+        private int _totalLanterns = 0;
+        private int _litLanterns = 0;
+        private SpriteFont _font;
+        public Level2(int frameWidth, int frameHeight, int actualWidth, int actualHeight, Texture2D background = null)
+            : base(frameWidth, frameHeight, actualWidth, actualHeight, 900, background)
+        {
+        }
+
+        public override void Setup()
+        {
+            base.Setup();
+            // Initialize entities and background specific to Level1
+            Texture2D entityTexture = MainApp.GetInstance()._imageLoader.GetResource("Frog");
+            Texture2D playerTexture = MainApp.GetInstance()._imageLoader.GetResource("character");
+            Texture2D activePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalActive");
+            Texture2D inactivePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalInactive");
+            Texture2D heartTexture = MainApp.GetInstance()._imageLoader.GetResource("Heart");
+            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
+            Texture2D litLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternLit");
+            Texture2D unlitLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternUnlit");
+            _font = MainApp.GetInstance()._fontLoader.GetResource("Default");
+
+            // Add player
+            if (playerTexture != null)
+            {
+                SetPlayer(new Player(this, playerTexture, new Vector2(50, 50)));
+            }
+
+            // Add portal
+            if (activePortalTexture != null && inactivePortalTexture != null)
+            {
+                _portal = new Portal(this, activePortalTexture, inactivePortalTexture, new Vector2(1500, 50), scale: 3.0f, isActive: false);
+                AddEntity(_portal);
+            }
+
+            // Add obstacles
+            AddEntity(new Obstacle(this, new Vector2(200, 550), new Vector2(100, 50)));
+            AddEntity(new Obstacle(this, new Vector2(400, 500), new Vector2(100, 100)));
+            AddEntity(new Obstacle(this, new Vector2(600, 450), new Vector2(100, 150)));
+            AddEntity(new Obstacle(this, new Vector2(800, 400), new Vector2(100, 200)));
+
+            // Enable debug bounds for obstacles
+            Obstacle.DebugShowBounds = true;
         }
     }
 }

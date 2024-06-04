@@ -11,13 +11,15 @@ namespace AppDevGame
         private float _randomMoveTimer;
         private Vector2 _randomMoveDirection;
         private const float RandomMoveInterval = 2f; // Time in seconds before changing direction
+        private bool _selfDestruct; // Flag to indicate if the enemy should self-destruct on contact
 
-        public MeleeAttackEnemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float speed = 100f, float scale = 1.5f)
+        public MeleeAttackEnemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float speed = 100f, float scale = 1.5f, bool selfDestruct = false)
             : base(level, texture, position, maxHealth, damage, scale)
         {
             _speed = speed;
             _random = new Random();
             _randomMoveTimer = RandomMoveInterval;
+            _selfDestruct = selfDestruct;
             SetRandomDirection();
         }
 
@@ -25,7 +27,17 @@ namespace AppDevGame
         {
             if (other is Player player)
             {
-                Attack(player);
+                if (_selfDestruct)
+                {
+                    // Self-destruct logic
+                    player.TakeDamage(Damage);
+                    _level.RemoveEntity(this); // Remove the enemy from the level
+                }
+                else
+                {
+                    // Melee attack logic
+                    Attack(player);
+                }
             }
             base.OnCollision(other);
         }

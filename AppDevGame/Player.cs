@@ -26,7 +26,7 @@ namespace AppDevGame
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
         private float _heartScale = 2.0f; // Scale factor for the hearts
-        private float _playerScale = 0.5f; // Scale factor for the player
+        private float _playerScale = 0.8f; // Scale factor for the player
 
         private Direction _lastDirection; // Last movement direction
 

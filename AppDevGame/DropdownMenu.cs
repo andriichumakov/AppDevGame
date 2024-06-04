@@ -46,9 +46,10 @@ namespace AppDevGame
             // Draw dropdown items if open
             if (_isOpen)
             {
-                for (int i = 0; i < _items.Count; i++)
+                for (int i = 0, j = 0; i < _items.Count; i++)
                 {
-                    Rectangle itemBounds = new Rectangle(_bounds.X, _bounds.Y + (i + 1) * _bounds.Height, _bounds.Width, _bounds.Height);
+                    if (i == _selectedIndex) continue; // Skip the selected item
+                    Rectangle itemBounds = new Rectangle(_bounds.X, _bounds.Y + (++j) * _bounds.Height, _bounds.Width, _bounds.Height);
                     spriteBatch.Draw(_backgroundTexture, itemBounds, _backgroundColor);
 
                     if (_font != null)
@@ -78,9 +79,10 @@ namespace AppDevGame
                 }
                 else if (_isOpen)
                 {
-                    for (int i = 0; i < _items.Count; i++)
+                    for (int i = 0, j = 0; i < _items.Count; i++)
                     {
-                        Rectangle itemBounds = new Rectangle(_bounds.X, _bounds.Y + (i + 1) * _bounds.Height, _bounds.Width, _bounds.Height);
+                        if (i == _selectedIndex) continue; // Skip the selected item
+                        Rectangle itemBounds = new Rectangle(_bounds.X, _bounds.Y + (++j) * _bounds.Height, _bounds.Width, _bounds.Height);
                         if (itemBounds.Contains(clickPosition))
                         {
                             _selectedIndex = i;

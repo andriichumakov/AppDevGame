@@ -41,9 +41,9 @@ namespace AppDevGame
                 AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(850, 1100), maxHealth: 100, damage: 1, scale: 2.0f));
                 AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(700, 1300), maxHealth: 100, damage: 1, scale: 2.0f));
                 AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(1200, 450), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture2, new Vector2(600, 800), maxHealth: 100, damage: 2, scale: 3.0f, selfDestruct: true));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture2, new Vector2(800, 500), maxHealth: 100, damage: 2, scale: 3.0f, selfDestruct: true));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture2, new Vector2(1000, 450), maxHealth: 100, damage: 2, scale: 3.0f, selfDestruct: true));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture2, new Vector2(600, 800), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture2, new Vector2(800, 500), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture2, new Vector2(1000, 450), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
             }
 
             if (playerTexture != null)

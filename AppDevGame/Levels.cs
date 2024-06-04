@@ -37,46 +37,49 @@ namespace AppDevGame
             if (entityTexture != null)
             {
                 // Add entities at specified positions
-                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(500, 100), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(300, 300), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(700, 450), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(850, 1100), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(700, 1300), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(1200, 450), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(600, 800), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(800, 500), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(1000, 450), maxHealth: 100, damage: 1, scale: 2.0f));
             }
 
             if (playerTexture != null)
             {
                 // Add player at the starting position
-                SetPlayer(new Player(this, playerTexture, new Vector2(50, 50)));
+                SetPlayer(new Player(this, playerTexture, new Vector2(700, 500)));
             }
 
             if (activePortalTexture != null && inactivePortalTexture != null)
             {
                 // Add inactive portal at the desired position (update the coordinates accordingly)
-                _portal = new Portal(this, activePortalTexture, inactivePortalTexture, new Vector2(535, 40), scale: 3.0f, isActive: false);
+                _portal = new Portal(this, activePortalTexture, inactivePortalTexture, new Vector2(1225, 65), scale: 5.0f, isActive: false);
                 AddEntity(_portal);
             }
 
             if (heartTexture != null)
             {
                 // Add hearts at specified positions
-                AddHeart(heartTexture, new Vector2(400, 200));
-                AddHeart(heartTexture, new Vector2(600, 300));
-                AddHeart(heartTexture, new Vector2(800, 400));
+                AddHeart(heartTexture, new Vector2(1200, 500));
+                AddHeart(heartTexture, new Vector2(900, 400));
+                AddHeart(heartTexture, new Vector2(700, 600));
             }
 
             if (coinTexture != null)
             {
                 // Add coins at specified positions
-                AddCoin(coinTexture, new Vector2(200, 200));
-                AddCoin(coinTexture, new Vector2(500, 500));
-                AddCoin(coinTexture, new Vector2(700, 700));
+                AddCoin(coinTexture, new Vector2(1200, 200));
+                AddCoin(coinTexture, new Vector2(700, 500));
+                AddCoin(coinTexture, new Vector2(800, 700));
             }
 
             if (litLanternTexture != null && unlitLanternTexture != null)
             {
                 // Add lanterns at specified positions
-                AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(300, 150));
-                AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(600, 400));
-                AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(800, 200));
+                AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(800, 550));
+                AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(1350, 600));
+                AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(1500, 800));
             }
         }
 

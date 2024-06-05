@@ -1,9 +1,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Input;
 
 namespace AppDevGame
 {
@@ -13,7 +13,7 @@ namespace AppDevGame
         private BaseWindow _settingsWindow;
         private SpriteFont _font;
 
-        public MainMenu(int width, int height, Texture2D background, WindowManager windowManager, BaseWindow settingsWindow, SpriteFont font) 
+        public MainMenu(int width, int height, Texture2D background, WindowManager windowManager, BaseWindow settingsWindow, SpriteFont font)
             : base(width, height, background)
         {
             _windowManager = windowManager;
@@ -33,10 +33,9 @@ namespace AppDevGame
             int x = (int)buttonPos.X;
             int y = (int)buttonPos.Y;
 
-            AddElement(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, "Start", new LoadWindowCommand(WindowManager.GetInstance(), new Level1(800, 600, 2372, 3063, MainApp.GetInstance()._imageLoader.GetResource("BackgroundLevel1"))), _font));
+            AddElement(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, "Start", new LoadWindowCommand(WindowManager.GetInstance(), MainApp.GetInstance().StartMenu), _font));
             AddElement(new Button(new Rectangle(x, (y + buttonHeight + buttonSpacing), buttonWidth, buttonHeight), Color.Green, Color.White, "Change Settings", new LoadWindowCommand(_windowManager, _settingsWindow), _font));
             AddElement(new Button(new Rectangle(x, (y + 2 * (buttonHeight + buttonSpacing)), buttonWidth, buttonHeight), Color.Green, Color.White, "Quit", new QuitCommand(), _font));
-
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
@@ -50,7 +49,7 @@ namespace AppDevGame
         private WindowManager _windowManager;
         private SpriteFont _font;
 
-        public SettingsMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font) 
+        public SettingsMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font)
             : base(width, height, background)
         {
             _windowManager = windowManager;
@@ -147,7 +146,7 @@ namespace AppDevGame
         private SpriteFont _font;
         private GraphicsDevice _graphicsDevice;
 
-        public SoundMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font, GraphicsDevice graphicsDevice) 
+        public SoundMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font, GraphicsDevice graphicsDevice)
             : base(width, height, background)
         {
             _windowManager = windowManager;
@@ -171,13 +170,13 @@ namespace AppDevGame
             int startY = _height / 2 - sliderSpacing;
 
             Vector2 masterVolumePos = new Vector2(centerX - sliderWidth / 2, startY);
-            masterVolumeSlider = new Slider(_graphicsDevice, new Rectangle((int)masterVolumePos.X, (int)masterVolumePos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Master Volume", 0.5f, _font);
+            masterVolumeSlider = new Slider(_graphicsDevice, new Rectangle((int)masterVolumePos.X, (int)masterVolumePos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Green, "Master Volume", 0.5f, _font);
 
             Vector2 musicPos = new Vector2(centerX - sliderWidth / 2, startY + sliderSpacing);
-            musicSlider = new Slider(_graphicsDevice, new Rectangle((int)musicPos.X, (int)musicPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Music", 0.5f, _font);
+            musicSlider = new Slider(_graphicsDevice, new Rectangle((int)musicPos.X, (int)musicPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Green, "Music Volume", 0.5f, _font);
 
             Vector2 soundEffectsPos = new Vector2(centerX - sliderWidth / 2, startY + 2 * sliderSpacing);
-            soundEffectsSlider = new Slider(_graphicsDevice, new Rectangle((int)soundEffectsPos.X, (int)soundEffectsPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Sound Effects", 0.5f, _font);
+            soundEffectsSlider = new Slider(_graphicsDevice, new Rectangle((int)soundEffectsPos.X, (int)soundEffectsPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Green, "Sound Effects Volume", 0.5f, _font);
 
             AddElement(backButton);
             AddElement(masterVolumeSlider);
@@ -189,31 +188,31 @@ namespace AppDevGame
         {
             base.LoadContent(graphicsDevice, content);
             backButton.LoadContent(graphicsDevice, content);
-            masterVolumeSlider.LoadContent(graphicsDevice, content);
-            musicSlider.LoadContent(graphicsDevice, content);
-            soundEffectsSlider.LoadContent(graphicsDevice, content);
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            masterVolumeSlider.Update(gameTime);
+            musicSlider.Update(gameTime);
+            soundEffectsSlider.Update(gameTime);
+        }
 
-            float masterVolume = masterVolumeSlider.Value;
-            musicSlider.Value = Math.Min(musicSlider.Value, masterVolume);
-            soundEffectsSlider.Value = Math.Min(soundEffectsSlider.Value, masterVolume);
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+            masterVolumeSlider.Draw(spriteBatch);
+            musicSlider.Draw(spriteBatch);
+            soundEffectsSlider.Draw(spriteBatch);
         }
     }
 
     public class ModMenu : MenuWindow
     {
         private WindowManager _windowManager;
-        private Button backButton;
-        private Button chooseWeaponButton;
-        private Button chooseCharacterButton;
-        private Button applyChangesButton;
         private SpriteFont _font;
 
-        public ModMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font) 
+        public ModMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font)
             : base(width, height, background)
         {
             _windowManager = windowManager;
@@ -227,33 +226,132 @@ namespace AppDevGame
             int buttonHeight = 50;
             int buttonSpacing = 10;
 
-            Vector2 backButtonPos = new Vector2(10, 10);
-            backButton = new Button(new Rectangle((int)backButtonPos.X, (int)backButtonPos.Y, buttonWidth, buttonHeight), Color.Green, Color.White, "Go Back", new LoadWindowCommand(_windowManager, MainApp.GetInstance().SettingsMenu), _font);
+            Vector2 buttonPos = CalcButtonPosition(2, buttonWidth, buttonHeight, buttonSpacing);
+            int x = (int)buttonPos.X;
+            int y = (int)buttonPos.Y;
 
-            Vector2 chooseWeaponPos = new Vector2(300, 200);
-            chooseWeaponButton = new Button(new Rectangle((int)chooseWeaponPos.X + 200, (int)chooseWeaponPos.Y, buttonWidth, buttonHeight), Color.Gray, Color.Black, "Open File", null, _font);
-            AddElement(new Label(new Rectangle((int)chooseWeaponPos.X - 150, (int)chooseWeaponPos.Y, 150, buttonHeight), Color.Transparent, Color.Black, "Choose Weapon", _font));
-
-            Vector2 chooseCharacterPos = new Vector2(300, 200 + buttonHeight + buttonSpacing);
-            chooseCharacterButton = new Button(new Rectangle((int)chooseCharacterPos.X + 200, (int)chooseCharacterPos.Y, buttonWidth, buttonHeight), Color.Gray, Color.Black, "Open File", null, _font);
-            AddElement(new Label(new Rectangle((int)chooseCharacterPos.X - 150, (int)chooseCharacterPos.Y, 150, buttonHeight), Color.Transparent, Color.Black, "Choose Main Character", _font));
-
-            Vector2 applyChangesPos = new Vector2(_width - buttonWidth - 10, _height - buttonHeight - 10);
-            applyChangesButton = new Button(new Rectangle((int)applyChangesPos.X, (int)applyChangesPos.Y, buttonWidth, buttonHeight), Color.Green, Color.White, "Apply Changes", new LoadWindowCommand(_windowManager, MainApp.GetInstance().MainMenu), _font);
-
-            AddElement(backButton);
-            AddElement(chooseWeaponButton);
-            AddElement(chooseCharacterButton);
-            AddElement(applyChangesButton);
+            AddElement(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, "Install Mod", new PrintCommand("Install Mod"), _font));
+            AddElement(new Button(new Rectangle(x, (y + buttonHeight + buttonSpacing), buttonWidth, buttonHeight), Color.Green, Color.White, "Remove Mod", new PrintCommand("Remove Mod"), _font));
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
             base.LoadContent(graphicsDevice, content);
-            backButton.LoadContent(graphicsDevice, content);
-            chooseWeaponButton.LoadContent(graphicsDevice, content);
-            chooseCharacterButton.LoadContent(graphicsDevice, content);
-            applyChangesButton.LoadContent(graphicsDevice, content);
+        }
+    }
+
+    public class StartMenu : MenuWindow
+    {
+        private WindowManager _windowManager;
+        private SpriteFont _font;
+
+        public StartMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font)
+            : base(width, height, background)
+        {
+            _windowManager = windowManager;
+            _font = font;
+        }
+
+        public override void Setup()
+        {
+            base.Setup();
+            int buttonWidth = 200;
+            int buttonHeight = 50;
+            int buttonSpacing = 10;
+
+            Vector2 buttonPos = CalcButtonPosition(3, buttonWidth, buttonHeight, buttonSpacing);
+            int x = (int)buttonPos.X;
+            int y = (int)buttonPos.Y;
+
+            AddElement(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, "New Game", new LoadWindowCommand(_windowManager, MainApp.GetInstance().SelectSaveSlotMenu), _font));
+            AddElement(new Button(new Rectangle(x, (y + buttonHeight + buttonSpacing), buttonWidth, buttonHeight), Color.Green, Color.White, "Load Game", new LoadWindowCommand(_windowManager, MainApp.GetInstance().LoadSaveMenu), _font));
+            AddElement(new Button(new Rectangle(x, (y + 2 * (buttonHeight + buttonSpacing)), buttonWidth, buttonHeight), Color.Green, Color.White, "Quit", new QuitCommand(), _font));
+        }
+
+        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        {
+            base.LoadContent(graphicsDevice, content);
+        }
+    }
+
+    public class SelectSaveSlotMenu : MenuWindow
+    {
+        private WindowManager _windowManager;
+        private SpriteFont _font;
+
+        public SelectSaveSlotMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font)
+            : base(width, height, background)
+        {
+            _windowManager = windowManager;
+            _font = font;
+        }
+
+        public override void Setup()
+        {
+            base.Setup();
+            int buttonWidth = 200;
+            int buttonHeight = 50;
+            int buttonSpacing = 10;
+
+            Vector2 buttonPos = CalcButtonPosition(4, buttonWidth, buttonHeight, buttonSpacing);
+            int x = (int)buttonPos.X;
+            int y = (int)buttonPos.Y;
+
+            // Adjust button texts based on whether the save slots are empty or not
+            AddElement(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, SaveLoadManager.SaveSlotsEmpty[0] ? "Save 1 (empty)" : "Save 1", new StartNewGameCommand(_windowManager, 1), _font));
+            AddElement(new Button(new Rectangle(x, (y + buttonHeight + buttonSpacing), buttonWidth, buttonHeight), Color.Green, Color.White, SaveLoadManager.SaveSlotsEmpty[1] ? "Save 2 (empty)" : "Save 2", new StartNewGameCommand(_windowManager, 2), _font));
+            AddElement(new Button(new Rectangle(x, (y + 2 * (buttonHeight + buttonSpacing)), buttonWidth, buttonHeight), Color.Green, Color.White, SaveLoadManager.SaveSlotsEmpty[2] ? "Save 3 (empty)" : "Save 3", new StartNewGameCommand(_windowManager, 3), _font));
+            
+            // Add "Go Back" button
+            AddElement(new Button(new Rectangle(x, (y + 3 * (buttonHeight + buttonSpacing)), buttonWidth, buttonHeight), Color.Green, Color.White, "Go Back", new LoadWindowCommand(_windowManager, MainApp.GetInstance().StartMenu), _font));
+        }
+
+        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        {
+            base.LoadContent(graphicsDevice, content);
+        }
+    }
+
+    public class LoadSaveMenu : MenuWindow
+    {
+        private WindowManager _windowManager;
+        private SpriteFont _font;
+
+        public LoadSaveMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font)
+            : base(width, height, background)
+        {
+            _windowManager = windowManager;
+            _font = font;
+        }
+
+        public override void Setup()
+        {
+            base.Setup();
+            int buttonWidth = 200;
+            int buttonHeight = 50;
+            int buttonSpacing = 10;
+
+            Vector2 buttonPos = CalcButtonPosition(4, buttonWidth, buttonHeight, buttonSpacing);
+            int x = (int)buttonPos.X;
+            int y = (int)buttonPos.Y;
+
+            // Adjust button texts based on whether the save slots are empty or not
+            AddElement(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, SaveLoadManager.SaveSlotsEmpty[0] ? "Save 1 (empty)" : "Save 1", new LoadGameCommand(_windowManager, 1), _font));
+            AddElement(new Button(new Rectangle(x, (y + buttonHeight + buttonSpacing), buttonWidth, buttonHeight), Color.Green, Color.White, SaveLoadManager.SaveSlotsEmpty[1] ? "Save 2 (empty)" : "Save 2", new LoadGameCommand(_windowManager, 2), _font));
+            AddElement(new Button(new Rectangle(x, (y + 2 * (buttonHeight + buttonSpacing)), buttonWidth, buttonHeight), Color.Green, Color.White, SaveLoadManager.SaveSlotsEmpty[2] ? "Save 3 (empty)" : "Save 3", new LoadGameCommand(_windowManager, 3), _font));
+
+            // Add delete buttons
+            AddElement(new Button(new Rectangle(x + buttonWidth + buttonSpacing, y, buttonWidth / 2, buttonHeight), Color.Red, Color.White, "Delete", new DeleteSaveCommand(1), _font));
+            AddElement(new Button(new Rectangle(x + buttonWidth + buttonSpacing, (y + buttonHeight + buttonSpacing), buttonWidth / 2, buttonHeight), Color.Red, Color.White, "Delete", new DeleteSaveCommand(2), _font));
+            AddElement(new Button(new Rectangle(x + buttonWidth + buttonSpacing, (y + 2 * (buttonHeight + buttonSpacing)), buttonWidth / 2, buttonHeight), Color.Red, Color.White, "Delete", new DeleteSaveCommand(3), _font));
+
+            // Add "Go Back" button
+            AddElement(new Button(new Rectangle(x, (y + 3 * (buttonHeight + buttonSpacing)), buttonWidth, buttonHeight), Color.Green, Color.White, "Go Back", new LoadWindowCommand(_windowManager, MainApp.GetInstance().StartMenu), _font));
+        }
+
+        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        {
+            base.LoadContent(graphicsDevice, content);
         }
     }
 }

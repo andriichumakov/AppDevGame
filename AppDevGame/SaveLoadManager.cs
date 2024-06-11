@@ -77,5 +77,27 @@ namespace AppDevGame
         }
 
         public static int MaxSaveSlots => maxSaveSlots;
+
+        public static bool SaveSlotIsEmpty(int slot)
+        {
+            string saveFilePath = Path.Combine(saveDirectory, $"savegame_{slot}.json");
+            return !File.Exists(saveFilePath);
+        }
+    }
+
+    public class GameState
+    {
+        public Vector2 playerPosition { get; set; }
+        public int playerHealth { get; set; }
+        public int coinsCollected { get; set; }
+        public string currentLevel { get; set; }
+        public List<EntityState> entities { get; set; }
+    }
+
+    public class EntityState
+    {
+        public string EntityType { get; set; }
+        public Vector2 Position { get; set; }
+        public int Health { get; set; }
     }
 }

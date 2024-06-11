@@ -170,13 +170,13 @@ namespace AppDevGame
             int startY = _height / 2 - sliderSpacing;
 
             Vector2 masterVolumePos = new Vector2(centerX - sliderWidth / 2, startY);
-            masterVolumeSlider = new Slider(_graphicsDevice, new Rectangle((int)masterVolumePos.X, (int)masterVolumePos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Green, "Master Volume", 0.5f, _font);
+            masterVolumeSlider = new Slider(_graphicsDevice, new Rectangle((int)masterVolumePos.X, (int)masterVolumePos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Master Volume", 0.5f, _font);
 
             Vector2 musicPos = new Vector2(centerX - sliderWidth / 2, startY + sliderSpacing);
-            musicSlider = new Slider(_graphicsDevice, new Rectangle((int)musicPos.X, (int)musicPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Green, "Music Volume", 0.5f, _font);
+            musicSlider = new Slider(_graphicsDevice, new Rectangle((int)musicPos.X, (int)musicPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Music Volume", 0.5f, _font);
 
             Vector2 soundEffectsPos = new Vector2(centerX - sliderWidth / 2, startY + 2 * sliderSpacing);
-            soundEffectsSlider = new Slider(_graphicsDevice, new Rectangle((int)soundEffectsPos.X, (int)soundEffectsPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Green, "Sound Effects Volume", 0.5f, _font);
+            soundEffectsSlider = new Slider(_graphicsDevice, new Rectangle((int)soundEffectsPos.X, (int)soundEffectsPos.Y, sliderWidth, sliderHeight), Color.Gray, Color.Black, "Sound Effects Volume", 0.5f, _font);
 
             AddElement(backButton);
             AddElement(masterVolumeSlider);
@@ -193,9 +193,21 @@ namespace AppDevGame
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
             masterVolumeSlider.Update(gameTime);
             musicSlider.Update(gameTime);
             soundEffectsSlider.Update(gameTime);
+
+            // Sync music and sound effects volume with master volume
+            if (masterVolumeSlider.Value < musicSlider.Value)
+            {
+                musicSlider.SetValue(masterVolumeSlider.Value);
+            }
+
+            if (masterVolumeSlider.Value < soundEffectsSlider.Value)
+            {
+                soundEffectsSlider.SetValue(masterVolumeSlider.Value);
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)

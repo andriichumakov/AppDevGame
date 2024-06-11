@@ -88,5 +88,10 @@ namespace AppDevGame
         {
             _isDragging = false;
         }
+
+        public void SetValue(float value)
+        {
+            Value = value;
+        }
     }
 }

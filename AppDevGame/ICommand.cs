@@ -124,4 +124,35 @@ namespace AppDevGame
             }
         }
     }
+
+    public class ApplyLanguageCommand : ICommand
+    {
+        public void Execute()
+        {
+            MainApp mainApp = MainApp.GetInstance();
+            string selectedLanguage = mainApp.LanguageMenu.GetSelectedLanguage();
+            string currentLanguage = mainApp.LocLoader.GetCurrentLanguage();
+
+            if (selectedLanguage != currentLanguage)
+            {
+                mainApp.LocLoader.ChangeLanguage(selectedLanguage, mainApp.Content);
+
+                // Update the text of buttons and other UI elements to the selected language
+                mainApp.MainMenu.SetupElements();
+                mainApp.SettingsMenu.SetupElements();
+                mainApp.LanguageMenu.SetupElements();
+                mainApp.SoundMenu.SetupElements();
+                mainApp.ModMenu.SetupElements();
+                mainApp.StartMenu.SetupElements();
+                mainApp.SelectSaveSlotMenu.SetupElements();
+                mainApp.LoadSaveMenu.SetupElements();
+
+                MainApp.Log("Language changed and UI updated.");
+            }
+            else
+            {
+                MainApp.Log("Selected language is the same as the current language. No changes made.");
+            }
+        }
+    }
 }

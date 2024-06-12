@@ -5,5 +5,19 @@
     "MusicVolume": "Music Volume",
     "SoundEffectsVolume": "Sound Effects Volume",
     "English": "English",
-    "Dutch": "Dutch"
+    "Dutch": "Dutch",
+    "Start": "Start",
+    "ChangeSettings": "Change Settings",
+    "Quit": "Quit",
+    "LanguageMenu": "Language Menu",
+    "SoundMenu": "Sound Menu",
+    "ModMenu": "Mod Menu",
+    "InstallMod": "Install Mod",
+    "RemoveMod": "Remove Mod",
+    "NewGame": "New Game",
+    "LoadGame": "Load Game",
+    "Save1": "Save 1",
+    "Save2": "Save 2",
+    "Save3": "Save 3",
+    "GoBack": "Go Back"
 }

@@ -107,5 +107,13 @@ namespace AppDevGame
             _elementsToAdd.Clear();
             _elementsToRemove.Clear();
         }
+
+        public void UpdateTexts()
+        {
+            foreach (var element in _uiElements)
+            {
+                element.UpdateText();
+            }
+        }
     }
 }

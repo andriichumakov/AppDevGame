@@ -100,7 +100,7 @@ namespace AppDevGame
             _value = value;
         }
 
-        public void UpdateText()
+        public override void UpdateText()
         {
             _text = MainApp.GetInstance().LocLoader.GetString(_textKey);
         }

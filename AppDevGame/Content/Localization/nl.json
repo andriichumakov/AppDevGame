@@ -5,5 +5,19 @@
     "MusicVolume": "Muziekvolume",
     "SoundEffectsVolume": "Geluidseffectenvolume",
     "English": "Engels",
-    "Dutch": "Nederlands"
+    "Dutch": "Nederlands",
+    "Start": "Begin",
+    "ChangeSettings": "Instellingen wijzigen",
+    "Quit": "Afsluiten",
+    "LanguageMenu": "Taalmenu",
+    "SoundMenu": "Geluidmenu",
+    "ModMenu": "Mod menu",
+    "InstallMod": "Mod installeren",
+    "RemoveMod": "Mod verwijderen",
+    "NewGame": "Nieuw spel",
+    "LoadGame": "Spel laden",
+    "Save1": "Opslaan 1",
+    "Save2": "Opslaan 2",
+    "Save3": "Opslaan 3",
+    "GoBack": "Ga terug"
 }

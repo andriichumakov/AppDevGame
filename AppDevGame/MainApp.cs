@@ -158,5 +158,16 @@ namespace AppDevGame
         {
             _lastActionTime = DateTime.Now;
         }
+
+        public void ChangeLanguage(string newLanguage)
+        {
+            LocLoader.ChangeLanguage(newLanguage, Content);
+            
+            // Update text for all elements in the current window
+            if (_windowManager.CurrentWindow is MenuWindow currentMenu)
+            {
+                currentMenu.UpdateTexts();
+            }
+        }
     }
 }

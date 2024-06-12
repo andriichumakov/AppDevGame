@@ -24,7 +24,7 @@ namespace AppDevGame
             UpdateText(); // Get localized string during initialization
         }
 
-        public void UpdateText()
+        public override void UpdateText()
         {
             _text = MainApp.GetInstance().LocLoader.GetString(_textKey); // Update text based on localization
         }
@@ -62,7 +62,7 @@ namespace AppDevGame
                     if (_onClick != null)
                     {
                         try
-                        {
+                            {
                             _onClick.Execute();
                         }
                         catch (Exception ex)

@@ -17,6 +17,7 @@ namespace AppDevGame
         internal FontLoader _fontLoader;
         public ImageLoader _imageLoader;
         public LevelWindow _currentLevel;
+        public LocLoader LocLoader { get; private set; }
 
         private MainMenu _mainMenu;
         private SettingsMenu _settingsMenu;
@@ -29,6 +30,9 @@ namespace AppDevGame
 
         private const bool _isDebugMode = true;
         private static readonly string LogFilePath = "game_log.txt";
+
+        private static DateTime _lastActionTime = DateTime.MinValue;
+        private static readonly TimeSpan ActionDelay = TimeSpan.FromSeconds(1.5); // 1.5 seconds delay
 
         private MainApp()
         {
@@ -88,6 +92,7 @@ namespace AppDevGame
             _windowManager = WindowManager.GetInstance();
             _imageLoader = new ImageLoader(GraphicsDevice);
             _fontLoader = new FontLoader(Content);
+            LocLoader = new LocLoader();
             base.Initialize();
         }
 
@@ -96,6 +101,7 @@ namespace AppDevGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _imageLoader.LoadContent();
             _fontLoader.LoadContent();
+            LocLoader.LoadLocalization("en", Content);
             _backgroundTexture = _imageLoader.GetResource("PlaceholderBackground");
 
             var font = _fontLoader.GetResource("Default");
@@ -141,6 +147,16 @@ namespace AppDevGame
         public LevelWindow GetCurrentLevel()
         {
             return _currentLevel;
+        }
+
+        public static bool CanPerformAction()
+        {
+            return DateTime.Now - _lastActionTime >= ActionDelay;
+        }
+
+        public static void RecordAction()
+        {
+            _lastActionTime = DateTime.Now;
         }
     }
 }

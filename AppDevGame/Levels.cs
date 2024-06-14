@@ -48,8 +48,16 @@ namespace AppDevGame
 
             if (playerTexture != null)
             {
-                // Add player at the starting position
-                SetPlayer(new Player(this, playerTexture, new Vector2(700, 500)));
+                // Ensure the player is set only once
+                if (Player == null)
+                {
+                    MainApp.Log("Adding player to the level.");
+                    SetPlayer(new Player(this, playerTexture, new Vector2(700, 500)));
+                }
+                else
+                {
+                    MainApp.Log("Player is already set in the level.");
+                }
             }
 
             if (activePortalTexture != null && inactivePortalTexture != null)

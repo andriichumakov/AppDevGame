@@ -135,6 +135,11 @@ namespace AppDevGame
             }
         }
 
+        private int GetRemainingEnemies()
+        {
+            return _entities.OfType<Enemy>().Count(e => !e.IsDead());
+        }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -155,6 +160,13 @@ namespace AppDevGame
             if (_font != null)
             {
                 spriteBatch.DrawString(_font, lanternText, new Vector2(10, 40), Color.Yellow);
+            }
+
+            // Draw the UI for remaining enemies
+            string enemyText = $"Enemies: {GetRemainingEnemies()}";
+            if (_font != null)
+            {
+                spriteBatch.DrawString(_font, enemyText, new Vector2(10, 70), Color.Red);
             }
         }
     }

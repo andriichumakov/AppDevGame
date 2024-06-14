@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace AppDevGame
@@ -11,15 +10,23 @@ namespace AppDevGame
         private TimeSpan _lastClickTime;
         private static readonly TimeSpan DebounceTime = TimeSpan.FromMilliseconds(300);
         private SpriteFont _font;
+        private string _textKey;
 
-        public Button(Rectangle bounds, Color backgroundColor, Color textColor, string text, ICommand onClick, SpriteFont font) 
-            : base(bounds, new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1), backgroundColor, textColor, text)
+        public Button(Rectangle bounds, Color backgroundColor, Color textColor, string textKey, ICommand onClick, SpriteFont font) 
+            : base(bounds, new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1), backgroundColor, textColor, textKey)
         {
             _texture = new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1);
             _texture.SetData(new[] { backgroundColor });
             _onClick = onClick;
             _lastClickTime = TimeSpan.Zero;
             _font = font;
+            _textKey = textKey;
+            UpdateText(); // Get localized string during initialization
+        }
+
+        public override void UpdateText()
+        {
+            _text = MainApp.GetInstance().LocLoader.GetString(_textKey); // Update text based on localization
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -47,13 +54,15 @@ namespace AppDevGame
             if (_bounds.Contains(mousePosition))
             {
                 var currentTime = gameTime.TotalGameTime;
-                if (currentTime - _lastClickTime > DebounceTime)
+                if (currentTime - _lastClickTime > DebounceTime && MainApp.CanPerformAction())
                 {
                     _lastClickTime = currentTime;
+                    MainApp.RecordAction(); // Record the action to enforce delay
+
                     if (_onClick != null)
                     {
                         try
-                        {
+                            {
                             _onClick.Execute();
                         }
                         catch (Exception ex)
@@ -65,6 +74,10 @@ namespace AppDevGame
                     {
                         MainApp.Log("Error: Button click command is null.");
                     }
+                }
+                else
+                {
+                    MainApp.Log("Click ignored due to debounce.");
                 }
             }
         }

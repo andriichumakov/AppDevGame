@@ -12,7 +12,9 @@ namespace AppDevGame
         protected int _width;
         protected int _height;
         protected Texture2D _background;
-        protected List<UIElement> _elements = new List<UIElement>(); 
+        protected List<UIElement> _elements = new List<UIElement>();
+        protected List<UIElement> _elementsToAdd = new List<UIElement>();
+        protected List<UIElement> _elementsToRemove = new List<UIElement>();
         protected MouseState _previousMouseState;
 
         public BaseWindow(int width, int height, Texture2D background = null)
@@ -28,18 +30,18 @@ namespace AppDevGame
             MainApp.Log("Setting up window...");
             MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth = this._width;
             MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferHeight = this._height;
-            // MainApp.GetInstance().GetGraphicsManager().IsFullScreen = true;  //command this out to make the game go windowed mode
+            //MainApp.GetInstance().GetGraphicsManager().IsFullScreen = true;  //command this out to make the game go windowed mode
             MainApp.GetInstance().GetGraphicsManager().ApplyChanges();
         }
 
         public void AddElement(UIElement element)
         {
-            this._elements.Add(element);
+            this._elementsToAdd.Add(element);
         }
 
         public void RemoveElement(UIElement element)
         {
-            this._elements.Remove(element);
+            this._elementsToRemove.Add(element);
         }
 
         public virtual void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
@@ -52,6 +54,23 @@ namespace AppDevGame
 
         public virtual void Update(GameTime gameTime)
         {
+            // Add pending elements
+            if (_elementsToAdd.Count > 0)
+            {
+                _elements.AddRange(_elementsToAdd);
+                _elementsToAdd.Clear();
+            }
+
+            // Remove pending elements
+            if (_elementsToRemove.Count > 0)
+            {
+                foreach (var element in _elementsToRemove)
+                {
+                    _elements.Remove(element);
+                }
+                _elementsToRemove.Clear();
+            }
+
             MouseState currentMouseState = Mouse.GetState();
 
             if (currentMouseState.LeftButton == ButtonState.Pressed && _previousMouseState.LeftButton == ButtonState.Released)

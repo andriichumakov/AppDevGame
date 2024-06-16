@@ -116,6 +116,7 @@ namespace AppDevGame
         }
     }
 
+
     public class LoadGameCommand : ICommand
     {
         private WindowManager _windowManager;
@@ -142,6 +143,7 @@ namespace AppDevGame
             }
         }
     }
+
 
     public class DeleteSaveCommand : ICommand
     {

@@ -34,7 +34,7 @@ namespace AppDevGame
         private string _currentLevel;
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, Texture2D backgroundTexture, float speed = 200f, int maxHealth = 100)
-        : base(level, texture, position, EntityType.Player)
+         : base(level, texture, position, EntityType.Player)
         {
             _speed = speed;
             _maxHealth = maxHealth;
@@ -52,6 +52,7 @@ namespace AppDevGame
 
             _currentLevel = "Level1"; // Example current level
         }
+
 
         public int CoinsCollected => _coinsCollected;
         public string CurrentLevel => _currentLevel;

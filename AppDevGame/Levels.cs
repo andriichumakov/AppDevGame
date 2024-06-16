@@ -65,7 +65,8 @@ namespace AppDevGame
                 if (Player == null)
                 {
                     MainApp.Log("Adding player to the level.");
-                    SetPlayer(new Player(this, playerTexture, new Vector2(700, 500)));
+                    SetPlayer(new Player(this, playerTexture, new Vector2(700, 500), MainApp.GetInstance().BackgroundTexture));
+
                 }
                 else
                 {

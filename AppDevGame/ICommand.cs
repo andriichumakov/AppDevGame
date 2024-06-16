@@ -106,7 +106,7 @@ namespace AppDevGame
             MainApp.Log("loading the level...");
             Level1 newLevel = new Level1(800, 600, 2372, 3063, MainApp.GetInstance()._imageLoader.GetResource("BackgroundLevel1"));
             MainApp.Log("loading the player...");
-            Player newPlayer = new Player(newLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), new Vector2(100, 100));
+            Player newPlayer = new Player(newLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), new Vector2(100, 100), MainApp.GetInstance().BackgroundTexture);
             MainApp.Log("setting the player to the level...");
             newLevel.SetPlayer(newPlayer);
             MainApp.Log("loading the window...");
@@ -133,7 +133,7 @@ namespace AppDevGame
             if (gameState != null)
             {
                 Level1 loadedLevel = new Level1(800, 600, 2372, 3063, MainApp.GetInstance()._imageLoader.GetResource("BackgroundLevel1"));
-                Player loadedPlayer = new Player(loadedLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), gameState.playerPosition);
+                Player loadedPlayer = new Player(loadedLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), gameState.playerPosition, MainApp.GetInstance().BackgroundTexture);
                 loadedPlayer.SetHealth(gameState.playerHealth);
                 loadedPlayer.SetCoins(gameState.coinsCollected);
                 loadedPlayer.SetCurrentLevel(gameState.currentLevel);

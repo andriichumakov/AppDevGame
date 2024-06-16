@@ -27,7 +27,7 @@ namespace AppDevGame
         private ModMenu _modMenu;
 
         private bool _isPaused = false;  // Track whether the game is paused
-        public LevelWindow _currentLevel;
+        // public LevelWindow _currentLevel;
 
         // Property to access the background texture
         public Texture2D BackgroundTexture => _backgroundTexture;

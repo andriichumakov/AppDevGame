@@ -21,6 +21,14 @@ namespace AppDevGame
         public override void Setup()
         {
             base.Setup();
+            // Clear existing entities before setting up the level again
+            _entities.Clear();
+            _entitiesToAdd.Clear();
+            _entitiesToRemove.Clear();
+            _currentHeartCount = 0;
+            _totalLanterns = 0;
+            _litLanterns = 0;
+
             // Initialize entities and background specific to Level1
 
             // Example of adding entities to the level

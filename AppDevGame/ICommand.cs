@@ -61,12 +61,7 @@ namespace AppDevGame
     {
         public void Execute() 
         {
-            // Example: toggle pause state
-            // This should interface with your game's main state management to resume gameplay
-            MainApp.GetInstance().TogglePause(); // You need to define this method according to your game's architecture
-            
-            // Optionally, close/hide the current pause menu
-            // WindowManager.GetInstance().HideCurrentWindow(); // You might need to implement this method in WindowManager
+            MainApp.GetInstance().TogglePause();
             Console.WriteLine("Game unpaused");
         }
     }
@@ -82,7 +77,6 @@ namespace AppDevGame
 
         public void Execute()
         {
-            // Assuming there's a way to reset the level
             _level.Setup();
             MainApp.GetInstance().TogglePause();
         }

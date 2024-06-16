@@ -46,7 +46,8 @@ namespace AppDevGame
         public void Hide()
         {
             _isVisible = false;
-           //if we wanna also pause sounds or animations, we should place those actions here
+           //if we wanna also pause sounds or animations, we should place those actions here, 
+           //tho prolly not needed cus the player will not see them anyways when its pauses
         }
 
         //method to show the window again when unpaused

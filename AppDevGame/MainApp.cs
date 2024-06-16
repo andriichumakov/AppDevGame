@@ -134,14 +134,10 @@ namespace AppDevGame
             _selectSaveSlotMenu = new SelectSaveSlotMenu(800, 600, _backgroundTexture, _windowManager, font);
             _loadSaveMenu = new LoadSaveMenu(800, 600, _backgroundTexture, _windowManager, font);
 
-            // Remove the following line:
-            // EscapeMenu = new EscapeMenu(800, 600, _backgroundTexture, currentLevel);
-
             _windowManager.LoadWindow(_mainMenu);
 
             base.LoadContent();
         }
-
 
        public void TogglePause()
         {
@@ -161,9 +157,6 @@ namespace AppDevGame
                 }
             }
         }
-
-
-
 
        protected override void Update(GameTime gameTime)
        {

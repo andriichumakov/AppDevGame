@@ -49,7 +49,7 @@ namespace AppDevGame
         {
             if (_currentWindow != null)
             {
-                _currentWindow.Hide();  // Assume BaseWindow has a Hide method to make the window invisible
+                _currentWindow.Hide();
             }
         }
 

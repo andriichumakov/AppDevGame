@@ -64,7 +64,7 @@ namespace AppDevGame
 
         public override void Update(GameTime gameTime)
         {
-            // Update logic if needed
+            //update the logic if needed
         }
 
         public void HandleClick(Point clickPosition, GameTime gameTime)

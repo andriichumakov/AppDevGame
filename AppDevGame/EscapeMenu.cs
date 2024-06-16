@@ -31,7 +31,7 @@ namespace AppDevGame
             AddElement(new Button(new Rectangle(startX, startY, buttonWidth, buttonHeight), Color.Gray, Color.White, "Unpause", new UnpauseCommand(), _font));
             AddElement(new Button(new Rectangle(startX, startY += (buttonHeight + spacing), buttonWidth, buttonHeight), Color.Gray, Color.White, "Restart Level", new RestartLevelCommand(_currentLevel), _font));
             AddElement(new Button(new Rectangle(startX, startY += (buttonHeight + spacing), buttonWidth, buttonHeight), Color.Gray, Color.White, "Controls", new ShowControlsCommand(this), _font));
-            AddElement(new Button(new Rectangle(startX, startY += (buttonHeight + spacing), buttonWidth, buttonHeight), Color.Gray, Color.White, "Quit to Menu", new LoadWindowCommand(WindowManager.GetInstance(), MainApp.GetInstance().MainMenu, true), _font));
+            AddElement(new Button(new Rectangle(startX, startY += (buttonHeight + spacing), buttonWidth, buttonHeight), Color.Gray, Color.White, "Quit to Menu", new LoadWindowCommand(WindowManager.GetInstance(), MainApp.GetInstance().MainMenu, unpause: true), _font));
             AddElement(new Button(new Rectangle(startX, startY += (buttonHeight + spacing), buttonWidth, buttonHeight), Color.Gray, Color.White, "Quit to Desktop", new QuitCommand(), _font));
         }
 
@@ -40,22 +40,15 @@ namespace AppDevGame
             _controlsOverlay = new OverlayWindow(_width, _height, _background);
             int buttonWidth = 200;
             int buttonHeight = 50;
-            int startX = (_width - buttonWidth) / 2;
-            int startY = (_height - buttonHeight) / 2;
 
-            // Add "Go back" button
-            var goBackButton = new Button(new Rectangle(startX, startY, buttonWidth, buttonHeight), Color.Gray, Color.White, "Go back", new HideControlsCommand(this), _font);
+            // Add "Go back" button to the top left
+            var goBackButton = new Button(new Rectangle(10, 10, 150, 50), Color.Gray, Color.White, "Go back", new HideControlsCommand(this), _font);
             _controlsOverlay.AddElement(goBackButton);
             MainApp.Log("Added 'Go back' button to controls overlay.");
 
-            // Add "Hello world" text as a button
-            var helloWorldButton = new Button(new Rectangle(startX, startY + 100, buttonWidth, buttonHeight), Color.Transparent, Color.White, "Hello world", null, _font);
-            _controlsOverlay.AddElement(helloWorldButton);
-            MainApp.Log("Added 'Hello world' text to controls overlay.");
-
             // Add the control instructions as "buttons" with no click event
             int leftColumnX = 50;
-            int rightColumnX = _width - 250;
+            int rightColumnX = _width - 350;
             int topRowY = 150;
 
             // Top Down Controls
@@ -148,4 +141,3 @@ namespace AppDevGame
         }
     }
 }
-    

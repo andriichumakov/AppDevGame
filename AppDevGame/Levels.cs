@@ -21,6 +21,14 @@ namespace AppDevGame
         public override void Setup()
         {
             base.Setup();
+            // Clear existing entities before setting up the level again
+            _entities.Clear();
+            _entitiesToAdd.Clear();
+            _entitiesToRemove.Clear();
+            _currentHeartCount = 0;
+            _totalLanterns = 0;
+            _litLanterns = 0;
+
             // Initialize entities and background specific to Level1
 
             // Example of adding entities to the level
@@ -34,6 +42,7 @@ namespace AppDevGame
             Texture2D litLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternLit");
             Texture2D unlitLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternUnlit");
             _font = MainApp.GetInstance()._fontLoader.GetResource("Default");
+            // SpriteFont font = MainApp.GetInstance()._fontLoader.GetResource("Default");
 
             if (entityTexture != null)
             {
@@ -48,6 +57,10 @@ namespace AppDevGame
 
             if (playerTexture != null)
             {
+
+                // Add player at the starting position
+                //SetPlayer(new Player(this, playerTexture, new Vector2(700, 500), MainApp.GetInstance().BackgroundTexture, 200f, 100));
+
                 // Ensure the player is set only once
                 if (Player == null)
                 {
@@ -58,6 +71,7 @@ namespace AppDevGame
                 {
                     MainApp.Log("Player is already set in the level.");
                 }
+
             }
 
             if (activePortalTexture != null && inactivePortalTexture != null)

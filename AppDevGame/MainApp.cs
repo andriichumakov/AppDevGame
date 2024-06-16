@@ -3,6 +3,7 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace AppDevGame
 {
@@ -22,6 +23,13 @@ namespace AppDevGame
         private LanguageMenu _languageMenu;
         private SoundMenu _soundMenu;
         private ModMenu _modMenu;
+        private bool _isPaused = false;  // Track whether the game is paused
+        public LevelWindow _currentLevel;
+
+        // Property to access the background texture
+        public Texture2D BackgroundTexture => _backgroundTexture;
+        public EscapeMenu EscapeMenu { get; private set; }
+        public bool IsPaused => _isPaused;  // Public property to check if the game is paused
 
         private const bool _isDebugMode = true;
         private static readonly string LogFilePath = "game_log.txt";
@@ -34,7 +42,6 @@ namespace AppDevGame
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Log("Setup complete.");
-
         }
 
         public static MainApp GetInstance()
@@ -80,7 +87,6 @@ namespace AppDevGame
         protected override void Initialize()
         {
             _windowManager = WindowManager.GetInstance();
-            _imageLoader = new ImageLoader(GraphicsDevice);
             _fontLoader = new FontLoader(Content);
             base.Initialize();
         }
@@ -88,6 +94,7 @@ namespace AppDevGame
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _imageLoader = new ImageLoader(GraphicsDevice);
             _imageLoader.LoadContent();
             _fontLoader.LoadContent();
             _backgroundTexture = _imageLoader.GetResource("PlaceholderBackground");
@@ -108,24 +115,79 @@ namespace AppDevGame
             _modMenu = new ModMenu(800, 600, _backgroundTexture, _windowManager, font);
             _mainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, _settingsMenu, font);
 
+            // Remove the following line:
+            // EscapeMenu = new EscapeMenu(800, 600, _backgroundTexture, currentLevel);
+
             _windowManager.LoadWindow(_mainMenu);
 
             base.LoadContent();
         }
 
-        protected override void Update(GameTime gameTime)
+
+       public void TogglePause()
         {
-            _windowManager.Update(gameTime);
-            base.Update(gameTime);
+            _isPaused = !_isPaused;
+
+            if (_isPaused)
+            {
+                LevelWindow currentLevel = _windowManager.GetCurrentWindow() as LevelWindow;
+
+                if (currentLevel != null)
+                {
+                    EscapeMenu = new EscapeMenu(800, 600, _backgroundTexture, currentLevel);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Current window is not a LevelWindow.");
+                }
+            }
         }
+
+
+
+
+       protected override void Update(GameTime gameTime)
+       {
+            KeyboardState state = Keyboard.GetState();
+
+            if (state.IsKeyDown(Keys.Escape) && !_isPaused)
+            {
+                TogglePause();
+            }
+            else if (state.IsKeyDown(Keys.U) && _isPaused)
+            {
+                TogglePause();
+            }
+
+            if (_isPaused)
+            {
+                // Log that we're updating the pause menu
+                MainApp.Log("Updating the pause menu...");
+                EscapeMenu.Update(gameTime);
+            }
+            else
+            {
+                _windowManager.Update(gameTime);
+                base.Update(gameTime);
+            }
+       }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            _spriteBatch.Begin();
 
+            _spriteBatch.Begin();
             _windowManager.Draw(_spriteBatch);
             _spriteBatch.End();
+
+            // If the game is paused, draw the escape menu overlay
+            if (_isPaused)
+            {
+                _spriteBatch.Begin();
+                EscapeMenu.Draw(_spriteBatch);  // Draw the pause menu overlay
+                _spriteBatch.End();
+            }
+
             base.Draw(gameTime);
         }
     }

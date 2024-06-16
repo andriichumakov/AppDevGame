@@ -101,11 +101,12 @@ namespace AppDevGame
 
         public override void Update(GameTime gameTime)
         {
-            try
+            if (!MainApp.GetInstance().IsPaused)
             {
                 base.Update(gameTime);
                 _player?.Update(gameTime);
                 AdjustFrame(); // Adjust the frame based on the player's position
+
                 foreach (var entity in _entities.ToList()) // Use ToList() to avoid modifying the collection while iterating
                 {
                     if (_frameSize.Contains(entity.Hitbox) || _frameSize.Intersects(entity.Hitbox))
@@ -118,12 +119,8 @@ namespace AppDevGame
                 // Remove dead enemies
                 _entities.RemoveAll(entity => entity is Enemy enemy && enemy.IsDead());
             }
-            catch (Exception ex)
-            {
-                MainApp.Log($"Error during LevelWindow.Update: {ex.Message}");
-                throw;
-            }
         }
+
 
         public override void Draw(SpriteBatch spriteBatch)
         {

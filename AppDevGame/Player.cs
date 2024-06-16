@@ -27,15 +27,17 @@ namespace AppDevGame
         private Texture2D _healthEmptyTexture;
         private float _heartScale = 2.0f; // Scale factor for the hearts
         private float _playerScale = 0.8f; // Scale factor for the player
+        private Texture2D _backgroundTexture; // Background texture
 
         private Direction _lastDirection; // Last movement direction
 
-        public Player(LevelWindow level, Texture2D texture, Vector2 position, float speed = 200f, int maxHealth = 100)
-            : base(level, texture, position, EntityType.Player)
+        public Player(LevelWindow level, Texture2D texture, Vector2 position, Texture2D backgroundTexture, float speed = 200f, int maxHealth = 100)
+        : base(level, texture, position, EntityType.Player)
         {
             _speed = speed;
             _maxHealth = maxHealth;
             _currentHealth = maxHealth;
+            _backgroundTexture = backgroundTexture;
 
             _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
@@ -69,7 +71,7 @@ namespace AppDevGame
 
         public override void Update(GameTime gameTime)
         {
-            try
+            if (!MainApp.GetInstance().IsPaused)
             {
                 base.Update(gameTime);
 
@@ -122,11 +124,6 @@ namespace AppDevGame
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                MainApp.Log($"Error during Player.Update: {ex.Message}");
-                throw;
-            }
         }
 
         private void AttackEnemies()
@@ -161,33 +158,25 @@ namespace AppDevGame
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)
         {
-            try
+            // Draw the player texture
+            spriteBatch.Draw(_texture, _position - offset, null, Color.White, 0f, Vector2.Zero, _playerScale, SpriteEffects.None, 0f);
+
+            // Draw health hearts in the top right corner
+            int heartWidth = (int)(_healthFullTexture.Width * _heartScale);
+            int heartHeight = (int)(_healthFullTexture.Height * _heartScale);
+            int spacing = 10;
+            int totalHearts = 3;
+            int heartsToDraw = (int)Math.Ceiling((_currentHealth / (float)_maxHealth) * totalHearts);
+
+            for (int i = 0; i < totalHearts; i++)
             {
-                // Draw the player texture
-                spriteBatch.Draw(_texture, _position - offset, null, Color.White, 0f, Vector2.Zero, _playerScale, SpriteEffects.None, 0f);
+                Texture2D texture = i < heartsToDraw ? _healthFullTexture : _healthEmptyTexture;
+                Vector2 position = new Vector2(
+                    MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
+                    spacing);
 
-                // Draw health hearts in the top right corner
-                int heartWidth = (int)(_healthFullTexture.Width * _heartScale);
-                int heartHeight = (int)(_healthFullTexture.Height * _heartScale);
-                int spacing = 10;
-                int totalHearts = 3;
-                int heartsToDraw = (int)Math.Ceiling((_currentHealth / (float)_maxHealth) * totalHearts);
-
-                for (int i = 0; i < totalHearts; i++)
-                {
-                    Texture2D texture = i < heartsToDraw ? _healthFullTexture : _healthEmptyTexture;
-                    Vector2 position = new Vector2(
-                        MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
-                        spacing);
-
-                    // Draw heart
-                    spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
-                }
-            }
-            catch (Exception ex)
-            {
-                MainApp.Log($"Error during Player.Draw: {ex.Message}");
-                throw;
+                // Draw heart
+                spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
             }
         }
 
@@ -198,24 +187,16 @@ namespace AppDevGame
 
         public override void ResolveCollision(Entity other)
         {
-            try
+            // Handle collision with hearts separately
+            if (other is Heart)
             {
-                // Handle collision with hearts separately
-                if (other is Heart)
-                {
-                    Heal((int)(_maxHealth * 0.33));
-                    _level.RemoveEntity(other);
-                    ((Level1)_level).DecrementHeartCount();
-                    MainApp.Log("Heart collected and removed during collision");
-                    return;
-                }
-                base.ResolveCollision(other);
+                Heal((int)(_maxHealth * 0.33));
+                _level.RemoveEntity(other);
+                ((Level1)_level).DecrementHeartCount();
+                MainApp.Log("Heart collected and removed during collision");
+                return;
             }
-            catch (Exception ex)
-            {
-                MainApp.Log($"Error during Player.OnCollision: {ex.Message}");
-                throw;
-            }
+            base.ResolveCollision(other);
         }
     }
 }

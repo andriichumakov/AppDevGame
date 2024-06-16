@@ -34,6 +34,7 @@ namespace AppDevGame
             Texture2D litLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternLit");
             Texture2D unlitLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternUnlit");
             _font = MainApp.GetInstance()._fontLoader.GetResource("Default");
+            // SpriteFont font = MainApp.GetInstance()._fontLoader.GetResource("Default");
 
             if (entityTexture != null)
             {
@@ -49,7 +50,7 @@ namespace AppDevGame
             if (playerTexture != null)
             {
                 // Add player at the starting position
-                SetPlayer(new Player(this, playerTexture, new Vector2(700, 500)));
+                SetPlayer(new Player(this, playerTexture, new Vector2(700, 500), MainApp.GetInstance().BackgroundTexture, 200f, 100));
             }
 
             if (activePortalTexture != null && inactivePortalTexture != null)

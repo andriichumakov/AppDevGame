@@ -14,6 +14,7 @@ namespace AppDevGame
         protected Texture2D _background;
         protected List<UIElement> _elements = new List<UIElement>(); 
         protected MouseState _previousMouseState;
+        private bool _isVisible = true;
 
         public BaseWindow(int width, int height, Texture2D background = null)
         {
@@ -30,6 +31,27 @@ namespace AppDevGame
             MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferHeight = this._height;
             // MainApp.GetInstance().GetGraphicsManager().IsFullScreen = true;  //command this out to make the game go windowed mode
             MainApp.GetInstance().GetGraphicsManager().ApplyChanges();
+        }
+
+        //check if the window is visible
+        public bool IsVisible
+        {
+            get { return _isVisible; }
+            set { _isVisible = value; }
+        }
+
+        //method to hide the window when paused
+        public void Hide()
+        {
+            _isVisible = false;
+           //if we wanna also pause sounds or animations, we should place those actions here
+        }
+
+        //method to show the window again when unpaused
+        public void Show()
+        {
+            _isVisible = true;
+            //if we paused sounds and or animations above, add actions here to resume them 
         }
 
         public void AddElement(UIElement element)
@@ -54,6 +76,8 @@ namespace AppDevGame
         {
             MouseState currentMouseState = Mouse.GetState();
 
+            if (!_isVisible) return; //skip update when the window is not visible aka paused
+
             if (currentMouseState.LeftButton == ButtonState.Pressed && _previousMouseState.LeftButton == ButtonState.Released)
             {
                 Point mousePosition = new Point(currentMouseState.X, currentMouseState.Y);
@@ -77,6 +101,8 @@ namespace AppDevGame
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
+            if (!_isVisible) return; //skip drawing when the window is not visible aka paused
+
             if (_background != null)
             {
                 spriteBatch.Draw(_background, new Rectangle(0, 0, _width, _height), Color.White);

@@ -47,12 +47,11 @@ namespace AppDevGame
             this._unpause = unpause;
         }
 
-
         public void Execute()
         {
-
             this._windowManager.LoadWindow(this._targetWindow);
-            if (_unpause) {
+            if (_unpause)
+            {
                 MainApp.GetInstance().TogglePause(); // Unpause the game if the flag is set
             }
         }

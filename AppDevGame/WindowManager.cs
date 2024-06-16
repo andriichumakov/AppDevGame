@@ -9,6 +9,7 @@ namespace AppDevGame
         private BaseWindow _currentWindow;
         private BaseWindow _previousWindow;
         private WindowManager() { }
+        public BaseWindow CurrentWindow => _currentWindow;
 
         public static WindowManager GetInstance()
         {

@@ -48,8 +48,16 @@ namespace AppDevGame
 
         public void SetPlayer(Player player)
         {
-            _player = player;
-            AddEntity(player);
+            if (_player == null)
+            {
+                _player = player;
+                AddEntity(player);
+                MainApp.Log("Player set in the level.");
+            }
+            else
+            {
+                MainApp.Log("Player already set, skipping.");
+            }
         }
 
         private void AdjustFrame()

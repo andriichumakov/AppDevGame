@@ -57,8 +57,21 @@ namespace AppDevGame
 
             if (playerTexture != null)
             {
+
                 // Add player at the starting position
-                SetPlayer(new Player(this, playerTexture, new Vector2(700, 500), MainApp.GetInstance().BackgroundTexture, 200f, 100));
+                //SetPlayer(new Player(this, playerTexture, new Vector2(700, 500), MainApp.GetInstance().BackgroundTexture, 200f, 100));
+
+                // Ensure the player is set only once
+                if (Player == null)
+                {
+                    MainApp.Log("Adding player to the level.");
+                    SetPlayer(new Player(this, playerTexture, new Vector2(700, 500)));
+                }
+                else
+                {
+                    MainApp.Log("Player is already set in the level.");
+                }
+
             }
 
             if (activePortalTexture != null && inactivePortalTexture != null)
@@ -136,6 +149,11 @@ namespace AppDevGame
             }
         }
 
+        private int GetRemainingEnemies()
+        {
+            return _entities.OfType<Enemy>().Count(e => !e.IsDead());
+        }
+
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -156,6 +174,13 @@ namespace AppDevGame
             if (_font != null)
             {
                 spriteBatch.DrawString(_font, lanternText, new Vector2(10, 40), Color.Yellow);
+            }
+
+            // Draw the UI for remaining enemies
+            string enemyText = $"Enemies: {GetRemainingEnemies()}";
+            if (_font != null)
+            {
+                spriteBatch.DrawString(_font, enemyText, new Vector2(10, 70), Color.Red);
             }
         }
     }

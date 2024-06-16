@@ -26,10 +26,12 @@ namespace AppDevGame
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
         private float _heartScale = 2.0f; // Scale factor for the hearts
+
         private float _playerScale = 0.8f; // Scale factor for the player
         private Texture2D _backgroundTexture; // Background texture
 
         private Direction _lastDirection; // Last movement direction
+        private string _currentLevel;
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, Texture2D backgroundTexture, float speed = 200f, int maxHealth = 100)
         : base(level, texture, position, EntityType.Player)
@@ -42,9 +44,22 @@ namespace AppDevGame
             _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
             SetCollidableTypes(EntityType.Item, EntityType.Obstacle, EntityType.Enemy, EntityType.Lantern);
+
+            // Adjust the hitbox dimensions based on the player's scale
+            int hitboxWidth = (int)(texture.Width * _playerScale);
+            int hitboxHeight = (int)(texture.Height * _playerScale);
+            _hitbox = new Rectangle((int)position.X, (int)position.Y, hitboxWidth, hitboxHeight);
+
+            _currentLevel = "Level1"; // Example current level
         }
 
         public int CoinsCollected => _coinsCollected;
+        public string CurrentLevel => _currentLevel;
+
+        public void SetCurrentLevel(string level)
+        {
+            _currentLevel = level;
+        }
 
         public void CollectCoin()
         {
@@ -100,7 +115,7 @@ namespace AppDevGame
                 }
 
                 _position += movement;
-                _hitbox.Location = _position.ToPoint();
+                _hitbox.Location = new Point((int)_position.X, (int)_position.Y);
 
                 // Ensure the player does not move out of the actual level bounds
                 _position.X = Math.Clamp(_position.X, 0, _level.ActualSize.Width - _hitbox.Width);
@@ -197,6 +212,27 @@ namespace AppDevGame
                 return;
             }
             base.ResolveCollision(other);
+        }
+
+        public List<EntityState> GetEntityStates()
+        {
+            // Implement method to get current entity states
+            return new List<EntityState>();
+        }
+
+        public void SetPosition(Vector2 position)
+        {
+            _position = position;
+        }
+
+        public void SetHealth(int health)
+        {
+            _currentHealth = health;
+        }
+
+        public void SetCoins(int coins)
+        {
+            _coinsCollected = coins;
         }
     }
 }

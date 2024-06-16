@@ -22,17 +22,16 @@ namespace AppDevGame
 
         public string Name => _name;
 
-        public void SpawnNearPlayer()
+        public virtual void SpawnNearPortal(Vector2 portalPosition)
         {
-            Vector2 playerPosition = _level.Player.Position;
-            float distance = 300; // Distance from the player to spawn the boss
+            float distance = 50; // Distance from the portal to spawn the boss
 
             Vector2 randomOffset = new Vector2(
                 _random.Next((int)-distance, (int)distance),
                 _random.Next((int)-distance, (int)distance)
             );
 
-            Vector2 spawnPosition = playerPosition + randomOffset;
+            Vector2 spawnPosition = portalPosition + randomOffset;
 
             // Ensure the boss doesn't spawn outside the level bounds
             spawnPosition.X = Math.Clamp(spawnPosition.X, 0, _level.ActualSize.Width - _hitbox.Width);
@@ -61,14 +60,6 @@ namespace AppDevGame
             direction.Normalize();
             _position += direction * _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             _hitbox.Location = _position.ToPoint();
-        }
-        public virtual void SpawnNearPortal(Vector2 portalPosition)
-        {
-            // Default implementation to spawn near the portal
-            Vector2 spawnPosition = portalPosition + new Vector2(50, 50); // Adjust the offset as needed
-            _position = spawnPosition;
-            _hitbox.Location = _position.ToPoint();
-            MainApp.Log($"{Name} spawned near the portal.");
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)

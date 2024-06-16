@@ -35,7 +35,7 @@ namespace AppDevGame
             Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
             Texture2D litLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternLit");
             Texture2D unlitLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternUnlit");
-            Texture2D bossTexture = MainApp.GetInstance()._imageLoader.GetResource("plantbeast"); // Use the plantbeast texture
+            Texture2D bossTexture = MainApp.GetInstance()._imageLoader.GetResource("PlantBeast"); // Use the plantbeast texture
             _font = MainApp.GetInstance()._fontLoader.GetResource("Default");
 
             if (entityTexture != null)
@@ -97,7 +97,7 @@ namespace AppDevGame
             if (bossTexture != null)
             {
                 // Initialize the boss but do not add it yet
-                _boss = new PlantBeast(this, bossTexture, Vector2.Zero, maxHealth: 300, damage: 5, speed: 120f, scale: 2.5f);
+                _boss = new PlantBeast(this, bossTexture, Vector2.Zero, maxHealth: 300, damage: 10, speed: 100f, scale: 3.0f);
             }
         }
 
@@ -188,10 +188,10 @@ namespace AppDevGame
                 spriteBatch.DrawString(_font, enemyText, new Vector2(10, 70), Color.Red);
             }
 
-            // Draw boss health bar if the boss is present
+            // Draw the boss health bar if the boss is present
             if (_boss != null && !_boss.IsDead())
             {
-                string bossHealthText = $"{_boss.Name} Health: {_boss.CurrentHealth} / {_boss.MaxHealth}";
+                string bossHealthText = $"Boss: {_boss.Name} Health: {_boss.CurrentHealth} / {_boss.MaxHealth}";
                 spriteBatch.DrawString(_font, bossHealthText, new Vector2(10, 100), Color.Green);
             }
         }

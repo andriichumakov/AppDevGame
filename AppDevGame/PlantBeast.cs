@@ -13,12 +13,7 @@ namespace AppDevGame
         public override void Attack(Entity target)
         {
             // Implement specific attack logic for PlantBeast
-        }
-
-        public override void SpawnNearPortal(Vector2 portalPosition)
-        {
-            // Specific implementation for PlantBeast to spawn near the portal
-            base.SpawnNearPortal(portalPosition); // Use the base implementation or customize further
+            base.Attack(target);
         }
     }
 }

@@ -27,6 +27,7 @@ namespace AppDevGame
         private ModMenu _modMenu;
 
         private bool _isPaused = false;  // Track whether the game is paused
+    
 
         // Property to access the background texture
         public Texture2D BackgroundTexture => _backgroundTexture;
@@ -36,6 +37,7 @@ namespace AppDevGame
         private StartMenu _startMenu;
         private SelectSaveSlotMenu _selectSaveSlotMenu;
         private LoadSaveMenu _loadSaveMenu;
+
 
         private const bool _isDebugMode = true;
         private static readonly string LogFilePath = "game_log.txt";
@@ -132,12 +134,16 @@ namespace AppDevGame
             _selectSaveSlotMenu = new SelectSaveSlotMenu(800, 600, _backgroundTexture, _windowManager, font);
             _loadSaveMenu = new LoadSaveMenu(800, 600, _backgroundTexture, _windowManager, font);
 
+            // Remove the following line:
+            // EscapeMenu = new EscapeMenu(800, 600, _backgroundTexture, currentLevel);
+
             _windowManager.LoadWindow(_mainMenu);
 
             base.LoadContent();
         }
 
-        public void TogglePause()
+
+       public void TogglePause()
         {
             _isPaused = !_isPaused;
 
@@ -156,8 +162,11 @@ namespace AppDevGame
             }
         }
 
-        protected override void Update(GameTime gameTime)
-        {
+
+
+
+       protected override void Update(GameTime gameTime)
+       {
             KeyboardState state = Keyboard.GetState();
 
             if (state.IsKeyDown(Keys.Escape) && !_isPaused)
@@ -180,7 +189,7 @@ namespace AppDevGame
                 _windowManager.Update(gameTime);
                 base.Update(gameTime);
             }
-        }
+       }
 
         protected override void Draw(GameTime gameTime)
         {
@@ -188,16 +197,14 @@ namespace AppDevGame
 
             _spriteBatch.Begin();
             _windowManager.Draw(_spriteBatch);
-            _spriteBatch.End();
 
             // If the game is paused, draw the escape menu overlay
             if (_isPaused)
             {
-                _spriteBatch.Begin();
                 EscapeMenu.Draw(_spriteBatch);  // Draw the pause menu overlay
-                _spriteBatch.End();
             }
 
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
 

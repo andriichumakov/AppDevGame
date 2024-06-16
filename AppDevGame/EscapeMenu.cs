@@ -44,10 +44,33 @@ namespace AppDevGame
             int startY = (_height - buttonHeight) / 2;
 
             // Add "Go back" button
-            _controlsOverlay.AddElement(new Button(new Rectangle(startX, startY, buttonWidth, buttonHeight), Color.Gray, Color.White, "Go back", new HideControlsCommand(this), _font));
-            
+            var goBackButton = new Button(new Rectangle(startX, startY, buttonWidth, buttonHeight), Color.Gray, Color.White, "Go back", new HideControlsCommand(this), _font);
+            _controlsOverlay.AddElement(goBackButton);
+            MainApp.Log("Added 'Go back' button to controls overlay.");
+
             // Add "Hello world" text as a button
-            _controlsOverlay.AddElement(new Button(new Rectangle(startX, startY + 100, buttonWidth, buttonHeight), Color.Transparent, Color.White, "Hello world", null, _font));
+            var helloWorldButton = new Button(new Rectangle(startX, startY + 100, buttonWidth, buttonHeight), Color.Transparent, Color.White, "Hello world", null, _font);
+            _controlsOverlay.AddElement(helloWorldButton);
+            MainApp.Log("Added 'Hello world' text to controls overlay.");
+
+            // Add the control instructions as "buttons" with no click event
+            int leftColumnX = 50;
+            int rightColumnX = _width - 250;
+            int topRowY = 150;
+
+            // Top Down Controls
+            _controlsOverlay.AddElement(new Button(new Rectangle(leftColumnX, topRowY, 300, 50), Color.Transparent, Color.White, "Top Down", null, _font));
+            _controlsOverlay.AddElement(new Button(new Rectangle(leftColumnX, topRowY + 30, 300, 50), Color.Transparent, Color.White, "Up : W", null, _font));
+            _controlsOverlay.AddElement(new Button(new Rectangle(leftColumnX, topRowY + 60, 300, 50), Color.Transparent, Color.White, "Down : S", null, _font));
+            _controlsOverlay.AddElement(new Button(new Rectangle(leftColumnX, topRowY + 90, 300, 50), Color.Transparent, Color.White, "Left : A", null, _font));
+            _controlsOverlay.AddElement(new Button(new Rectangle(leftColumnX, topRowY + 120, 300, 50), Color.Transparent, Color.White, "Right : D", null, _font));
+            _controlsOverlay.AddElement(new Button(new Rectangle(leftColumnX, topRowY + 150, 300, 50), Color.Transparent, Color.White, "Attack : Space", null, _font));
+
+            // Side Scroller Controls
+            _controlsOverlay.AddElement(new Button(new Rectangle(rightColumnX, topRowY, 300, 50), Color.Transparent, Color.White, "Side Scroller", null, _font));
+            _controlsOverlay.AddElement(new Button(new Rectangle(rightColumnX, topRowY + 30, 300, 50), Color.Transparent, Color.White, "Right : D", null, _font));
+            _controlsOverlay.AddElement(new Button(new Rectangle(rightColumnX, topRowY + 60, 300, 50), Color.Transparent, Color.White, "Left : A", null, _font));
+            _controlsOverlay.AddElement(new Button(new Rectangle(rightColumnX, topRowY + 90, 300, 50), Color.Transparent, Color.White, "Jump : W", null, _font));
 
             MainApp.Log("Controls overlay set up.");
         }
@@ -125,3 +148,4 @@ namespace AppDevGame
         }
     }
 }
+    

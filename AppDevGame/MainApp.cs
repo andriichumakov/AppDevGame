@@ -113,6 +113,9 @@ namespace AppDevGame
             // Load the coin texture
             _imageLoader.LoadSpecificResource("Content/coin.png", "Coin");
 
+            // Load the boss texture
+            _imageLoader.LoadSpecificResource("Content/PlantBeast.png", "PlantBeast");
+
             // Initialize menus
             _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager, font);
             _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);

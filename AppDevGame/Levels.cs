@@ -23,6 +23,16 @@ namespace AppDevGame
         public override void Setup()
         {
             base.Setup();
+            // Clear existing entities before setting up the level again
+            _entities.Clear();
+            _entitiesToAdd.Clear();
+            _entitiesToRemove.Clear();
+            _currentHeartCount = 0;
+            _totalLanterns = 0;
+            _litLanterns = 0;
+            _player = null;  // Reset the player
+            _bossSpawned = false; // Reset boss spawned state
+
             // Initialize entities and background specific to Level1
 
             // Example of adding entities to the level
@@ -51,16 +61,8 @@ namespace AppDevGame
 
             if (playerTexture != null)
             {
-                // Ensure the player is set only once
-                if (Player == null)
-                {
-                    MainApp.Log("Adding player to the level.");
-                    SetPlayer(new Player(this, playerTexture, new Vector2(700, 500)));
-                }
-                else
-                {
-                    MainApp.Log("Player is already set in the level.");
-                }
+                // Add player at the starting position
+                SetPlayer(new Player(this, playerTexture, new Vector2(700, 500), MainApp.GetInstance().BackgroundTexture, 200f, 100));
             }
 
             if (activePortalTexture != null && inactivePortalTexture != null)

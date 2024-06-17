@@ -38,15 +38,19 @@ namespace AppDevGame
         private WindowManager _windowManager;
         private BaseWindow _targetWindow;
 
-        public LoadWindowCommand(WindowManager windowManager, BaseWindow targetWindow)
+        private bool _unpause;
+
+        public LoadWindowCommand(WindowManager windowManager, BaseWindow targetWindow, bool unpause = false)
         {
             this._windowManager = windowManager;
             this._targetWindow = targetWindow;
+            this._unpause = unpause;
         }
 
         public void Execute()
         {
             this._windowManager.LoadWindow(this._targetWindow);
+
 
             // Check if the target window is the main menu
             if (_targetWindow is MainMenu)
@@ -57,6 +61,36 @@ namespace AppDevGame
             {
                 MainApp.GetInstance().PlayLevelMusic();
             }
+
+            if (_unpause)
+            {
+                MainApp.GetInstance().TogglePause(); // Unpause the game if the flag is set
+            }
+        }
+    }
+
+    public class UnpauseCommand : ICommand
+    {
+        public void Execute() 
+        {
+            MainApp.GetInstance().TogglePause();
+            Console.WriteLine("Game unpaused");
+        }
+    }
+
+    public class RestartLevelCommand : ICommand
+    {
+        private LevelWindow _level;
+
+        public RestartLevelCommand(LevelWindow level)
+        {
+            _level = level;
+        }
+
+        public void Execute()
+        {
+            _level.Setup();
+            MainApp.GetInstance().TogglePause();
         }
     }
 
@@ -77,7 +111,7 @@ namespace AppDevGame
             MainApp.Log("loading the level...");
             Level1 newLevel = new Level1(800, 600, 2372, 3063, MainApp.GetInstance()._imageLoader.GetResource("BackgroundLevel1"));
             MainApp.Log("loading the player...");
-            Player newPlayer = new Player(newLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), new Vector2(100, 100));
+            Player newPlayer = new Player(newLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), new Vector2(100, 100), MainApp.GetInstance().BackgroundTexture);
             MainApp.Log("setting the player to the level...");
             newLevel.SetPlayer(newPlayer);
             MainApp.Log("loading the window...");
@@ -88,6 +122,7 @@ namespace AppDevGame
             MainApp.GetInstance().PlayLevelMusic(); // Ensure level music is played
         }
     }
+
 
     public class LoadGameCommand : ICommand
     {
@@ -106,7 +141,7 @@ namespace AppDevGame
             if (gameState != null)
             {
                 Level1 loadedLevel = new Level1(800, 600, 2372, 3063, MainApp.GetInstance()._imageLoader.GetResource("BackgroundLevel1"));
-                Player loadedPlayer = new Player(loadedLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), gameState.playerPosition);
+                Player loadedPlayer = new Player(loadedLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), gameState.playerPosition, MainApp.GetInstance().BackgroundTexture);
                 loadedPlayer.SetHealth(gameState.playerHealth);
                 loadedPlayer.SetCoins(gameState.coinsCollected);
                 loadedPlayer.SetCurrentLevel(gameState.currentLevel);
@@ -117,6 +152,7 @@ namespace AppDevGame
             }
         }
     }
+
 
     public class DeleteSaveCommand : ICommand
     {

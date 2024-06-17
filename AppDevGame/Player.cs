@@ -25,18 +25,23 @@ namespace AppDevGame
         private int _attackRange = 120;
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
-        private float _heartScale = 2.0f;
-        private float _playerScale = 0.8f;
+
+        private float _heartScale = 2.0f; // Scale factor for the heart
+
+
+        private float _playerScale = 0.8f; // Scale factor for the player
+        private Texture2D _backgroundTexture; // Background texture
 
         private Direction _lastDirection;
         private string _currentLevel;
 
-        public Player(LevelWindow level, Texture2D texture, Vector2 position, float speed = 200f, int maxHealth = 100)
-            : base(level, texture, position, EntityType.Player)
+        public Player(LevelWindow level, Texture2D texture, Vector2 position, Texture2D backgroundTexture, float speed = 200f, int maxHealth = 100)
+         : base(level, texture, position, EntityType.Player)
         {
             _speed = speed;
             _maxHealth = maxHealth;
             _currentHealth = maxHealth;
+            _backgroundTexture = backgroundTexture;
 
             _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
@@ -48,6 +53,7 @@ namespace AppDevGame
 
             _currentLevel = "Level1";
         }
+
 
         public int CoinsCollected => _coinsCollected;
         public string CurrentLevel => _currentLevel;
@@ -82,7 +88,7 @@ namespace AppDevGame
 
         public override void Update(GameTime gameTime)
         {
-            try
+            if (!MainApp.GetInstance().IsPaused)
             {
                 base.Update(gameTime);
 
@@ -131,11 +137,6 @@ namespace AppDevGame
                         MainApp.Log("Lantern lit up");
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                MainApp.Log($"Error during Player.Update: {ex.Message}");
-                throw;
             }
         }
 
@@ -194,8 +195,13 @@ namespace AppDevGame
             }
             catch (Exception ex)
             {
-                MainApp.Log($"Error during Player.Draw: {ex.Message}");
-                throw;
+                Texture2D texture = i < heartsToDraw ? _healthFullTexture : _healthEmptyTexture;
+                Vector2 position = new Vector2(
+                    MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
+                    spacing);
+
+                // Draw heart
+                spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
             }
         }
 
@@ -219,10 +225,6 @@ namespace AppDevGame
                 base.ResolveCollision(other);
             }
             catch (Exception ex)
-            {
-                MainApp.Log($"Error during Player.OnCollision: {ex.Message}");
-                throw;
-            }
         }
 
         public List<EntityState> GetEntityStates()

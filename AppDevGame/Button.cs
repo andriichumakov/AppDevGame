@@ -8,7 +8,7 @@ namespace AppDevGame
     {
         protected ICommand _onClick;
         private TimeSpan _lastClickTime;
-        private static readonly TimeSpan DebounceTime = TimeSpan.FromMilliseconds(30);
+        private static readonly TimeSpan DebounceTime = TimeSpan.FromMilliseconds(3);
         private SpriteFont _font;
         private string _textKey;
 
@@ -62,7 +62,7 @@ namespace AppDevGame
                     if (_onClick != null)
                     {
                         try
-                            {
+                        {
                             _onClick.Execute();
                         }
                         catch (Exception ex)

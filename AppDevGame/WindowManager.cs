@@ -5,9 +5,9 @@ namespace AppDevGame
 {
     public class WindowManager
     {
-        private static WindowManager _instance;
+         private static WindowManager _instance;
         private BaseWindow _currentWindow;
-
+        private BaseWindow _previousWindow;
         private WindowManager() { }
         public BaseWindow CurrentWindow => _currentWindow;
 
@@ -20,6 +20,24 @@ namespace AppDevGame
             return _instance;
         }
 
+        public BaseWindow PreviousWindow => _previousWindow;
+
+        public BaseWindow GetCurrentWindow()
+        {
+            return _currentWindow;
+        }
+
+         public void SetCurrentWindow(BaseWindow window)
+        {
+            _currentWindow = window;
+        }
+
+        public void SetLevelWindow(LevelWindow levelWindow)
+        {
+            SetCurrentWindow(levelWindow);
+        }
+
+
         public void LoadWindow(BaseWindow window)
         {
             _currentWindow?.Clear();
@@ -27,14 +45,28 @@ namespace AppDevGame
             _currentWindow.Setup();
         }
 
+        public void HideCurrentWindow()
+        {
+            if (_currentWindow != null)
+            {
+                _currentWindow.Hide();
+            }
+        }
+
         public void Update(GameTime gameTime)
         {
-            _currentWindow?.Update(gameTime);
+            if (_currentWindow != null)
+            {
+                _currentWindow?.Update(gameTime);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            _currentWindow?.Draw(spriteBatch);
+            if (_currentWindow != null)
+            {
+                _currentWindow?.Draw(spriteBatch);
+            }
         }
     }
 }

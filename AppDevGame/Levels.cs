@@ -31,6 +31,7 @@ namespace AppDevGame
             _totalLanterns = 0;
             _litLanterns = 0;
             _player = null;  // Reset the player
+            _bossSpawned = false; // Reset boss spawned state
 
             // Initialize entities and background specific to Level1
 
@@ -46,7 +47,6 @@ namespace AppDevGame
             Texture2D unlitLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternUnlit");
             Texture2D bossTexture = MainApp.GetInstance()._imageLoader.GetResource("PlantBeast"); // Use the plantbeast texture
             _font = MainApp.GetInstance()._fontLoader.GetResource("Default");
-            // SpriteFont font = MainApp.GetInstance()._fontLoader.GetResource("Default");
 
             if (entityTexture != null)
             {

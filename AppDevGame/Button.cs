@@ -62,7 +62,7 @@ namespace AppDevGame
                     if (_onClick != null)
                     {
                         try
-                            {
+                        {
                             _onClick.Execute();
                         }
                         catch (Exception ex)

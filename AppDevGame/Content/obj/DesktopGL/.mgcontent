@@ -7,8 +7,10 @@
     <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/background_music.mp3</File>
     <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Default.spritefont</File>
     <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/level_music.mp3</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/player_attack.wav</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

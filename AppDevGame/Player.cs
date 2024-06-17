@@ -21,14 +21,14 @@ namespace AppDevGame
         private int _maxHealth;
         private int _currentHealth;
         private int _coinsCollected = 0;
-        private int _attackDamage = 2; // Damage dealt to enemies when attacking
-        private int _attackRange = 120; // Range of the player's attack
+        private int _attackDamage = 2;
+        private int _attackRange = 120;
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
-        private float _heartScale = 2.0f; // Scale factor for the hearts
-        private float _playerScale = 0.8f; // Scale factor for the player
+        private float _heartScale = 2.0f;
+        private float _playerScale = 0.8f;
 
-        private Direction _lastDirection; // Last movement direction
+        private Direction _lastDirection;
         private string _currentLevel;
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, float speed = 200f, int maxHealth = 100)
@@ -42,12 +42,11 @@ namespace AppDevGame
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
             SetCollidableTypes(EntityType.Item, EntityType.Obstacle, EntityType.Enemy, EntityType.Lantern);
 
-            // Adjust the hitbox dimensions based on the player's scale
             int hitboxWidth = (int)(texture.Width * _playerScale);
             int hitboxHeight = (int)(texture.Height * _playerScale);
             _hitbox = new Rectangle((int)position.X, (int)position.Y, hitboxWidth, hitboxHeight);
 
-            _currentLevel = "Level1"; // Example current level
+            _currentLevel = "Level1";
         }
 
         public int CoinsCollected => _coinsCollected;
@@ -114,17 +113,14 @@ namespace AppDevGame
                 _position += movement;
                 _hitbox.Location = new Point((int)_position.X, (int)_position.Y);
 
-                // Ensure the player does not move out of the actual level bounds
                 _position.X = Math.Clamp(_position.X, 0, _level.ActualSize.Width - _hitbox.Width);
                 _position.Y = Math.Clamp(_position.Y, 0, _level.ActualSize.Height - _hitbox.Height);
 
-                // Handle attack logic
                 if (state.IsKeyDown(Keys.Space))
                 {
                     AttackEnemies();
                 }
 
-                // Check for collision with hearts and lanterns
                 var lanterns = _level.GetEntitiesInRange(_position, _hitbox.Width).OfType<Lantern>().ToList();
                 foreach (var lantern in lanterns)
                 {
@@ -145,6 +141,7 @@ namespace AppDevGame
 
         private void AttackEnemies()
         {
+            MainApp.GetInstance().PlayAttackSound();
             var entitiesInRange = _level.GetEntitiesInRange(_position, _attackRange);
 
             foreach (var entity in entitiesInRange)
@@ -177,10 +174,8 @@ namespace AppDevGame
         {
             try
             {
-                // Draw the player texture
                 spriteBatch.Draw(_texture, _position - offset, null, Color.White, 0f, Vector2.Zero, _playerScale, SpriteEffects.None, 0f);
 
-                // Draw health hearts in the top right corner
                 int heartWidth = (int)(_healthFullTexture.Width * _heartScale);
                 int heartHeight = (int)(_healthFullTexture.Height * _heartScale);
                 int spacing = 10;
@@ -194,7 +189,6 @@ namespace AppDevGame
                         MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
                         spacing);
 
-                    // Draw heart
                     spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
                 }
             }
@@ -214,7 +208,6 @@ namespace AppDevGame
         {
             try
             {
-                // Handle collision with hearts separately
                 if (other is Heart)
                 {
                     Heal((int)(_maxHealth * 0.33));
@@ -234,7 +227,6 @@ namespace AppDevGame
 
         public List<EntityState> GetEntityStates()
         {
-            // Implement method to get current entity states
             return new List<EntityState>();
         }
 

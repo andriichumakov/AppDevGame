@@ -32,3 +32,9 @@
 /processorParam:Quality=Best
 /build:level_music.mp3
 
+#begin player_attack.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:player_attack.wav
+

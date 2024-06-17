@@ -2,8 +2,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AppDevGame
 {
@@ -25,7 +25,8 @@ namespace AppDevGame
         private int _attackRange = 120; // Range of the player's attack
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
-        private float _heartScale = 2.0f; // Scale factor for the hearts
+        private float _heartScale = 2.0f; // Scale factor for the heart
+
 
         private float _playerScale = 0.8f; // Scale factor for the player
         private Texture2D _backgroundTexture; // Background texture

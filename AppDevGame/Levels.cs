@@ -11,7 +11,9 @@ namespace AppDevGame
         private int _currentHeartCount = 0;
         private int _totalLanterns = 0;
         private int _litLanterns = 0;
+        private bool _bossSpawned = false;
         private SpriteFont _font;
+        private BossEnemy _boss;
 
         public Level1(int frameWidth, int frameHeight, int actualWidth, int actualHeight, Texture2D background = null)
             : base(frameWidth, frameHeight, actualWidth, actualHeight, background)
@@ -42,6 +44,7 @@ namespace AppDevGame
             Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
             Texture2D litLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternLit");
             Texture2D unlitLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternUnlit");
+            Texture2D bossTexture = MainApp.GetInstance()._imageLoader.GetResource("PlantBeast"); // Use the plantbeast texture
             _font = MainApp.GetInstance()._fontLoader.GetResource("Default");
             // SpriteFont font = MainApp.GetInstance()._fontLoader.GetResource("Default");
 
@@ -92,6 +95,12 @@ namespace AppDevGame
                 AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(1350, 600));
                 AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(1500, 800));
             }
+
+            if (bossTexture != null)
+            {
+                // Initialize the boss but do not add it yet
+                _boss = new PlantBeast(this, bossTexture, Vector2.Zero, maxHealth: 300, damage: 10, speed: 100f, scale: 3.0f);
+            }
         }
 
         private void AddHeart(Texture2D heartTexture, Vector2 position)
@@ -132,8 +141,18 @@ namespace AppDevGame
         {
             if (_entities.OfType<Enemy>().All(e => e.IsDead()) && _litLanterns >= _totalLanterns)
             {
-                // Activate the portal if all enemies are dead and all lanterns are lit
-                _portal.IsActive = true;
+                if (!_bossSpawned && _boss != null)
+                {
+                    // Spawn the boss near the portal
+                    _boss.SpawnNearPortal(_portal.Position);
+                    AddEntity(_boss);
+                    _bossSpawned = true;
+                }
+                else if (_boss != null && _boss.IsDead())
+                {
+                    // Activate the portal if the boss is dead
+                    _portal.IsActive = true;
+                }
             }
         }
 
@@ -169,6 +188,13 @@ namespace AppDevGame
             if (_font != null)
             {
                 spriteBatch.DrawString(_font, enemyText, new Vector2(10, 70), Color.Red);
+            }
+
+            // Draw the boss health bar if the boss is present
+            if (_boss != null && !_boss.IsDead())
+            {
+                string bossHealthText = $"Boss: {_boss.Name} Health: {_boss.CurrentHealth} / {_boss.MaxHealth}";
+                spriteBatch.DrawString(_font, bossHealthText, new Vector2(10, 100), Color.Green);
             }
         }
     }

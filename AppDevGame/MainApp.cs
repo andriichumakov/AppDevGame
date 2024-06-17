@@ -219,11 +219,11 @@ namespace AppDevGame
         public void ChangeLanguage(string newLanguage)
         {
             LocLoader.ChangeLanguage(newLanguage, Content);
-            
+
             // Update text for all elements in the current window
-            if (_windowManager.CurrentWindow is MenuWindow currentMenu)
+            if (_windowManager.CurrentWindow is MenuWindow current_menu)
             {
-                currentMenu.UpdateTexts();
+                current_menu.UpdateTexts();
             }
         }
     }

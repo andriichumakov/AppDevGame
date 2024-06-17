@@ -30,6 +30,8 @@ namespace AppDevGame
 
         public void TakeDamage(int damage)
         {
+            //MainApp.GetInstance().GetSoundEffect("enemy_damage")?.Play();
+
             _currentHealth -= damage;
             if (_currentHealth <= 0)
             {

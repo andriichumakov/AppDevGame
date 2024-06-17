@@ -1,7 +1,9 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 
 namespace AppDevGame
@@ -218,12 +220,16 @@ namespace AppDevGame
             soundEffectsSlider.Update(gameTime);
 
             // Sync music and sound effects volume with master volume
-            if (masterVolumeSlider.Value < musicSlider.Value)
+            MediaPlayer.Volume = masterVolumeSlider.Value * musicSlider.Value;
+            SoundEffect.MasterVolume = masterVolumeSlider.Value * soundEffectsSlider.Value;
+
+            // Ensure music and sound effects volume do not exceed master volume
+            if (musicSlider.Value > masterVolumeSlider.Value)
             {
                 musicSlider.SetValue(masterVolumeSlider.Value);
             }
 
-            if (masterVolumeSlider.Value < soundEffectsSlider.Value)
+            if (soundEffectsSlider.Value > masterVolumeSlider.Value)
             {
                 soundEffectsSlider.SetValue(masterVolumeSlider.Value);
             }

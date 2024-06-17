@@ -45,7 +45,7 @@ namespace AppDevGame
             Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
             Texture2D litLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternLit");
             Texture2D unlitLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternUnlit");
-            Texture2D bossTexture = MainApp.GetInstance()._imageLoader.GetResource("PlantBeast"); // Use the plantbeast texture
+            Texture2D bossTexture = MainApp.GetInstance()._imageLoader.GetResource("PlantBeast");
             _font = MainApp.GetInstance()._fontLoader.GetResource("Default");
 
             if (entityTexture != null)
@@ -101,6 +101,8 @@ namespace AppDevGame
                 // Initialize the boss but do not add it yet
                 _boss = new PlantBeast(this, bossTexture, Vector2.Zero, maxHealth: 300, damage: 10, speed: 100f, scale: 3.0f);
             }
+
+            MainApp.GetInstance().PlayLevelMusic(); // Add this line
         }
 
         private void AddHeart(Texture2D heartTexture, Vector2 position)

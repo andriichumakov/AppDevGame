@@ -195,13 +195,13 @@ namespace AppDevGame
             }
             catch (Exception ex)
             {
-                Texture2D texture = i < heartsToDraw ? _healthFullTexture : _healthEmptyTexture;
-                Vector2 position = new Vector2(
-                    MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
-                    spacing);
+                // Texture2D texture = i < heartsToDraw ? _healthFullTexture : _healthEmptyTexture;
+                // Vector2 position = new Vector2(
+                //     MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
+                //     spacing);
 
-                // Draw heart
-                spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
+                // // Draw heart
+                // spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
             }
         }
 
@@ -224,7 +224,7 @@ namespace AppDevGame
                 }
                 base.ResolveCollision(other);
             }
-            catch (Exception ex)
+            catch (Exception ex){}
         }
 
         public List<EntityState> GetEntityStates()

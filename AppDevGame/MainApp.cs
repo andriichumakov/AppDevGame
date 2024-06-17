@@ -172,9 +172,6 @@ namespace AppDevGame
             MediaPlayer.Play(_levelMusic);
             MediaPlayer.IsRepeating = true; // Loop the song
         }
-
-        protected override void Update(GameTime gameTime)
-
        public void TogglePause()
 
         {

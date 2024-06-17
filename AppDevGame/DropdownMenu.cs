@@ -13,7 +13,7 @@ namespace AppDevGame
         private SpriteFont _font;
         private Texture2D _backgroundTexture;
         private TimeSpan _lastClickTime;
-        private static readonly TimeSpan DebounceTime = TimeSpan.FromMilliseconds(30);
+        private static readonly TimeSpan DebounceTime = TimeSpan.FromMilliseconds(100);
 
         public DropdownMenu(GraphicsDevice graphicsDevice, Rectangle bounds, Color backgroundColor, Color foregroundColor, string defaultItem, List<string> items, SpriteFont font)
             : base(bounds, null, backgroundColor, foregroundColor, defaultItem)

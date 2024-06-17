@@ -3,6 +3,8 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace AppDevGame
 {
@@ -13,6 +15,8 @@ namespace AppDevGame
         private SpriteBatch _spriteBatch;
         private WindowManager _windowManager;
         private Texture2D _backgroundTexture;
+        private Song _mainMenuSong;
+        private Song _levelSong; // Add this line
 
         internal FontLoader _fontLoader;
         public ImageLoader _imageLoader;
@@ -113,6 +117,10 @@ namespace AppDevGame
             // Load the coin texture
             _imageLoader.LoadSpecificResource("Content/coin.png", "Coin");
 
+            // Load the background music and level music
+            _mainMenuSong = Content.Load<Song>("background_music");
+            _levelSong = Content.Load<Song>("level_music");
+
             // Initialize menus
             _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager, font);
             _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);
@@ -124,8 +132,23 @@ namespace AppDevGame
             _loadSaveMenu = new LoadSaveMenu(800, 600, _backgroundTexture, _windowManager, font);
 
             _windowManager.LoadWindow(_mainMenu);
+            PlayMainMenuMusic(); // Start playing the main menu music
 
             base.LoadContent();
+        }
+
+        public void PlayMainMenuMusic()
+        {
+            MediaPlayer.Stop();
+            MediaPlayer.Play(_mainMenuSong);
+            MediaPlayer.IsRepeating = true;
+        }
+
+        public void PlayLevelMusic()
+        {
+            MediaPlayer.Stop();
+            MediaPlayer.Play(_levelSong);
+            MediaPlayer.IsRepeating = true;
         }
 
         protected override void Update(GameTime gameTime)

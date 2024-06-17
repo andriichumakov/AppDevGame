@@ -47,6 +47,16 @@ namespace AppDevGame
         public void Execute()
         {
             this._windowManager.LoadWindow(this._targetWindow);
+
+            // Check if the target window is the main menu
+            if (_targetWindow is MainMenu)
+            {
+                MainApp.GetInstance().PlayMainMenuMusic();
+            }
+            else if (_targetWindow is LevelWindow)
+            {
+                MainApp.GetInstance().PlayLevelMusic();
+            }
         }
     }
 
@@ -74,6 +84,8 @@ namespace AppDevGame
             _windowManager.LoadWindow(newLevel);
             MainApp.Log("saving the state...");
             SaveLoadManager.SaveToDevice(newPlayer, _saveSlot);
+
+            MainApp.GetInstance().PlayLevelMusic(); // Ensure level music is played
         }
     }
 
@@ -100,6 +112,8 @@ namespace AppDevGame
                 loadedPlayer.SetCurrentLevel(gameState.currentLevel);
                 loadedLevel.SetPlayer(loadedPlayer);
                 _windowManager.LoadWindow(loadedLevel);
+
+                MainApp.GetInstance().PlayLevelMusic(); // Ensure level music is played
             }
         }
     }

@@ -35,15 +35,12 @@ namespace AppDevGame
 
         public void AddEntity(Entity entity)
         {
-            _entities.Add(entity);
+            _entitiesToAdd.Add(entity);
         }
 
         public void RemoveEntity(Entity entity)
         {
-            if (_entities.Contains(entity))
-            {
-                _entities.Remove(entity);
-            }
+            _entitiesToRemove.Add(entity);
         }
 
         public void SetPlayer(Player player)
@@ -123,12 +120,25 @@ namespace AppDevGame
                     }
                 }
 
+                // Add pending entities
+                foreach (var entity in _entitiesToAdd)
+                {
+                    _entities.Add(entity);
+                }
+                _entitiesToAdd.Clear();
+
+                // Remove pending entities
+                foreach (var entity in _entitiesToRemove)
+                {
+                    _entities.Remove(entity);
+                }
+                _entitiesToRemove.Clear();
+
                 CheckCollisions();
                 // Remove dead enemies
                 _entities.RemoveAll(entity => entity is Enemy enemy && enemy.IsDead());
             }
         }
-
 
         public override void Draw(SpriteBatch spriteBatch)
         {

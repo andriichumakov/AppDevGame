@@ -41,6 +41,7 @@ namespace AppDevGame
                     DropCoin();
                     _hasDroppedCoin = true;
                 }
+                _level.RemoveEntity(this); // Remove the enemy when its health reaches zero
             }
         }
 

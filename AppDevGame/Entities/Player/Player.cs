@@ -27,13 +27,15 @@ namespace AppDevGame
         private Texture2D _healthEmptyTexture;
 
         private float _heartScale = 2.0f; // Scale factor for the heart
-
-
         private float _playerScale = 2.0f; // Scale factor for the player
         private Texture2D _backgroundTexture; // Background texture
 
         private Direction _lastDirection;
         private string _currentLevel;
+
+        // Cooldown for shooting projectiles
+        private TimeSpan _shootCooldown = TimeSpan.FromSeconds(0.75);
+        private TimeSpan _lastShootTime;
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, Texture2D backgroundTexture, float speed = 200f, int maxHealth = 100)
          : base(level, texture, position, EntityType.Player)
@@ -52,8 +54,8 @@ namespace AppDevGame
             _hitbox = new Rectangle((int)position.X, (int)position.Y, hitboxWidth, hitboxHeight);
 
             _currentLevel = "Level1";
+            _lastShootTime = TimeSpan.Zero;
         }
-
 
         public int CoinsCollected => _coinsCollected;
         public string CurrentLevel => _currentLevel;
@@ -122,6 +124,13 @@ namespace AppDevGame
                 _position.X = Math.Clamp(_position.X, 0, _level.ActualSize.Width - _hitbox.Width);
                 _position.Y = Math.Clamp(_position.Y, 0, _level.ActualSize.Height - _hitbox.Height);
 
+                // Handle shooting
+                if (state.IsKeyDown(Keys.Q) && gameTime.TotalGameTime - _lastShootTime > _shootCooldown)
+                {
+                    ShootProjectile();
+                    _lastShootTime = gameTime.TotalGameTime;
+                }
+
                 if (state.IsKeyDown(Keys.Space))
                 {
                     AttackEnemies();
@@ -137,6 +146,33 @@ namespace AppDevGame
                         MainApp.Log("Lantern lit up");
                     }
                 }
+            }
+        }
+
+        private void ShootProjectile()
+        {
+            var direction = Vector2.Zero;
+            switch (_lastDirection)
+            {
+                case Direction.Up:
+                    direction = new Vector2(0, -1);
+                    break;
+                case Direction.Down:
+                    direction = new Vector2(0, 1);
+                    break;
+                case Direction.Left:
+                    direction = new Vector2(-1, 0);
+                    break;
+                case Direction.Right:
+                    direction = new Vector2(1, 0);
+                    break;
+            }
+
+            if (direction != Vector2.Zero)
+            {
+                var projectile = new Projectile(_level, MainApp.GetInstance()._imageLoader.GetResource("Projectile"), _position, direction);
+                _level.AddEntity(projectile);
+                MainApp.Log("Projectile shot.");
             }
         }
 
@@ -195,13 +231,7 @@ namespace AppDevGame
             }
             catch (Exception ex)
             {
-                // Texture2D texture = i < heartsToDraw ? _healthFullTexture : _healthEmptyTexture;
-                // Vector2 position = new Vector2(
-                //     MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
-                //     spacing);
-
-                // // Draw heart
-                // spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
+                MainApp.Log($"Error during Player.Draw: {ex.Message}");
             }
         }
 
@@ -224,7 +254,10 @@ namespace AppDevGame
                 }
                 base.ResolveCollision(other);
             }
-            catch (Exception ex){}
+            catch (Exception ex)
+            {
+                MainApp.Log($"Error during Player.ResolveCollision: {ex.Message}");
+            }
         }
 
         public List<EntityState> GetEntityStates()
@@ -248,3 +281,4 @@ namespace AppDevGame
         }
     }
 }
+

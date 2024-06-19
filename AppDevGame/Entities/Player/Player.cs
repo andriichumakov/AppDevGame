@@ -29,7 +29,7 @@ namespace AppDevGame
         private float _heartScale = 2.0f; // Scale factor for the heart
 
 
-        private float _playerScale = 0.8f; // Scale factor for the player
+        private float _playerScale = 2.0f; // Scale factor for the player
         private Texture2D _backgroundTexture; // Background texture
 
         private Direction _lastDirection;

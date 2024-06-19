@@ -33,9 +33,10 @@ namespace AppDevGame
         private Direction _lastDirection;
         private string _currentLevel;
 
-        // Cooldown for shooting projectiles
-        private TimeSpan _shootCooldown = TimeSpan.FromSeconds(0.75);
-        private TimeSpan _lastShootTime;
+        private Queue<Projectile> _projectiles;
+        private Texture2D _projectileTexture;
+        private float _projectileCooldown = 0.75f;
+        private float _timeSinceLastShot = 0f;
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, Texture2D backgroundTexture, float speed = 200f, int maxHealth = 100)
          : base(level, texture, position, EntityType.Player)
@@ -47,6 +48,9 @@ namespace AppDevGame
 
             _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
+            _projectileTexture = MainApp.GetInstance()._imageLoader.GetResource("Projectile");
+            _projectiles = new Queue<Projectile>();
+
             SetCollidableTypes(EntityType.Item, EntityType.Obstacle, EntityType.Enemy, EntityType.Lantern);
 
             int hitboxWidth = (int)(texture.Width * _playerScale);
@@ -54,7 +58,6 @@ namespace AppDevGame
             _hitbox = new Rectangle((int)position.X, (int)position.Y, hitboxWidth, hitboxHeight);
 
             _currentLevel = "Level1";
-            _lastShootTime = TimeSpan.Zero;
         }
 
         public int CoinsCollected => _coinsCollected;
@@ -96,6 +99,7 @@ namespace AppDevGame
 
                 Vector2 movement = Vector2.Zero;
                 KeyboardState state = Keyboard.GetState();
+                _timeSinceLastShot += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (state.IsKeyDown(Keys.W))
                 {
@@ -124,11 +128,10 @@ namespace AppDevGame
                 _position.X = Math.Clamp(_position.X, 0, _level.ActualSize.Width - _hitbox.Width);
                 _position.Y = Math.Clamp(_position.Y, 0, _level.ActualSize.Height - _hitbox.Height);
 
-                // Handle shooting
-                if (state.IsKeyDown(Keys.Q) && gameTime.TotalGameTime - _lastShootTime > _shootCooldown)
+                if (state.IsKeyDown(Keys.Q) && _timeSinceLastShot >= _projectileCooldown)
                 {
                     ShootProjectile();
-                    _lastShootTime = gameTime.TotalGameTime;
+                    _timeSinceLastShot = 0f;
                 }
 
                 if (state.IsKeyDown(Keys.Space))
@@ -151,7 +154,8 @@ namespace AppDevGame
 
         private void ShootProjectile()
         {
-            var direction = Vector2.Zero;
+            Vector2 direction = Vector2.Zero;
+
             switch (_lastDirection)
             {
                 case Direction.Up:
@@ -168,12 +172,16 @@ namespace AppDevGame
                     break;
             }
 
-            if (direction != Vector2.Zero)
+            var projectile = new Projectile(_level, _projectileTexture, _position, direction);
+
+            if (_projectiles.Count >= 2)
             {
-                var projectile = new Projectile(_level, MainApp.GetInstance()._imageLoader.GetResource("Projectile"), _position, direction);
-                _level.AddEntity(projectile);
-                MainApp.Log("Projectile shot.");
+                var oldProjectile = _projectiles.Dequeue();
+                _level.RemoveEntity(oldProjectile);
             }
+
+            _projectiles.Enqueue(projectile);
+            _level.AddEntity(projectile);
         }
 
         private void AttackEnemies()
@@ -235,7 +243,7 @@ namespace AppDevGame
             }
         }
 
-        public override void OnCollision(Entity other) 
+        public override void OnCollision(Entity other)
         {
             base.OnCollision(other);
         }
@@ -281,4 +289,3 @@ namespace AppDevGame
         }
     }
 }
-

@@ -12,7 +12,7 @@ namespace AppDevGame
             : base(level, texture, position, EntityType.Projectile)
         {
             _direction = direction;
-            _direction.Normalize();
+            _direction.Normalize(); // Normalize the direction vector to ensure it moves correctly in all directions
 
             // Set the hitbox to be 10 times larger
             int hitboxWidth = texture.Width * 10;

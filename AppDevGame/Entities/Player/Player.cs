@@ -12,7 +12,11 @@ namespace AppDevGame
         Up,
         Down,
         Left,
-        Right
+        Right,
+        UpRight,
+        UpLeft,
+        DownRight,
+        DownLeft
     }
 
     public class Player : Entity
@@ -27,16 +31,15 @@ namespace AppDevGame
         private Texture2D _healthEmptyTexture;
 
         private float _heartScale = 2.0f; // Scale factor for the heart
+
+
         private float _playerScale = 2.0f; // Scale factor for the player
         private Texture2D _backgroundTexture; // Background texture
 
         private Direction _lastDirection;
         private string _currentLevel;
-
-        private Queue<Projectile> _projectiles;
+        private double _lastShotTime;
         private Texture2D _projectileTexture;
-        private float _projectileCooldown = 0.75f;
-        private float _timeSinceLastShot = 0f;
 
         public Player(LevelWindow level, Texture2D texture, Vector2 position, Texture2D backgroundTexture, float speed = 200f, int maxHealth = 100)
          : base(level, texture, position, EntityType.Player)
@@ -49,8 +52,6 @@ namespace AppDevGame
             _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
             _projectileTexture = MainApp.GetInstance()._imageLoader.GetResource("Projectile");
-            _projectiles = new Queue<Projectile>();
-
             SetCollidableTypes(EntityType.Item, EntityType.Obstacle, EntityType.Enemy, EntityType.Lantern);
 
             int hitboxWidth = (int)(texture.Width * _playerScale);
@@ -58,6 +59,7 @@ namespace AppDevGame
             _hitbox = new Rectangle((int)position.X, (int)position.Y, hitboxWidth, hitboxHeight);
 
             _currentLevel = "Level1";
+            _lastShotTime = -1; // Initialize to -1 so the player can shoot immediately at the start
         }
 
         public int CoinsCollected => _coinsCollected;
@@ -99,7 +101,6 @@ namespace AppDevGame
 
                 Vector2 movement = Vector2.Zero;
                 KeyboardState state = Keyboard.GetState();
-                _timeSinceLastShot += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 if (state.IsKeyDown(Keys.W))
                 {
@@ -122,21 +123,40 @@ namespace AppDevGame
                     _lastDirection = Direction.Right;
                 }
 
+                // Check for diagonal movement
+                if (state.IsKeyDown(Keys.W) && state.IsKeyDown(Keys.D))
+                {
+                    _lastDirection = Direction.UpRight;
+                }
+                if (state.IsKeyDown(Keys.W) && state.IsKeyDown(Keys.A))
+                {
+                    _lastDirection = Direction.UpLeft;
+                }
+                if (state.IsKeyDown(Keys.S) && state.IsKeyDown(Keys.D))
+                {
+                    _lastDirection = Direction.DownRight;
+                }
+                if (state.IsKeyDown(Keys.S) && state.IsKeyDown(Keys.A))
+                {
+                    _lastDirection = Direction.DownLeft;
+                }
+
                 _position += movement;
                 _hitbox.Location = new Point((int)_position.X, (int)_position.Y);
 
                 _position.X = Math.Clamp(_position.X, 0, _level.ActualSize.Width - _hitbox.Width);
                 _position.Y = Math.Clamp(_position.Y, 0, _level.ActualSize.Height - _hitbox.Height);
 
-                if (state.IsKeyDown(Keys.Q) && _timeSinceLastShot >= _projectileCooldown)
-                {
-                    ShootProjectile();
-                    _timeSinceLastShot = 0f;
-                }
-
                 if (state.IsKeyDown(Keys.Space))
                 {
                     AttackEnemies();
+                }
+
+                // Handle shooting projectiles
+                if (state.IsKeyDown(Keys.Q) && gameTime.TotalGameTime.TotalSeconds - _lastShotTime >= 0.75)
+                {
+                    ShootProjectile();
+                    _lastShotTime = gameTime.TotalGameTime.TotalSeconds;
                 }
 
                 var lanterns = _level.GetEntitiesInRange(_position, _hitbox.Width).OfType<Lantern>().ToList();
@@ -148,6 +168,20 @@ namespace AppDevGame
                         ((Level1)_level).IncrementLitLanterns();
                         MainApp.Log("Lantern lit up");
                     }
+                }
+            }
+        }
+
+        private void AttackEnemies()
+        {
+            MainApp.GetInstance().PlayAttackSound();
+            var entitiesInRange = _level.GetEntitiesInRange(_position, _attackRange);
+
+            foreach (var entity in entitiesInRange)
+            {
+                if (entity is Enemy enemy && IsInAttackDirection(enemy))
+                {
+                    enemy.TakeDamage(_attackDamage);
                 }
             }
         }
@@ -170,32 +204,24 @@ namespace AppDevGame
                 case Direction.Right:
                     direction = new Vector2(1, 0);
                     break;
+                case Direction.UpRight:
+                    direction = new Vector2(1, -1);
+                    break;
+                case Direction.UpLeft:
+                    direction = new Vector2(-1, -1);
+                    break;
+                case Direction.DownRight:
+                    direction = new Vector2(1, 1);
+                    break;
+                case Direction.DownLeft:
+                    direction = new Vector2(-1, 1);
+                    break;
             }
+
+            direction.Normalize(); // Normalize the direction to ensure consistent speed
 
             var projectile = new Projectile(_level, _projectileTexture, _position, direction);
-
-            if (_projectiles.Count >= 2)
-            {
-                var oldProjectile = _projectiles.Dequeue();
-                _level.RemoveEntity(oldProjectile);
-            }
-
-            _projectiles.Enqueue(projectile);
             _level.AddEntity(projectile);
-        }
-
-        private void AttackEnemies()
-        {
-            MainApp.GetInstance().PlayAttackSound();
-            var entitiesInRange = _level.GetEntitiesInRange(_position, _attackRange);
-
-            foreach (var entity in entitiesInRange)
-            {
-                if (entity is Enemy enemy && IsInAttackDirection(enemy))
-                {
-                    enemy.TakeDamage(_attackDamage);
-                }
-            }
         }
 
         private bool IsInAttackDirection(Entity entity)
@@ -210,6 +236,14 @@ namespace AppDevGame
                     return entity.Position.X < _position.X;
                 case Direction.Right:
                     return entity.Position.X > _position.X;
+                case Direction.UpRight:
+                    return entity.Position.X > _position.X && entity.Position.Y < _position.Y;
+                case Direction.UpLeft:
+                    return entity.Position.X < _position.X && entity.Position.Y < _position.Y;
+                case Direction.DownRight:
+                    return entity.Position.X > _position.X && entity.Position.Y > _position.Y;
+                case Direction.DownLeft:
+                    return entity.Position.X < _position.X && entity.Position.Y > _position.Y;
                 default:
                     return false;
             }
@@ -243,7 +277,7 @@ namespace AppDevGame
             }
         }
 
-        public override void OnCollision(Entity other)
+        public override void OnCollision(Entity other) 
         {
             base.OnCollision(other);
         }

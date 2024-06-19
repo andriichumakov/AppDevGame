@@ -1,12 +1,9 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using Microsoft.Xna.Framework.Input;
 
 namespace AppDevGame
 {
@@ -45,6 +42,8 @@ namespace AppDevGame
 
         private static DateTime _lastActionTime = DateTime.MinValue;
         private static readonly TimeSpan ActionDelay = TimeSpan.FromSeconds(1.5);
+
+        private AudioManager _audioManager;
 
         private MainApp()
         {
@@ -116,11 +115,12 @@ namespace AppDevGame
 
             var font = _fontLoader.GetResource("Default");
 
-            _imageLoader.LoadSpecificResource("Content/PortalActive.png", "PortalActive");
-            _imageLoader.LoadSpecificResource("Content/PortalInactive.png", "PortalInactive");
-            _imageLoader.LoadSpecificResource("Content/coin.png", "Coin");
+            _imageLoader.LoadSpecificResource("Images/PortalActive.png", "PortalActive");
+            _imageLoader.LoadSpecificResource("Images/PortalInactive.png", "PortalInactive");
+            _imageLoader.LoadSpecificResource("Images/coin.png", "Coin");
 
-            AudioManager.GetInstance().LoadContent(Content);  // Load audio content
+            _audioManager = AudioManager.GetInstance(Content);
+            _audioManager.PlaySong("background_music");
 
             _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager, font);
             _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);
@@ -138,12 +138,14 @@ namespace AppDevGame
 
         public void PlayMainMenuMusic()
         {
-            AudioManager.GetInstance().PlayMainMenuMusic();
+            _audioManager.StopSong();
+            _audioManager.PlaySong("background_music");
         }
 
         public void PlayLevelMusic()
         {
-            AudioManager.GetInstance().PlayLevelMusic();
+            _audioManager.StopSong();
+            _audioManager.PlaySong("level_music");
         }
 
         public void TogglePause()
@@ -235,7 +237,7 @@ namespace AppDevGame
 
         public void SetMasterVolume(float volume)
         {
-            AudioManager.GetInstance().SetMasterVolume(volume);
+            _audioManager.SetMasterVolume(volume);
         }
     }
 }

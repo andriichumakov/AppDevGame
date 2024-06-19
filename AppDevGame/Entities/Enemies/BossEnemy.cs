@@ -87,6 +87,7 @@ namespace AppDevGame
         public override void Attack(Entity target)
         {
             // Default attack logic
+            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("enemy_attack");
             if (Hitbox.Intersects(target.Hitbox))
             {
                 if (target is Player player)

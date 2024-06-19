@@ -65,6 +65,7 @@ namespace AppDevGame
         {
             _coinsCollected++;
             MainApp.Log("Coin collected. Total coins: " + _coinsCollected);
+            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("coin_collect");
         }
 
         public int CurrentHealth => _currentHealth;
@@ -73,8 +74,11 @@ namespace AppDevGame
         public void TakeDamage(int damage)
         {
             _currentHealth -= damage;
+            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_damage");
+
             if (_currentHealth <= 0)
             {
+                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_die");
                 new LoadWindowCommand(WindowManager.GetInstance(), MainApp.GetInstance().MainMenu).Execute();
             }
         }
@@ -82,6 +86,7 @@ namespace AppDevGame
         public void Heal(int amount)
         {
             _currentHealth = Math.Min(_currentHealth + amount, _maxHealth);
+            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("heart_collect");
         }
 
         public override void Update(GameTime gameTime)
@@ -140,7 +145,7 @@ namespace AppDevGame
 
         private void AttackEnemies()
         {
-            AudioManager.GetInstance().PlayAttackSound();
+            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_attack");
             var entitiesInRange = _level.GetEntitiesInRange(_position, _attackRange);
 
             foreach (var entity in entitiesInRange)
@@ -193,11 +198,17 @@ namespace AppDevGame
             }
             catch (Exception ex)
             {
-                MainApp.Log($"Error during Player.Draw: {ex.Message}");
+                // Texture2D texture = i < heartsToDraw ? _healthFullTexture : _healthEmptyTexture;
+                // Vector2 position = new Vector2(
+                //     MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
+                //     spacing);
+
+                // // Draw heart
+                // spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
             }
         }
 
-        public override void OnCollision(Entity other) 
+        public override void OnCollision(Entity other)
         {
             base.OnCollision(other);
         }
@@ -216,10 +227,7 @@ namespace AppDevGame
                 }
                 base.ResolveCollision(other);
             }
-            catch (Exception ex)
-            {
-                MainApp.Log($"Error during Player.ResolveCollision: {ex.Message}");
-            }
+            catch (Exception ex) { }
         }
 
         public List<EntityState> GetEntityStates()

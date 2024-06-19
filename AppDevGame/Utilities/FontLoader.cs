@@ -11,7 +11,7 @@ namespace AppDevGame
         private Dictionary<string, SpriteFont> _fonts;
 
         public FontLoader(ContentManager content)
-            : base("", new List<string> { ".spritefont" })
+            : base("Fonts", new List<string> { ".spritefont" }) // Note the "Fonts" subfolder is specified here
         {
             _content = content;
             _fonts = new Dictionary<string, SpriteFont>();

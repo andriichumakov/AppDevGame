@@ -4,12 +4,38 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/background_music.mp3</File>
-    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Default.spritefont</File>
-    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/level_music.mp3</File>
-    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/player_attack.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/background_music.mp3</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/button_click.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/coin_collect.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/enemy_attack.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/enemy_damage.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/enemy_die.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/heart_collect.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/lantern_lit.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/level_music.mp3</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/plantbeast_attack.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/plantbeast_damage.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/plantbeast_die.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/player_attack.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/player_damage.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/player_die.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Audio/portal_activate.wav</File>
+    <File>C:/Users/Xunkn/OneDrive/Desktop/School/App Development/AppDevGame/AppDevGame/Content/Fonts/Default.spritefont</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

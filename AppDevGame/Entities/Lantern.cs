@@ -25,6 +25,10 @@ namespace AppDevGame
             {
                 _isLit = value;
                 _texture = _isLit ? _litTexture : _unlitTexture;
+                if (_isLit)
+                {
+                    AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("lantern_lit");
+                }
             }
         }
 

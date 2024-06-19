@@ -1,13 +1,9 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using Microsoft.Xna.Framework.Input;
-
 
 namespace AppDevGame
 {
@@ -31,7 +27,6 @@ namespace AppDevGame
         private ModMenu _modMenu;
 
         private bool _isPaused = false;  // Track whether the game is paused
-    
 
         // Property to access the background texture
         public Texture2D BackgroundTexture => _backgroundTexture;
@@ -42,21 +37,13 @@ namespace AppDevGame
         private SelectSaveSlotMenu _selectSaveSlotMenu;
         private LoadSaveMenu _loadSaveMenu;
 
-
         private const bool _isDebugMode = true;
         private static readonly string LogFilePath = "game_log.txt";
 
         private static DateTime _lastActionTime = DateTime.MinValue;
         private static readonly TimeSpan ActionDelay = TimeSpan.FromSeconds(1.5);
 
-        private Song _backgroundMusic;
-        private Song _levelMusic;
-        private SoundEffect _playerAttackSound;
-        //private SoundEffect _playerDamageSound;
-        //private SoundEffect _playerDieSound;
-        //private SoundEffect _enemyAttackSound;
-        //private SoundEffect _enemyDamageSound;
-        //private SoundEffect _enemyDieSound;
+        private AudioManager _audioManager;
 
         private MainApp()
         {
@@ -128,21 +115,12 @@ namespace AppDevGame
 
             var font = _fontLoader.GetResource("Default");
 
-            _imageLoader.LoadSpecificResource("Content/PortalActive.png", "PortalActive");
-            _imageLoader.LoadSpecificResource("Content/PortalInactive.png", "PortalInactive");
-            _imageLoader.LoadSpecificResource("Content/coin.png", "Coin");
+            _imageLoader.LoadSpecificResource("Images/PortalActive.png", "PortalActive");
+            _imageLoader.LoadSpecificResource("Images/PortalInactive.png", "PortalInactive");
+            _imageLoader.LoadSpecificResource("Images/coin.png", "Coin");
 
-            _backgroundMusic = Content.Load<Song>("background_music");
-            _levelMusic = Content.Load<Song>("level_music");
-            _playerAttackSound = Content.Load<SoundEffect>("player_attack");
-            //_playerDamageSound = Content.Load<SoundEffect>("player_damage");
-            //_playerDieSound = Content.Load<SoundEffect>("player_die");
-            //_enemyAttackSound = Content.Load<SoundEffect>("enemy_attack");
-            //_enemyDamageSound = Content.Load<SoundEffect>("enemy_damage");
-            //_enemyDieSound = Content.Load<SoundEffect>("enemy_die");
-
-            MediaPlayer.IsRepeating = true;
-            MediaPlayer.Play(_backgroundMusic);
+            _audioManager = AudioManager.GetInstance(Content);
+            _audioManager.PlaySong("background_music");
 
             _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager, font);
             _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);
@@ -158,22 +136,19 @@ namespace AppDevGame
             base.LoadContent();
         }
 
-
         public void PlayMainMenuMusic()
         {
-            MediaPlayer.Stop();
-            MediaPlayer.Play(_backgroundMusic);
-            MediaPlayer.IsRepeating = true; // Loop the song
+            _audioManager.StopSong();
+            _audioManager.PlaySong("background_music");
         }
 
         public void PlayLevelMusic()
         {
-            MediaPlayer.Stop();
-            MediaPlayer.Play(_levelMusic);
-            MediaPlayer.IsRepeating = true; // Loop the song
+            _audioManager.StopSong();
+            _audioManager.PlaySong("level_music");
         }
-       public void TogglePause()
 
+        public void TogglePause()
         {
             _isPaused = !_isPaused;
 
@@ -192,8 +167,8 @@ namespace AppDevGame
             }
         }
 
-       protected override void Update(GameTime gameTime)
-       {
+        protected override void Update(GameTime gameTime)
+        {
             KeyboardState state = Keyboard.GetState();
 
             if (state.IsKeyDown(Keys.Escape) && !_isPaused)
@@ -216,7 +191,7 @@ namespace AppDevGame
                 _windowManager.Update(gameTime);
                 base.Update(gameTime);
             }
-       }
+        }
 
         protected override void Draw(GameTime gameTime)
         {
@@ -260,36 +235,9 @@ namespace AppDevGame
             }
         }
 
-        /*public SoundEffect GetSoundEffect(string soundName)
-        {
-            switch (soundName)
-            {
-                case "player_attack":
-                    return _playerAttackSound;
-                case "player_damage":
-                    return _playerDamageSound;
-                case "player_die":
-                    return _playerDieSound;
-                case "enemy_attack":
-                    return _enemyAttackSound;
-                case "enemy_damage":
-                    return _enemyDamageSound;
-                case "enemy_die":
-                    return _enemyDieSound;
-                default:
-                    return null;
-            }
-        }*/
-
-        public void PlayAttackSound()
-        {
-            _playerAttackSound.Play(SoundEffect.MasterVolume, 0.0f, 0.0f);
-        }
-
         public void SetMasterVolume(float volume)
         {
-            MediaPlayer.Volume = volume;
-            SoundEffect.MasterVolume = volume;
+            _audioManager.SetMasterVolume(volume);
         }
     }
 }

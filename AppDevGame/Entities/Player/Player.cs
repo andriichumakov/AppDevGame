@@ -28,7 +28,6 @@ namespace AppDevGame
 
         private float _heartScale = 2.0f; // Scale factor for the heart
 
-
         private float _playerScale = 2.0f; // Scale factor for the player
         private Texture2D _backgroundTexture; // Background texture
 
@@ -54,7 +53,6 @@ namespace AppDevGame
             _currentLevel = "Level1";
         }
 
-
         public int CoinsCollected => _coinsCollected;
         public string CurrentLevel => _currentLevel;
 
@@ -67,6 +65,7 @@ namespace AppDevGame
         {
             _coinsCollected++;
             MainApp.Log("Coin collected. Total coins: " + _coinsCollected);
+            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("coin_collect");
         }
 
         public int CurrentHealth => _currentHealth;
@@ -75,8 +74,11 @@ namespace AppDevGame
         public void TakeDamage(int damage)
         {
             _currentHealth -= damage;
+            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_damage");
+
             if (_currentHealth <= 0)
             {
+                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_die");
                 new LoadWindowCommand(WindowManager.GetInstance(), MainApp.GetInstance().MainMenu).Execute();
             }
         }
@@ -84,6 +86,7 @@ namespace AppDevGame
         public void Heal(int amount)
         {
             _currentHealth = Math.Min(_currentHealth + amount, _maxHealth);
+            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("heart_collect");
         }
 
         public override void Update(GameTime gameTime)
@@ -142,7 +145,7 @@ namespace AppDevGame
 
         private void AttackEnemies()
         {
-            MainApp.GetInstance().PlayAttackSound();
+            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_attack");
             var entitiesInRange = _level.GetEntitiesInRange(_position, _attackRange);
 
             foreach (var entity in entitiesInRange)
@@ -205,7 +208,7 @@ namespace AppDevGame
             }
         }
 
-        public override void OnCollision(Entity other) 
+        public override void OnCollision(Entity other)
         {
             base.OnCollision(other);
         }
@@ -224,7 +227,7 @@ namespace AppDevGame
                 }
                 base.ResolveCollision(other);
             }
-            catch (Exception ex){}
+            catch (Exception ex) { }
         }
 
         public List<EntityState> GetEntityStates()

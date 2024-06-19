@@ -45,6 +45,7 @@ namespace AppDevGame
 
         public override void Attack(Entity target)
         {
+            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("enemy_attack");
             // Implement melee attack logic
             if (Hitbox.Intersects(target.Hitbox))
             {

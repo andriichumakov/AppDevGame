@@ -19,7 +19,7 @@ namespace AppDevGame
             _texture.SetData(new[] { backgroundColor });
             _onClick = onClick;
             _lastClickTime = TimeSpan.Zero;
-            _font = font;
+            _font = font ?? MainApp.GetInstance()._fontLoader.GetResource("Default"); // Ensure font is loaded
             _textKey = textKey;
             UpdateText(); // Get localized string during initialization
         }
@@ -57,7 +57,8 @@ namespace AppDevGame
                 if (currentTime - _lastClickTime > DebounceTime && MainApp.CanPerformAction())
                 {
                     _lastClickTime = currentTime;
-                    MainApp.RecordAction(); // Record the action to enforce delay
+                    MainApp.RecordAction();
+                    AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("button_click");
 
                     if (_onClick != null)
                     {

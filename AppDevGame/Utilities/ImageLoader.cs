@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -19,8 +20,9 @@ namespace AppDevGame
 
         public override void LoadContent()
         {
-            MainApp.Log("Loading textures from: " + Path.Combine("Content", _subfolder));
-            string[] files = Directory.GetFiles(Path.Combine("Content", _subfolder));
+            string contentPath = Path.Combine("Content", _subfolder);
+            MainApp.Log("Loading textures from: " + contentPath);
+            string[] files = Directory.GetFiles(contentPath);
             foreach (string file in files)
             {
                 MainApp.Log(file);
@@ -50,12 +52,13 @@ namespace AppDevGame
         {
             try
             {
-                if (!File.Exists(path))
+                string fullPath = Path.Combine("Content", path);
+                if (!File.Exists(fullPath))
                 {
-                    throw new FileNotFoundException($"File not found: {path}");
+                    throw new FileNotFoundException($"File not found: {fullPath}");
                 }
 
-                using (FileStream stream = new FileStream(path, FileMode.Open))
+                using (FileStream stream = new FileStream(fullPath, FileMode.Open))
                 {
                     _textures[key] = Texture2D.FromStream(_graphics, stream);
                     MainApp.Log($"Loaded texture: {key}");

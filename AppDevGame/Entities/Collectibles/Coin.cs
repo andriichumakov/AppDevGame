@@ -21,6 +21,7 @@ namespace AppDevGame
             {
                 player.CollectCoin();
                 _level.RemoveEntity(this);
+                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("coin_collect");
             }
         }
 

@@ -27,7 +27,12 @@ namespace AppDevGame
 
         public override void OnCollision(Entity other)
         {
-            // No collision logic needed for the heart pickup
+            if (other is Player player)
+            {
+                player.Heal((int)(player.MaxHealth * 0.33));
+                _level.RemoveEntity(this);
+                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("heart_collect");
+            }
         }
     }
 }

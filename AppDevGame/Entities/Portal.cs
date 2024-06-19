@@ -29,6 +29,7 @@ namespace AppDevGame
                 // Update hitbox position
                 _hitbox.Location = _position.ToPoint();
                 _texture = _activeTexture; // Set the active texture
+                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("portal_activate");
 
                 // Check for collision with the player
                 if (Hitbox.Intersects(_level.Player.Hitbox))

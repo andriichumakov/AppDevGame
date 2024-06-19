@@ -28,14 +28,15 @@ namespace AppDevGame
         public int MaxHealth => _maxHealth;
         public int Damage => _damage;
 
-        public void TakeDamage(int damage)
+        public virtual void TakeDamage(int damage)
         {
-            //MainApp.GetInstance().GetSoundEffect("enemy_damage")?.Play();
+            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("enemy_damage");
 
             _currentHealth -= damage;
             if (_currentHealth <= 0)
             {
                 _currentHealth = 0;
+                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("enemy_die");
                 if (!_hasDroppedCoin)
                 {
                     DropCoin();
@@ -50,6 +51,7 @@ namespace AppDevGame
             if (coinTexture != null)
             {
                 _level.AddEntity(new Coin(_level, coinTexture, _position));
+                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("coin_collect");
             }
         }
 

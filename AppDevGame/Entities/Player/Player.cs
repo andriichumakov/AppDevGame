@@ -28,7 +28,6 @@ namespace AppDevGame
 
         private float _heartScale = 2.0f; // Scale factor for the heart
 
-
         private float _playerScale = 2.0f; // Scale factor for the player
         private Texture2D _backgroundTexture; // Background texture
 
@@ -53,7 +52,6 @@ namespace AppDevGame
 
             _currentLevel = "Level1";
         }
-
 
         public int CoinsCollected => _coinsCollected;
         public string CurrentLevel => _currentLevel;
@@ -142,7 +140,7 @@ namespace AppDevGame
 
         private void AttackEnemies()
         {
-            MainApp.GetInstance().PlayAttackSound();
+            AudioManager.GetInstance().PlayAttackSound();
             var entitiesInRange = _level.GetEntitiesInRange(_position, _attackRange);
 
             foreach (var entity in entitiesInRange)
@@ -195,13 +193,7 @@ namespace AppDevGame
             }
             catch (Exception ex)
             {
-                // Texture2D texture = i < heartsToDraw ? _healthFullTexture : _healthEmptyTexture;
-                // Vector2 position = new Vector2(
-                //     MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
-                //     spacing);
-
-                // // Draw heart
-                // spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
+                MainApp.Log($"Error during Player.Draw: {ex.Message}");
             }
         }
 
@@ -224,7 +216,10 @@ namespace AppDevGame
                 }
                 base.ResolveCollision(other);
             }
-            catch (Exception ex){}
+            catch (Exception ex)
+            {
+                MainApp.Log($"Error during Player.ResolveCollision: {ex.Message}");
+            }
         }
 
         public List<EntityState> GetEntityStates()

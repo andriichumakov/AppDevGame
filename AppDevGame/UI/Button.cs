@@ -59,6 +59,8 @@ namespace AppDevGame
                     _lastClickTime = currentTime;
                     MainApp.RecordAction(); // Record the action to enforce delay
 
+                    AudioManager.GetInstance().PlayButtonClickSound(); // Play the button click sound
+
                     if (_onClick != null)
                     {
                         try

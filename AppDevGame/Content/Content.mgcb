@@ -19,6 +19,12 @@
 /processorParam:Quality=Best
 /build:background_music.mp3
 
+#begin button_click.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:button_click.wav
+
 #begin Default.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

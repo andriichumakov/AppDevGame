@@ -22,6 +22,7 @@ namespace AppDevGame
 
         public override void Setup()
         {
+            MainApp.Log("Setting up Level1...");
             base.Setup();
             // Clear existing entities before setting up the level again
             _entities.Clear();
@@ -103,6 +104,7 @@ namespace AppDevGame
             }
 
             MainApp.GetInstance().PlayLevelMusic(); // Add this line
+            MainApp.Log("Level1 setup complete.");
         }
 
         private void AddHeart(Texture2D heartTexture, Vector2 position)

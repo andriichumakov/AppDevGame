@@ -46,6 +46,9 @@ namespace AppDevGame
 
         private AudioManager _audioManager;
 
+        // Texture for the animated coin
+        private Texture2D _coinTexture;
+
         private MainApp()
         {
             Log("Starting Application...");
@@ -80,7 +83,6 @@ namespace AppDevGame
                 Log("Error: Current level is null in ShowGameOverScreen.");
             }
         }
-
 
         public static void Log(string message)
         {
@@ -136,7 +138,7 @@ namespace AppDevGame
 
             _imageLoader.LoadSpecificResource("Images/PortalActive.png", "PortalActive");
             _imageLoader.LoadSpecificResource("Images/PortalInactive.png", "PortalInactive");
-            _imageLoader.LoadSpecificResource("Images/coin.png", "Coin");
+            _imageLoader.LoadSpecificResource("Images/coin1.png", "coin1"); // Load the animated coin sprite sheet
 
             _audioManager = AudioManager.GetInstance(Content);
             _audioManager.PlaySong("background_music");
@@ -149,6 +151,8 @@ namespace AppDevGame
             _startMenu = new StartMenu(800, 600, _backgroundTexture, _windowManager, font);
             _selectSaveSlotMenu = new SelectSaveSlotMenu(800, 600, _backgroundTexture, _windowManager, font);
             _loadSaveMenu = new LoadSaveMenu(800, 600, _backgroundTexture, _windowManager, font);
+
+            _coinTexture = _imageLoader.GetResource("coin1");
 
             _windowManager.LoadWindow(_mainMenu);
 
@@ -261,5 +265,4 @@ namespace AppDevGame
             _audioManager.SetMasterVolume(volume);
         }
     }
-
 }

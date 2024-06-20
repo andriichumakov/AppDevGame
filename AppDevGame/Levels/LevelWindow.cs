@@ -122,9 +122,22 @@ namespace AppDevGame
                         entity.Update(gameTime);
                     }
                 }
+                
+                // Add pending entities
+                foreach (var entity in _entitiesToAdd)
+                {
+                    _entities.Add(entity);
+                }
+                _entitiesToAdd.Clear();
+
+                // Remove pending entities
+                foreach (var entity in _entitiesToRemove)
+                {
+                    _entities.Remove(entity);
+                }
+                _entitiesToRemove.Clear();
 
                 CheckCollisions();
-                // Remove dead enemies
                 _entities.RemoveAll(entity => entity is Enemy enemy && enemy.IsDead());
             }
         }

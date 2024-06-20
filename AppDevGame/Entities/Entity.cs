@@ -12,6 +12,7 @@ namespace AppDevGame
         HiddenObstacle,
         Item,
         Lantern,
+        Projectile  // Added Projectile type here
     }
 
     public class Entity : Sprite

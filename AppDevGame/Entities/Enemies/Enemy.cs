@@ -12,7 +12,7 @@ namespace AppDevGame
         private Texture2D _healthBarTexture;
         private Dictionary<string, double> _lastSoundTimes = new Dictionary<string, double>();
         private bool _hasDroppedCoin = false; // Track if coin has been dropped
-        private float _scale;
+        protected float _scale; // Changed from private to protected
 
         public Enemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float scale = 1.5f)
             : base(level, texture, position, EntityType.Enemy)
@@ -46,22 +46,16 @@ namespace AppDevGame
                     DropCoin();
                     _hasDroppedCoin = true;
                 }
-                _level.RemoveEntity(this); // Ensure the enemy is removed once dead
             }
         }
 
         private void DropCoin()
         {
-            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("coin1"); // Ensure the correct resource name
+            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("coin1");
             if (coinTexture != null)
             {
                 _level.AddEntity(new Coin(_level, coinTexture, _position));
                 AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("coin_collect");
-                MainApp.Log($"Coin dropped at position: {_position}");
-            }
-            else
-            {
-                MainApp.Log("Coin texture not found.");
             }
         }
 
@@ -128,4 +122,3 @@ namespace AppDevGame
         }
     }
 }
-

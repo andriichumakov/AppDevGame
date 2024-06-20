@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace AppDevGame
 {
@@ -13,6 +14,7 @@ namespace AppDevGame
         private const float RandomMoveInterval = 2f; // Time in seconds before changing direction
         private bool _selfDestruct; // Flag to indicate if the enemy should self-destruct on contact
         private int _selfDestructDamage = 33; // Damage dealt by self-destruct
+        private Dictionary<string, double> _lastSoundTimes = new Dictionary<string, double>();
 
         public MeleeAttackEnemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float speed = 100f, float scale = 1.5f, bool selfDestruct = false)
             : base(level, texture, position, maxHealth, damage, scale)
@@ -45,7 +47,7 @@ namespace AppDevGame
 
         public override void Attack(Entity target)
         {
-            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("enemy_attack");
+            PlaySoundWithDelay("enemy_attack");
             // Implement melee attack logic
             if (Hitbox.Intersects(target.Hitbox))
             {
@@ -99,6 +101,16 @@ namespace AppDevGame
         {
             float angle = (float)(_random.NextDouble() * Math.PI * 2);
             _randomMoveDirection = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+        }
+
+        private void PlaySoundWithDelay(string soundName)
+        {
+            double currentTime = MainApp.GetInstance().TotalGameTime.TotalSeconds;
+            if (!_lastSoundTimes.ContainsKey(soundName) || currentTime - _lastSoundTimes[soundName] >= 1)
+            {
+                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect(soundName);
+                _lastSoundTimes[soundName] = currentTime;
+            }
         }
     }
 }

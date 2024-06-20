@@ -32,6 +32,7 @@ namespace AppDevGame
         public Texture2D BackgroundTexture => _backgroundTexture;
         public EscapeMenu EscapeMenu { get; private set; }
         public bool IsPaused => _isPaused;  // Public property to check if the game is paused
+        public TimeSpan TotalGameTime { get; private set; }
 
         private StartMenu _startMenu;
         private SelectSaveSlotMenu _selectSaveSlotMenu;
@@ -187,6 +188,8 @@ namespace AppDevGame
 
         protected override void Update(GameTime gameTime)
         {
+            TotalGameTime = gameTime.TotalGameTime;
+
             KeyboardState state = Keyboard.GetState();
 
             if (state.IsKeyDown(Keys.Escape) && !_isPaused)

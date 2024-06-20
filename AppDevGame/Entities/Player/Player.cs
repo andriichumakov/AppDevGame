@@ -29,9 +29,9 @@ namespace AppDevGame
         private int _attackRange = 120;
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
+        private Dictionary<string, double> _lastSoundTimes = new Dictionary<string, double>();
 
         private float _heartScale = 2.0f; // Scale factor for the heart
-
         private float _playerScale = 2.0f; // Scale factor for the player
         private Texture2D _backgroundTexture; // Background texture
 
@@ -82,17 +82,15 @@ namespace AppDevGame
         public void TakeDamage(int damage)
         {
             _currentHealth -= damage;
-            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_damage");
+            PlaySoundWithDelay("player_damage");
 
             if (_currentHealth <= 0)
             {
                 _currentHealth = 0; // Ensure health doesn't go below zero
-                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_die");
-                MainApp.GetInstance().ShowGameOverScreen(_level); // Pass the current level to the game over screen
+                PlaySoundWithDelay("player_die");
+                MainApp.GetInstance().ShowGameOverScreen(_level); // Pass the current level
             }
         }
-
-
 
         public void Heal(int amount)
         {
@@ -181,7 +179,7 @@ namespace AppDevGame
 
         private void AttackEnemies()
         {
-            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_attack");
+            PlaySoundWithDelay("player_attack");
             var entitiesInRange = _level.GetEntitiesInRange(_position, _attackRange);
 
             foreach (var entity in entitiesInRange)
@@ -190,6 +188,16 @@ namespace AppDevGame
                 {
                     enemy.TakeDamage(_attackDamage);
                 }
+            }
+        }
+
+        private void PlaySoundWithDelay(string soundName)
+        {
+            double currentTime = MainApp.GetInstance().TotalGameTime.TotalSeconds;
+            if (!_lastSoundTimes.ContainsKey(soundName) || currentTime - _lastSoundTimes[soundName] >= 1)
+            {
+                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect(soundName);
+                _lastSoundTimes[soundName] = currentTime;
             }
         }
 
@@ -280,13 +288,7 @@ namespace AppDevGame
             }
             catch (Exception ex)
             {
-                // Texture2D texture = i < heartsToDraw ? _healthFullTexture : _healthEmptyTexture;
-                // Vector2 position = new Vector2(
-                //     MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
-                //     spacing);
-
-                // // Draw heart
-                // spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
+                MainApp.Log($"Error during Player.Draw: {ex.Message}");
             }
         }
 

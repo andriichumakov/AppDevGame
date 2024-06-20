@@ -88,9 +88,10 @@ namespace AppDevGame
             {
                 _currentHealth = 0; // Ensure health doesn't go below zero
                 AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_die");
-                MainApp.GetInstance().ShowGameOverScreen();
+                MainApp.GetInstance().ShowGameOverScreen(_level); // Pass the current level to the game over screen
             }
         }
+
 
 
         public void Heal(int amount)

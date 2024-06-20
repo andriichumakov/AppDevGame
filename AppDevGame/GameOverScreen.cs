@@ -25,7 +25,7 @@ namespace AppDevGame
             int startX = (_width - buttonWidth * 2 - spacing) / 2; // Center the buttons
             int startY = (_height / 2) + 50; // Position below the "GAME OVER" text
 
-            AddElement(new Button(new Rectangle(startX, startY, buttonWidth, buttonHeight), Color.Gray, Color.White, "Restart Level", new RestartLevelCommand(_currentLevel), _font));
+            AddElement(new Button(new Rectangle(startX, startY, buttonWidth, buttonHeight), Color.Gray, Color.White, "Restart Level", new RestartLevelCommand(_currentLevel, true), _font));
             AddElement(new Button(new Rectangle(startX + buttonWidth + spacing, startY, buttonWidth, buttonHeight), Color.Gray, Color.White, "Main Menu", new LoadWindowCommand(WindowManager.GetInstance(), MainApp.GetInstance().MainMenu), _font));
         }
 

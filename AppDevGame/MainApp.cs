@@ -68,17 +68,18 @@ namespace AppDevGame
             _windowManager.LoadWindow(window);
         }
 
-        public void ShowGameOverScreen()
+        public void ShowGameOverScreen(LevelWindow currentLevel)
         {
-            if (_currentLevel != null)
+            if (currentLevel != null)
             {
-                _windowManager.LoadWindow(new GameOverScreen(800, 600, _backgroundTexture, _currentLevel));
+                _windowManager.LoadWindow(new GameOverScreen(800, 600, _backgroundTexture, currentLevel));
             }
             else
             {
                 Log("Error: Current level is null in ShowGameOverScreen.");
             }
         }
+
 
         public static void Log(string message)
         {

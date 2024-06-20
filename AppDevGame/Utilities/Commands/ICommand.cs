@@ -81,11 +81,13 @@ namespace AppDevGame
     public class RestartLevelCommand : ICommand
     {
         private LevelWindow _level;
+        private bool _fromGameOverScreen;
 
-        public RestartLevelCommand(LevelWindow level)
+        public RestartLevelCommand(LevelWindow level, bool fromGameOverScreen = false)
         {
             _level = level;
-            MainApp.Log($"RestartLevelCommand created with level: {_level}");
+            _fromGameOverScreen = fromGameOverScreen;
+            MainApp.Log($"RestartLevelCommand created with level: {_level}, fromGameOverScreen: {_fromGameOverScreen}");
         }
 
         public void Execute()
@@ -93,12 +95,11 @@ namespace AppDevGame
             MainApp.Log("Executing RestartLevelCommand...");
             if (_level != null)
             {
-                MainApp.Log("Restarting level...");
                 _level.Setup(); // Assuming Setup() resets the level
-                MainApp.GetInstance().LoadWindow(_level); // Use the new public method to load the level window to remove the GameOverScreen
-                if (MainApp.GetInstance().IsPaused)
+                WindowManager.GetInstance().LoadWindow(_level); // Ensure the level is reloaded
+                if (!_fromGameOverScreen)
                 {
-                    MainApp.GetInstance().TogglePause(); // Ensure the game is unpaused when restarting
+                    MainApp.GetInstance().TogglePause(); // Ensure the game is unpaused when restarting, but only if not from game over screen
                 }
             }
             else
@@ -107,8 +108,6 @@ namespace AppDevGame
             }
         }
     }
-
-
 
 
     public class StartNewGameCommand : ICommand
@@ -131,15 +130,10 @@ namespace AppDevGame
             Player newPlayer = new Player(newLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), new Vector2(100, 100), MainApp.GetInstance().BackgroundTexture);
             MainApp.Log("setting the player to the level...");
             newLevel.SetPlayer(newPlayer);
-            //might have to command the line below out
-            MainApp.GetInstance()._currentLevel = newLevel; // Set the current level
-
             MainApp.Log("loading the window...");
             _windowManager.LoadWindow(newLevel);
             MainApp.Log("saving the state...");
             SaveLoadManager.SaveToDevice(newPlayer, _saveSlot);
-
-           
 
             MainApp.GetInstance().PlayLevelMusic(); // Ensure level music is played
         }

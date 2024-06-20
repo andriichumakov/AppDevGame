@@ -32,6 +32,7 @@ namespace AppDevGame
         public Texture2D BackgroundTexture => _backgroundTexture;
         public EscapeMenu EscapeMenu { get; private set; }
         public bool IsPaused => _isPaused;  // Public property to check if the game is paused
+        public TimeSpan TotalGameTime { get; private set; }
 
         private StartMenu _startMenu;
         private SelectSaveSlotMenu _selectSaveSlotMenu;
@@ -68,17 +69,18 @@ namespace AppDevGame
             _windowManager.LoadWindow(window);
         }
 
-        public void ShowGameOverScreen()
+        public void ShowGameOverScreen(LevelWindow currentLevel)
         {
-            if (_currentLevel != null)
+            if (currentLevel != null)
             {
-                _windowManager.LoadWindow(new GameOverScreen(800, 600, _backgroundTexture, _currentLevel));
+                _windowManager.LoadWindow(new GameOverScreen(800, 600, _backgroundTexture, currentLevel));
             }
             else
             {
                 Log("Error: Current level is null in ShowGameOverScreen.");
             }
         }
+
 
         public static void Log(string message)
         {
@@ -186,6 +188,8 @@ namespace AppDevGame
 
         protected override void Update(GameTime gameTime)
         {
+            TotalGameTime = gameTime.TotalGameTime;
+
             KeyboardState state = Keyboard.GetState();
 
             if (state.IsKeyDown(Keys.Escape) && !_isPaused)

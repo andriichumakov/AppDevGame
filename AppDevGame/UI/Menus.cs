@@ -248,32 +248,99 @@ namespace AppDevGame
     {
         private WindowManager _windowManager;
         private SpriteFont _font;
+        public Toggle _toggleAll;
+        private List<Checkbox> _modCheckboxes;
+        private Button _goBackButton;
+        private Texture2D _checkboxTexture;
+        private Texture2D _uncheckedTexture;
+        private Texture2D _toggleOnTexture;
+        private Texture2D _toggleOffTexture;
 
         public ModMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font)
             : base(width, height, background)
         {
             _windowManager = windowManager;
             _font = font;
+            _modCheckboxes = new List<Checkbox>();
         }
 
         public override void Setup()
         {
             base.Setup();
-            int buttonWidth = 200;
-            int buttonHeight = 50;
-            int buttonSpacing = 10;
 
-            Vector2 buttonPos = CalcButtonPosition(2, buttonWidth, buttonHeight, buttonSpacing);
-            int x = (int)buttonPos.X;
-            int y = (int)buttonPos.Y;
+            // Go Back button
+            _goBackButton = new Button(
+                new Rectangle(10, 10, 200, 50),
+                Color.Gray,
+                Color.White,
+                MainApp.GetInstance().LocLoader.GetString("GoBack"),
+                new LoadWindowCommand(_windowManager, MainApp.GetInstance().SettingsMenu),
+                _font
+            );
+            AddElement(_goBackButton);
 
-            AddElement(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, MainApp.GetInstance().LocLoader.GetString("InstallMod"), new PrintCommand("Install Mod"), _font));
-            AddElement(new Button(new Rectangle(x, (y + buttonHeight + buttonSpacing), buttonWidth, buttonHeight), Color.Green, Color.White, MainApp.GetInstance().LocLoader.GetString("RemoveMod"), new PrintCommand("Remove Mod"), _font));
+            // Toggle all mods button
+            _toggleAll = new Toggle(
+                new Rectangle(_width - 200, 20, 100, 50),
+                _toggleOnTexture,
+                _toggleOffTexture,
+                Color.Gray,
+                Color.White,
+                MainApp.GetInstance().LocLoader.GetString("ToggleAll"),
+                _font,
+                new ToggleAllModsCommand(this)
+            );
+            AddElement(_toggleAll);
+
+            // Individual mod checkboxes
+            for (int i = 0; i < 3; i++)
+            {
+                var checkbox = new Checkbox(
+                    new Rectangle(200, 80 + i * 60, 200, 50),
+                    _checkboxTexture,
+                    _uncheckedTexture,
+                    Color.Gray,
+                    Color.White,
+                    $"Mod {i + 1}",
+                    _font,
+                    new ToggleModCommand(this, i)
+                );
+                _modCheckboxes.Add(checkbox);
+                AddElement(checkbox);
+            }
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
             base.LoadContent(graphicsDevice, content);
+
+            // Create textures for checkbox and toggle elements
+            _checkboxTexture = new Texture2D(graphicsDevice, 1, 1);
+            _checkboxTexture.SetData(new[] { Color.Green });
+            _uncheckedTexture = new Texture2D(graphicsDevice, 1, 1);
+            _uncheckedTexture.SetData(new[] { Color.Red });
+            _toggleOnTexture = new Texture2D(graphicsDevice, 1, 1);
+            _toggleOnTexture.SetData(new[] { Color.Green });
+            _toggleOffTexture = new Texture2D(graphicsDevice, 1, 1);
+            _toggleOffTexture.SetData(new[] { Color.Red });
+
+            foreach (var element in _uiElements)
+            {
+                element.LoadContent(graphicsDevice, content);
+            }
+        }
+
+        public void ToggleAllMods(bool isOn)
+        {
+            foreach (var checkbox in _modCheckboxes)
+            {
+                checkbox.IsChecked = isOn;
+            }
+        }
+
+        public bool[] GetModStates()
+        {
+            return _modCheckboxes.ConvertAll(cb => cb.IsChecked).ToArray();
         }
     }
 
@@ -338,7 +405,7 @@ namespace AppDevGame
             AddElement(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, SaveLoadManager.SaveSlotsEmpty[0] ? MainApp.GetInstance().LocLoader.GetString("SaveSlotEmpty1") : MainApp.GetInstance().LocLoader.GetString("SaveSlot1"), new StartNewGameCommand(_windowManager, 1), _font));
             AddElement(new Button(new Rectangle(x, (y + buttonHeight + buttonSpacing), buttonWidth, buttonHeight), Color.Green, Color.White, SaveLoadManager.SaveSlotsEmpty[1] ? MainApp.GetInstance().LocLoader.GetString("SaveSlotEmpty2") : MainApp.GetInstance().LocLoader.GetString("SaveSlot2"), new StartNewGameCommand(_windowManager, 2), _font));
             AddElement(new Button(new Rectangle(x, (y + 2 * (buttonHeight + buttonSpacing)), buttonWidth, buttonHeight), Color.Green, Color.White, SaveLoadManager.SaveSlotsEmpty[2] ? MainApp.GetInstance().LocLoader.GetString("SaveSlotEmpty3") : MainApp.GetInstance().LocLoader.GetString("SaveSlot3"), new StartNewGameCommand(_windowManager, 3), _font));
-            
+
             // Add "Go Back" button
             AddElement(new Button(new Rectangle(x, (y + 3 * (buttonHeight + buttonSpacing)), buttonWidth, buttonHeight), Color.Green, Color.White, MainApp.GetInstance().LocLoader.GetString("GoBack"), new LoadWindowCommand(_windowManager, MainApp.GetInstance().StartMenu), _font));
         }

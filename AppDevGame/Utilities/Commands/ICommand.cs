@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using System.Numerics;
+using Microsoft.Xna.Framework;
 
 namespace AppDevGame
 {
@@ -37,7 +37,6 @@ namespace AppDevGame
     {
         private WindowManager _windowManager;
         private BaseWindow _targetWindow;
-
         private bool _unpause;
 
         public LoadWindowCommand(WindowManager windowManager, BaseWindow targetWindow, bool unpause = false)
@@ -50,7 +49,6 @@ namespace AppDevGame
         public void Execute()
         {
             this._windowManager.LoadWindow(this._targetWindow);
-
 
             // Check if the target window is the main menu
             if (_targetWindow is MainMenu)
@@ -71,7 +69,7 @@ namespace AppDevGame
 
     public class UnpauseCommand : ICommand
     {
-        public void Execute() 
+        public void Execute()
         {
             MainApp.GetInstance().TogglePause();
             Console.WriteLine("Game unpaused");
@@ -123,7 +121,6 @@ namespace AppDevGame
         }
     }
 
-
     public class LoadGameCommand : ICommand
     {
         private WindowManager _windowManager;
@@ -152,7 +149,6 @@ namespace AppDevGame
             }
         }
     }
-
 
     public class DeleteSaveCommand : ICommand
     {
@@ -203,6 +199,40 @@ namespace AppDevGame
             {
                 MainApp.Log("Selected language is the same as the current language. No changes made.");
             }
+        }
+    }
+
+    public class ToggleAllModsCommand : ICommand
+    {
+        private ModMenu _modMenu;
+
+        public ToggleAllModsCommand(ModMenu modMenu)
+        {
+            _modMenu = modMenu;
+        }
+
+        public void Execute()
+        {
+            _modMenu.ToggleAllMods(!_modMenu._toggleAll.IsToggled);
+        }
+    }
+
+    public class ToggleModCommand : ICommand
+    {
+        private ModMenu _modMenu;
+        private int _modIndex;
+
+        public ToggleModCommand(ModMenu modMenu, int modIndex)
+        {
+            _modMenu = modMenu;
+            _modIndex = modIndex;
+        }
+
+        public void Execute()
+        {
+            // Toggle the state of the specific mod checkbox
+            var modStates = _modMenu.GetModStates();
+            modStates[_modIndex] = !modStates[_modIndex];
         }
     }
 }

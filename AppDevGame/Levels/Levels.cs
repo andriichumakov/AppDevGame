@@ -38,7 +38,7 @@ namespace AppDevGame
 
             // Example of adding entities to the level
             Texture2D entityTexture = MainApp.GetInstance()._imageLoader.GetResource("Frog");
-            Texture2D entityTexture2 = MainApp.GetInstance()._imageLoader.GetResource("Ghost");
+            Texture2D ghostTexture = MainApp.GetInstance()._imageLoader.GetResource("ghost1_fly");
             Texture2D playerTexture = MainApp.GetInstance()._imageLoader.GetResource("character");
             Texture2D activePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalActive");
             Texture2D inactivePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalInactive");
@@ -55,9 +55,14 @@ namespace AppDevGame
                 AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(850, 1100), maxHealth: 100, damage: 1, scale: 2.0f));
                 AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(700, 1300), maxHealth: 100, damage: 1, scale: 2.0f));
                 AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(1200, 450), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture2, new Vector2(600, 800), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture2, new Vector2(800, 500), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture2, new Vector2(1000, 450), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
+            }
+
+            if (ghostTexture != null)
+            {
+                // Add ghosts at specified positions
+                AddEntity(new Ghost(this, ghostTexture, new Vector2(600, 800), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Ghost(this, ghostTexture, new Vector2(800, 500), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Ghost(this, ghostTexture, new Vector2(1000, 450), maxHealth: 100, damage: 1, scale: 2.0f));
             }
 
             if (playerTexture != null)

@@ -139,6 +139,8 @@ namespace AppDevGame
             _imageLoader.LoadSpecificResource("Images/PortalActive.png", "PortalActive");
             _imageLoader.LoadSpecificResource("Images/PortalInactive.png", "PortalInactive");
             _imageLoader.LoadSpecificResource("Images/coin1.png", "coin1"); // Load the animated coin sprite sheet
+            _imageLoader.LoadSpecificResource("Images/ghost1_fly.png", "Ghost");
+
 
             _audioManager = AudioManager.GetInstance(Content);
             _audioManager.PlaySong("background_music");

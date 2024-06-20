@@ -46,16 +46,22 @@ namespace AppDevGame
                     DropCoin();
                     _hasDroppedCoin = true;
                 }
+                _level.RemoveEntity(this); // Ensure the enemy is removed once dead
             }
         }
 
         private void DropCoin()
         {
-            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
+            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("coin1"); // Ensure the correct resource name
             if (coinTexture != null)
             {
                 _level.AddEntity(new Coin(_level, coinTexture, _position));
                 AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("coin_collect");
+                MainApp.Log($"Coin dropped at position: {_position}");
+            }
+            else
+            {
+                MainApp.Log("Coin texture not found.");
             }
         }
 
@@ -122,3 +128,4 @@ namespace AppDevGame
         }
     }
 }
+

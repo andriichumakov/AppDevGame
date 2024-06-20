@@ -18,7 +18,6 @@ namespace AppDevGame
         DownRight,
         DownLeft
     }
-
     public class Player : Entity
     {
         private float _speed;
@@ -30,11 +29,11 @@ namespace AppDevGame
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
         private Dictionary<string, double> _lastSoundTimes = new Dictionary<string, double>();
+        private AnimatedSprite _animatedSprite;
 
         private float _heartScale = 2.0f; // Scale factor for the heart
         private float _playerScale = 2.0f; // Scale factor for the player
         private Texture2D _backgroundTexture; // Background texture
-
         private Direction _lastDirection;
         private string _currentLevel;
         private double _lastShotTime;
@@ -51,6 +50,10 @@ namespace AppDevGame
             _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
             _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
             _projectileTexture = MainApp.GetInstance()._imageLoader.GetResource("Projectile");
+
+            Texture2D playerRunTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Run");
+            _animatedSprite = new AnimatedSprite(playerRunTexture, 6, 0.1);
+
             SetCollidableTypes(EntityType.Item, EntityType.Obstacle, EntityType.Enemy, EntityType.Lantern);
 
             int hitboxWidth = (int)(texture.Width * _playerScale);
@@ -174,6 +177,9 @@ namespace AppDevGame
                         MainApp.Log("Lantern lit up");
                     }
                 }
+
+                // Update animation
+                _animatedSprite.Update(gameTime);
             }
         }
 
@@ -268,7 +274,7 @@ namespace AppDevGame
         {
             try
             {
-                spriteBatch.Draw(_texture, _position - offset, null, Color.White, 0f, Vector2.Zero, _playerScale, SpriteEffects.None, 0f);
+                _animatedSprite.Draw(spriteBatch, _position - offset, _playerScale);
 
                 int heartWidth = (int)(_healthFullTexture.Width * _heartScale);
                 int heartHeight = (int)(_healthFullTexture.Height * _heartScale);

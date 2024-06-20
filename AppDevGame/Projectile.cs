@@ -6,7 +6,7 @@ namespace AppDevGame
     public class Projectile : Entity
     {
         private Vector2 _direction;
-        private float _speed = 500f; // Set the desired speed for the projectile
+        private float _speed = 800f; // Set the desired speed for the projectile
 
         public Projectile(LevelWindow level, Texture2D texture, Vector2 position, Vector2 direction)
             : base(level, texture, position, EntityType.Projectile)
@@ -15,8 +15,8 @@ namespace AppDevGame
             _direction.Normalize(); // Normalize the direction vector to ensure it moves correctly in all directions
 
             // Set the hitbox to be 10 times larger
-            int hitboxWidth = texture.Width * 10;
-            int hitboxHeight = texture.Height * 10;
+            int hitboxWidth = texture.Width * 5;
+            int hitboxHeight = texture.Height * 5;
             _hitbox = new Rectangle((int)position.X, (int)position.Y, hitboxWidth, hitboxHeight);
 
             SetCollidableTypes(EntityType.Enemy);

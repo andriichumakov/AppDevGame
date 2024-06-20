@@ -22,7 +22,7 @@ namespace AppDevGame
             _healthBarTexture = new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1);
             _healthBarTexture.SetData(new[] { Color.White });
             SetCollidableTypes(EntityType.Player, EntityType.Obstacle);
-            
+
             // Initialize the hitbox to match the scaled size of the enemy image
             UpdateHitbox();
         }
@@ -62,6 +62,7 @@ namespace AppDevGame
         {
             return _currentHealth <= 0;
         }
+
         private void UpdateHitbox()
         {
             int hitboxWidth = (int)(_texture.Width * _scale);
@@ -72,7 +73,7 @@ namespace AppDevGame
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            _hitbox.Location = _position.ToPoint();
+            UpdateHitbox();
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)
@@ -89,7 +90,7 @@ namespace AppDevGame
             int barYOffset = 10;
             float healthPercentage = (float)_currentHealth / _maxHealth;
 
-            Vector2 healthBarPosition = drawPosition + new Vector2(0, -barYOffset);
+            Vector2 healthBarPosition = drawPosition + new Vector2(-_hitbox.Width / 2, -(_hitbox.Height / 2 + barYOffset));
             Rectangle healthBarBackground = new Rectangle((int)healthBarPosition.X, (int)healthBarPosition.Y, barWidth, barHeight);
             Rectangle healthBarForeground = new Rectangle((int)healthBarPosition.X, (int)healthBarPosition.Y, (int)(barWidth * healthPercentage), barHeight);
 

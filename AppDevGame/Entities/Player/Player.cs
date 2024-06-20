@@ -18,6 +18,7 @@ namespace AppDevGame
         DownRight,
         DownLeft
     }
+
     public class Player : Entity
     {
         private float _speed;
@@ -30,10 +31,12 @@ namespace AppDevGame
         private Texture2D _healthEmptyTexture;
         private Dictionary<string, double> _lastSoundTimes = new Dictionary<string, double>();
         private AnimatedSprite _animatedSprite;
+        private SpriteEffects _spriteEffects = SpriteEffects.None; // Track sprite effect for flipping
 
         private float _heartScale = 2.0f; // Scale factor for the heart
         private float _playerScale = 2.0f; // Scale factor for the player
         private Texture2D _backgroundTexture; // Background texture
+
         private Direction _lastDirection;
         private string _currentLevel;
         private double _lastShotTime;
@@ -124,11 +127,13 @@ namespace AppDevGame
                 {
                     movement.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     _lastDirection = Direction.Left;
+                    _spriteEffects = SpriteEffects.FlipHorizontally; // Flip sprite to face left
                 }
                 if (state.IsKeyDown(Keys.D))
                 {
                     movement.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     _lastDirection = Direction.Right;
+                    _spriteEffects = SpriteEffects.None; // Face sprite to the right
                 }
                 
                 // Check for diagonal movement
@@ -274,7 +279,7 @@ namespace AppDevGame
         {
             try
             {
-                _animatedSprite.Draw(spriteBatch, _position - offset, _playerScale);
+                _animatedSprite.Draw(spriteBatch, _position - offset, _playerScale, _spriteEffects);
 
                 int heartWidth = (int)(_healthFullTexture.Width * _heartScale);
                 int heartHeight = (int)(_healthFullTexture.Height * _heartScale);

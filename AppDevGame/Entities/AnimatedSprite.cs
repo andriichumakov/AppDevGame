@@ -36,10 +36,13 @@ namespace AppDevGame
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position, float scale)
+       public void Draw(SpriteBatch spriteBatch, Vector2 position, float scale, SpriteEffects spriteEffects)
         {
-            Rectangle sourceRectangle = new Rectangle(_currentFrame * _frameWidth, 0, _frameWidth, _frameHeight);
-            spriteBatch.Draw(_texture, position, sourceRectangle, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f);
+            int frameWidth = _texture.Width / _frameCount;
+            Rectangle sourceRectangle = new Rectangle(frameWidth * _currentFrame, 0, frameWidth, _texture.Height);
+            Vector2 origin = new Vector2(frameWidth / 2f, _texture.Height / 2f);
+
+            spriteBatch.Draw(_texture, position, sourceRectangle, Color.White, 0f, origin, scale, spriteEffects, 0f);
         }
     }
 }

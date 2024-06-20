@@ -85,14 +85,31 @@ namespace AppDevGame
         public RestartLevelCommand(LevelWindow level)
         {
             _level = level;
+            MainApp.Log($"RestartLevelCommand created with level: {_level}");
         }
 
         public void Execute()
         {
-            _level.Setup();
-            MainApp.GetInstance().TogglePause();
+            MainApp.Log("Executing RestartLevelCommand...");
+            if (_level != null)
+            {
+                MainApp.Log("Restarting level...");
+                _level.Setup(); // Assuming Setup() resets the level
+                MainApp.GetInstance().LoadWindow(_level); // Use the new public method to load the level window to remove the GameOverScreen
+                if (MainApp.GetInstance().IsPaused)
+                {
+                    MainApp.GetInstance().TogglePause(); // Ensure the game is unpaused when restarting
+                }
+            }
+            else
+            {
+                MainApp.Log("Error: Level is null in RestartLevelCommand.");
+            }
         }
     }
+
+
+
 
     public class StartNewGameCommand : ICommand
     {
@@ -114,10 +131,15 @@ namespace AppDevGame
             Player newPlayer = new Player(newLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), new Vector2(100, 100), MainApp.GetInstance().BackgroundTexture);
             MainApp.Log("setting the player to the level...");
             newLevel.SetPlayer(newPlayer);
+            //might have to command the line below out
+            MainApp.GetInstance()._currentLevel = newLevel; // Set the current level
+
             MainApp.Log("loading the window...");
             _windowManager.LoadWindow(newLevel);
             MainApp.Log("saving the state...");
             SaveLoadManager.SaveToDevice(newPlayer, _saveSlot);
+
+           
 
             MainApp.GetInstance().PlayLevelMusic(); // Ensure level music is played
         }

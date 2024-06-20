@@ -17,7 +17,7 @@ namespace AppDevGame
 
         internal FontLoader _fontLoader;
         public ImageLoader _imageLoader;
-        public LevelWindow _currentLevel;
+        public LevelWindow _currentLevel; // Ensure this is correctly referenced
         public LocLoader LocLoader { get; private set; }
 
         private MainMenu _mainMenu;
@@ -61,6 +61,23 @@ namespace AppDevGame
                 _instance = new MainApp();
             }
             return _instance;
+        }
+        
+        public void LoadWindow(BaseWindow window)
+        {
+            _windowManager.LoadWindow(window);
+        }
+
+        public void ShowGameOverScreen()
+        {
+            if (_currentLevel != null)
+            {
+                _windowManager.LoadWindow(new GameOverScreen(800, 600, _backgroundTexture, _currentLevel));
+            }
+            else
+            {
+                Log("Error: Current level is null in ShowGameOverScreen.");
+            }
         }
 
         public static void Log(string message)
@@ -240,4 +257,5 @@ namespace AppDevGame
             _audioManager.SetMasterVolume(volume);
         }
     }
+
 }

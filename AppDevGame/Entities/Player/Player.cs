@@ -86,10 +86,12 @@ namespace AppDevGame
 
             if (_currentHealth <= 0)
             {
+                _currentHealth = 0; // Ensure health doesn't go below zero
                 AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_die");
-                new LoadWindowCommand(WindowManager.GetInstance(), MainApp.GetInstance().MainMenu).Execute();
+                MainApp.GetInstance().ShowGameOverScreen();
             }
         }
+
 
         public void Heal(int amount)
         {

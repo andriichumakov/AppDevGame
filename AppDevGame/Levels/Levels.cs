@@ -43,7 +43,7 @@ namespace AppDevGame
             Texture2D activePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalActive");
             Texture2D inactivePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalInactive");
             Texture2D heartTexture = MainApp.GetInstance()._imageLoader.GetResource("Heart");
-            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
+            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("coin1"); // Ensure correct resource name
             Texture2D litLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternLit");
             Texture2D unlitLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternUnlit");
             Texture2D bossTexture = MainApp.GetInstance()._imageLoader.GetResource("PlantBeast");
@@ -119,6 +119,7 @@ namespace AppDevGame
         private void AddCoin(Texture2D coinTexture, Vector2 position)
         {
             AddEntity(new Coin(this, coinTexture, position, scale: 2.0f)); // Ensure the scale value is provided
+            MainApp.Log($"Coin added at position: {position}");
         }
 
         private void AddLantern(Texture2D unlitTexture, Texture2D litTexture, Vector2 position)

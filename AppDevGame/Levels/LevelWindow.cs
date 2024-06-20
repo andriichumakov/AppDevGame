@@ -270,7 +270,7 @@ namespace AppDevGame
         // Method to add coins at random positions
         protected void AddCoins(int numberOfCoins)
         {
-            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
+            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("coin1"); // Use the animated coin texture
             if (coinTexture != null)
             {
                 for (int i = 0; i < numberOfCoins; i++)

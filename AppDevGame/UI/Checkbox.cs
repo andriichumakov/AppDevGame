@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,8 +9,8 @@ namespace AppDevGame
         private bool _isChecked;
         private Texture2D _checkedTexture;
         private Texture2D _uncheckedTexture;
-        private ICommand _onClick;
         private SpriteFont _font;
+        private ICommand _onClick;
 
         public Checkbox(Rectangle bounds, Texture2D checkedTexture, Texture2D uncheckedTexture, Color backgroundColor, Color textColor, string text, SpriteFont font, ICommand onClick)
             : base(bounds, uncheckedTexture, backgroundColor, textColor, text)
@@ -42,13 +41,30 @@ namespace AppDevGame
 
         public override void Update(GameTime gameTime)
         {
+            if (/* Check for input to toggle */ false) // Replace with your input handling logic
+            {
+                _isChecked = !_isChecked;
+                _texture = _isChecked ? _checkedTexture : _uncheckedTexture;
+                _onClick.Execute();
+            }
+
             base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            _texture = _isChecked ? _checkedTexture : _uncheckedTexture;
             base.Draw(spriteBatch);
+
+            if (_font != null)
+            {
+                var textSize = _font.MeasureString(_text);
+                var textPosition = new Vector2(_bounds.X + (_bounds.Width - textSize.X) / 2, _bounds.Y + (_bounds.Height - textSize.Y) / 2);
+                spriteBatch.DrawString(_font, _text, textPosition, _textColor);
+            }
+            else
+            {
+                MainApp.Log("Error: Font not loaded.");
+            }
         }
 
         public bool IsChecked
@@ -61,11 +77,21 @@ namespace AppDevGame
             }
         }
 
-        public void ToggleState()
+        public Texture2D CheckedTexture
         {
-            _isChecked = !_isChecked;
-            _texture = _isChecked ? _checkedTexture : _uncheckedTexture;
-            _onClick.Execute();
+            get { return _checkedTexture; }
+            set { _checkedTexture = value; }
+        }
+
+        public Texture2D UncheckedTexture
+        {
+            get { return _uncheckedTexture; }
+            set { _uncheckedTexture = value; }
+        }
+
+        public void SetChecked(bool isChecked)
+        {
+            IsChecked = isChecked;
         }
     }
 }

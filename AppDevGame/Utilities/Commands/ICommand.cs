@@ -50,7 +50,6 @@ namespace AppDevGame
         {
             this._windowManager.LoadWindow(this._targetWindow);
 
-            // Check if the target window is the main menu
             if (_targetWindow is MainMenu)
             {
                 MainApp.GetInstance().PlayMainMenuMusic();
@@ -62,7 +61,7 @@ namespace AppDevGame
 
             if (_unpause)
             {
-                MainApp.GetInstance().TogglePause(); // Unpause the game if the flag is set
+                MainApp.GetInstance().TogglePause();
             }
         }
     }
@@ -117,7 +116,7 @@ namespace AppDevGame
             MainApp.Log("saving the state...");
             SaveLoadManager.SaveToDevice(newPlayer, _saveSlot);
 
-            MainApp.GetInstance().PlayLevelMusic(); // Ensure level music is played
+            MainApp.GetInstance().PlayLevelMusic();
         }
     }
 
@@ -145,7 +144,7 @@ namespace AppDevGame
                 loadedLevel.SetPlayer(loadedPlayer);
                 _windowManager.LoadWindow(loadedLevel);
 
-                MainApp.GetInstance().PlayLevelMusic(); // Ensure level music is played
+                MainApp.GetInstance().PlayLevelMusic();
             }
         }
     }
@@ -183,7 +182,6 @@ namespace AppDevGame
             {
                 mainApp.LocLoader.ChangeLanguage(selectedLanguage, mainApp.Content);
 
-                // Update the text of buttons and other UI elements to the selected language
                 mainApp.MainMenu.SetupElements();
                 mainApp.SettingsMenu.SetupElements();
                 mainApp.LanguageMenu.SetupElements();
@@ -230,7 +228,6 @@ namespace AppDevGame
 
         public void Execute()
         {
-            // Toggle the state of the specific mod checkbox
             var modStates = _modMenu.GetModStates();
             modStates[_modIndex] = !modStates[_modIndex];
         }

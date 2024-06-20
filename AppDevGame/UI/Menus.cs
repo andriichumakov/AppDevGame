@@ -268,43 +268,29 @@ namespace AppDevGame
         {
             base.Setup();
 
+            int buttonWidth = 200;
+            int buttonHeight = 50;
+            int toggleWidth = 100;
+            int toggleHeight = 50;
+            int spacing = 10;
+            int textOffset = 20;  // Amount to shift text to the left
+
             // Go Back button
-            _goBackButton = new Button(
-                new Rectangle(10, 10, 200, 50),
-                Color.Gray,
-                Color.White,
-                MainApp.GetInstance().LocLoader.GetString("GoBack"),
-                new LoadWindowCommand(_windowManager, MainApp.GetInstance().SettingsMenu),
-                _font
-            );
+            _goBackButton = new Button(new Rectangle(10, 10, buttonWidth, buttonHeight), Color.Gray, Color.White, "GoBack", new LoadWindowCommand(_windowManager, MainApp.GetInstance().SettingsMenu), _font);
             AddElement(_goBackButton);
 
             // Toggle all mods button
-            _toggleAll = new Toggle(
-                new Rectangle(_width - 200, 20, 100, 50),
-                _toggleOnTexture,
-                _toggleOffTexture,
-                Color.Gray,
-                Color.White,
-                MainApp.GetInstance().LocLoader.GetString("ToggleAll"),
-                _font,
-                new ToggleAllModsCommand(this)
-            );
+            _toggleAll = new Toggle(new Rectangle(_width - toggleWidth - spacing - textOffset, spacing, toggleWidth, toggleHeight), _toggleOnTexture, _toggleOffTexture, Color.Gray, Color.Black, "Toggle All", _font, new ToggleAllModsCommand(this));
             AddElement(_toggleAll);
+
+            // Calculate the start position for the mod checkboxes
+            int startX = (_width - buttonWidth) / 3 - textOffset;
+            int startY = (_height - (3 * buttonHeight + 2 * spacing)) / 2;
 
             // Individual mod checkboxes
             for (int i = 0; i < 3; i++)
             {
-                var checkbox = new Checkbox(
-                    new Rectangle(200, 80 + i * 60, 200, 50),
-                    _checkboxTexture,
-                    _uncheckedTexture,
-                    Color.Gray,
-                    Color.White,
-                    $"Mod {i + 1}",
-                    _font,
-                    new ToggleModCommand(this, i)
-                );
+                var checkbox = new Checkbox(new Rectangle(startX, startY + i * (buttonHeight + spacing), buttonWidth, buttonHeight), _checkboxTexture, _uncheckedTexture, Color.Gray, Color.Black, $"Mod {i + 1}", _font, new ToggleModCommand(this, i));
                 _modCheckboxes.Add(checkbox);
                 AddElement(checkbox);
             }

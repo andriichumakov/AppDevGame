@@ -9,10 +9,10 @@ namespace AppDevGame
         private int _maxHealth;
         private int _currentHealth;
         private int _damage;
-        private Texture2D _healthBarTexture;
+        protected Texture2D _healthBarTexture;  // Changed to protected
         private Dictionary<string, double> _lastSoundTimes = new Dictionary<string, double>();
         private bool _hasDroppedCoin = false; // Track if coin has been dropped
-        protected float _scale; // Changed from private to protected
+        protected float _scale;
 
         public Enemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float scale = 1.5f)
             : base(level, texture, position, EntityType.Enemy)
@@ -84,7 +84,7 @@ namespace AppDevGame
             DrawHealthBar(spriteBatch, drawPosition);
         }
 
-        protected void DrawHealthBar(SpriteBatch spriteBatch, Vector2 drawPosition)
+        protected virtual void DrawHealthBar(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
             int barWidth = (int)(_hitbox.Width * _scale);
             int barHeight = 5;

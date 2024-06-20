@@ -71,6 +71,21 @@ namespace AppDevGame
             DrawHealthBar(spriteBatch, drawPosition);
         }
 
+        protected override void DrawHealthBar(SpriteBatch spriteBatch, Vector2 drawPosition)
+        {
+            int barWidth = (int)(_hitbox.Width * 0.5f); // Adjusted to make the health bar smaller
+            int barHeight = 3; // Adjusted height for the health bar
+            int barYOffset = 10;
+            float healthPercentage = (float)CurrentHealth / MaxHealth;
+
+            Vector2 healthBarPosition = drawPosition + new Vector2(-barWidth / 2, -(_hitbox.Height / 2 + barYOffset));
+            Rectangle healthBarBackground = new Rectangle((int)healthBarPosition.X, (int)healthBarPosition.Y, barWidth, barHeight);
+            Rectangle healthBarForeground = new Rectangle((int)healthBarPosition.X, (int)healthBarPosition.Y, (int)(barWidth * healthPercentage), barHeight);
+
+            spriteBatch.Draw(_healthBarTexture, healthBarBackground, Color.Red);
+            spriteBatch.Draw(_healthBarTexture, healthBarForeground, Color.Yellow);
+        }
+
         private void UpdateHitbox()
         {
             int hitboxWidth = (int)(_frameWidth * _scale);

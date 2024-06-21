@@ -36,7 +36,7 @@ namespace AppDevGame
             }
         }
 
-       public void Draw(SpriteBatch spriteBatch, Vector2 position, float scale, SpriteEffects spriteEffects)
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, float scale, SpriteEffects spriteEffects)
         {
             int frameWidth = _texture.Width / _frameCount;
             Rectangle sourceRectangle = new Rectangle(frameWidth * _currentFrame, 0, frameWidth, _texture.Height);

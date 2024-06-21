@@ -44,7 +44,7 @@ namespace AppDevGame
         private bool _isRunning;
         private SpriteEffects _spriteEffect;
 
-       public Player(LevelWindow level, Texture2D runningTexture, Texture2D idleTexture, Vector2 position, Texture2D backgroundTexture, float speed = 200f, int maxHealth = 100)
+        public Player(LevelWindow level, Texture2D runningTexture, Texture2D idleTexture, Vector2 position, Texture2D backgroundTexture, float speed = 200f, int maxHealth = 100)
             : base(level, runningTexture, position, EntityType.Player)
         {
             _speed = speed;
@@ -64,12 +64,12 @@ namespace AppDevGame
             _currentLevel = "Level1";
             _lastShotTime = -1; // Initialize to -1 so the player can shoot immediately at the start
 
-            _runningAnimation = new AnimatedSprite(runningTexture, 6, 1);
-            _idleAnimation = new AnimatedSprite(idleTexture, 5, 1);
+            // Reduce frameTime to speed up animations
+            _runningAnimation = new AnimatedSprite(runningTexture, 6, 0.2);
+            _idleAnimation = new AnimatedSprite(idleTexture, 5, 0.25);
             _isRunning = false;
             _spriteEffect = SpriteEffects.None;
         }
-
 
         public int CoinsCollected => _coinsCollected;
         public string CurrentLevel => _currentLevel;

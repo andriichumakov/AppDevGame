@@ -10,6 +10,8 @@ namespace AppDevGame
         private float _speed;
         private Random _random;
         private SpriteEffects _spriteEffect;
+        private double _attackCooldown;
+        private const double AttackCooldownDuration = 1.0; // 1 second cooldown
 
         public Frog(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float speed = 100f, float scale = 1.5f)
             : base(level, texture, position, maxHealth, damage, scale)
@@ -18,6 +20,7 @@ namespace AppDevGame
             _speed = speed;
             _random = new Random();
             _spriteEffect = SpriteEffects.None;
+            _attackCooldown = 0;
         }
 
         public override void Update(GameTime gameTime)
@@ -26,6 +29,13 @@ namespace AppDevGame
             MoveTowardsPlayer(gameTime);
 
             _jumpingAnimation.Update(gameTime);
+            _attackCooldown -= gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (_attackCooldown <= 0 && Hitbox.Intersects(_level.Player.Hitbox))
+            {
+                Attack(_level.Player);
+                _attackCooldown = AttackCooldownDuration;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)

@@ -328,6 +328,10 @@ namespace AppDevGame
         public override void OnCollision(Entity other)
         {
             base.OnCollision(other);
+            if (other is Frog frog)
+            {
+                TakeDamage(frog.Damage);
+            }
         }
 
         public override void ResolveCollision(Entity other)

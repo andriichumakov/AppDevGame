@@ -116,11 +116,7 @@ namespace AppDevGame
             backButton = new Button(new Rectangle((int)backButtonPos.X, (int)backButtonPos.Y, buttonWidth, buttonHeight), Color.Green, Color.White, MainApp.GetInstance().LocLoader.GetString("GoBack"), new LoadWindowCommand(_windowManager, MainApp.GetInstance().SettingsMenu), _font);
 
             Vector2 dropdownPos = new Vector2((_width - dropdownWidth) / 2, (_height - dropdownHeight) / 2);
-
-            // Initialize the dropdown menu with the current language as the selected item
-            string currentLanguage = MainApp.GetInstance().LocLoader.GetCurrentLanguage();
-            string defaultItem = currentLanguage == "en" ? "English" : "Dutch";
-            languageDropdown = new DropdownMenu(_graphicsDevice, new Rectangle((int)dropdownPos.X, (int)dropdownPos.Y, dropdownWidth, dropdownHeight), Color.Green, Color.White, defaultItem, new List<string> { "English", "Dutch" }, _font);
+            languageDropdown = new DropdownMenu(_graphicsDevice, new Rectangle((int)dropdownPos.X, (int)dropdownPos.Y, dropdownWidth, dropdownHeight), Color.Green, Color.White, "English", new List<string> { "English", "Dutch" }, _font);
 
             Vector2 applyButtonPos = new Vector2(_width - buttonWidth - 10, _height - buttonHeight - 10);
             applyButton = new Button(new Rectangle((int)applyButtonPos.X, (int)applyButtonPos.Y, buttonWidth, buttonHeight), Color.Green, Color.White, MainApp.GetInstance().LocLoader.GetString("ApplyChanges"), new ApplyLanguageCommand(), _font);

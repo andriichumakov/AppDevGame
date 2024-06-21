@@ -1,7 +1,6 @@
 using System;
 using System.IO;
-using Microsoft.Xna.Framework; // Ensure you are using the correct Vector2 namespace
-using Microsoft.Xna.Framework.Graphics; // Ensure you are using the correct Texture2D namespace
+using System.Numerics;
 
 namespace AppDevGame
 {
@@ -38,6 +37,7 @@ namespace AppDevGame
     {
         private WindowManager _windowManager;
         private BaseWindow _targetWindow;
+
         private bool _unpause;
 
         public LoadWindowCommand(WindowManager windowManager, BaseWindow targetWindow, bool unpause = false)
@@ -50,6 +50,7 @@ namespace AppDevGame
         public void Execute()
         {
             this._windowManager.LoadWindow(this._targetWindow);
+
 
             // Check if the target window is the main menu
             if (_targetWindow is MainMenu)
@@ -70,7 +71,7 @@ namespace AppDevGame
 
     public class UnpauseCommand : ICommand
     {
-        public void Execute()
+        public void Execute() 
         {
             MainApp.GetInstance().TogglePause();
             Console.WriteLine("Game unpaused");
@@ -108,6 +109,7 @@ namespace AppDevGame
         }
     }
 
+
     public class StartNewGameCommand : ICommand
     {
         private WindowManager _windowManager;
@@ -123,11 +125,9 @@ namespace AppDevGame
         {
             MainApp.Log("trying to actually create a save file...");
             MainApp.Log("loading the level...");
-            Level1 newLevel = new Level1(800, 600, 2372, 3063, MainApp.GetInstance()._imageLoader.GetResource("BackgroundLevel1"));
+            Level1 newLevel = new Level1(800, 600, 2640, 3467, MainApp.GetInstance()._imageLoader.GetResource("Level1"));
             MainApp.Log("loading the player...");
-            Texture2D playerRunTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Run");
-            Texture2D playerIdleTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Idle");
-            Player newPlayer = new Player(newLevel, playerRunTexture, playerIdleTexture, new Microsoft.Xna.Framework.Vector2(100, 100), MainApp.GetInstance().BackgroundTexture, 200f, 100);
+            Player newPlayer = new Player(newLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), new Vector2(100, 100), MainApp.GetInstance().BackgroundTexture);
             MainApp.Log("setting the player to the level...");
             newLevel.SetPlayer(newPlayer);
             MainApp.Log("loading the window...");
@@ -138,6 +138,7 @@ namespace AppDevGame
             MainApp.GetInstance().PlayLevelMusic(); // Ensure level music is played
         }
     }
+
 
     public class LoadGameCommand : ICommand
     {
@@ -156,9 +157,7 @@ namespace AppDevGame
             if (gameState != null)
             {
                 Level1 loadedLevel = new Level1(800, 600, 2372, 3063, MainApp.GetInstance()._imageLoader.GetResource("BackgroundLevel1"));
-                Texture2D playerRunTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Run");
-                Texture2D playerIdleTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Idle");
-                Player loadedPlayer = new Player(loadedLevel, playerRunTexture, playerIdleTexture, gameState.playerPosition, MainApp.GetInstance().BackgroundTexture, 200f, 100);
+                Player loadedPlayer = new Player(loadedLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), gameState.playerPosition, MainApp.GetInstance().BackgroundTexture);
                 loadedPlayer.SetHealth(gameState.playerHealth);
                 loadedPlayer.SetCoins(gameState.coinsCollected);
                 loadedPlayer.SetCurrentLevel(gameState.currentLevel);
@@ -169,6 +168,7 @@ namespace AppDevGame
             }
         }
     }
+
 
     public class DeleteSaveCommand : ICommand
     {

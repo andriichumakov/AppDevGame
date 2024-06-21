@@ -12,7 +12,7 @@ namespace AppDevGame
         HiddenObstacle,
         Item,
         Lantern,
-        Projectile  // Added Projectile type here
+        Projectile
     }
 
     public class Entity : Sprite
@@ -28,7 +28,7 @@ namespace AppDevGame
             : base(texture, position)
         {
             _level = level;
-            _hitbox = new Rectangle(0, 0, texture.Width, texture.Height);
+            _hitbox = new Rectangle(0, 0, texture?.Width ?? 0, texture?.Height ?? 0);
             _hitbox.Location = _position.ToPoint();
             _movable = movable;
             _entityType = entityType;
@@ -47,6 +47,11 @@ namespace AppDevGame
 
         public virtual void Draw(SpriteBatch spriteBatch, Vector2 offset)
         {
+            if (_texture == null || IsTextureFullyTransparent(_texture))
+            {
+                return;
+            }
+
             Vector2 drawPosition = _position - offset;
             spriteBatch.Draw(_texture, drawPosition, Color.White);
         }
@@ -62,12 +67,12 @@ namespace AppDevGame
         public virtual void ResolveCollision(Entity other)
         {
             Rectangle intersection = Rectangle.Intersect(_hitbox, other.Hitbox);
-            if (!_movable) {
+            if (!_movable)
+            {
                 return;
             }
             if (intersection.Width > intersection.Height)
             {
-                // Vertical collision
                 if (_hitbox.Top < other.Hitbox.Top)
                 {
                     _position.Y -= intersection.Height;
@@ -79,7 +84,6 @@ namespace AppDevGame
             }
             else
             {
-                // Horizontal collision
                 if (_hitbox.Left < other.Hitbox.Left)
                 {
                     _position.X -= intersection.Width;
@@ -89,14 +93,33 @@ namespace AppDevGame
                     _position.X += intersection.Width;
                 }
             }
-
-            // Update the hitbox location after resolving collision
-            _hitbox.Location = _position.ToPoint();
         }
 
-        public void SetCollidableTypes(params EntityType[] types)
+        private bool IsTextureFullyTransparent(Texture2D texture)
         {
-            _collidableTypes = new HashSet<EntityType>(types);
+            Color[] textureData = new Color[texture.Width * texture.Height];
+            texture.GetData(textureData);
+
+            foreach (Color color in textureData)
+            {
+                if (color.A != 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public void SetCollidableTypes(params EntityType[] collidableTypes)
+        {
+            _collidableTypes = new HashSet<EntityType>(collidableTypes);
+        }
+
+        public void Move(Vector2 delta)
+        {
+            _position += delta;
+            _hitbox.Location = _position.ToPoint();
         }
     }
 }

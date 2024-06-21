@@ -42,6 +42,7 @@ namespace AppDevGame
         {
             Vector2 drawPosition = _position - offset;
             _jumpingAnimation.Draw(spriteBatch, drawPosition, _scale, _spriteEffect);
+            DrawHealthBar(spriteBatch, drawPosition);
         }
 
         public override void Attack(Entity target)
@@ -73,6 +74,21 @@ namespace AppDevGame
                     _spriteEffect = SpriteEffects.None;
                 }
             }
+        }
+
+        protected override void DrawHealthBar(SpriteBatch spriteBatch, Vector2 drawPosition)
+        {
+            int barWidth = (int)(_hitbox.Width * 0.5); // Half width for smaller health bar
+            int barHeight = 5;
+            int barYOffset = 10;
+            float healthPercentage = (float)_currentHealth / _maxHealth;
+
+            Vector2 healthBarPosition = drawPosition + new Vector2(-barWidth / 2, -(_hitbox.Height / 2 + barYOffset));
+            Rectangle healthBarBackground = new Rectangle((int)healthBarPosition.X, (int)healthBarPosition.Y, barWidth, barHeight);
+            Rectangle healthBarForeground = new Rectangle((int)healthBarPosition.X, (int)healthBarPosition.Y, (int)(barWidth * healthPercentage), barHeight);
+
+            spriteBatch.Draw(_healthBarTexture, healthBarBackground, Color.Red);
+            spriteBatch.Draw(_healthBarTexture, healthBarForeground, Color.Yellow);
         }
     }
 }

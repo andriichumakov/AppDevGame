@@ -1,6 +1,7 @@
 using System;
 using System.IO;
-using System.Numerics;
+using Microsoft.Xna.Framework; // Ensure you are using the correct Vector2 namespace
+using Microsoft.Xna.Framework.Graphics; // Ensure you are using the correct Texture2D namespace
 
 namespace AppDevGame
 {
@@ -37,7 +38,6 @@ namespace AppDevGame
     {
         private WindowManager _windowManager;
         private BaseWindow _targetWindow;
-
         private bool _unpause;
 
         public LoadWindowCommand(WindowManager windowManager, BaseWindow targetWindow, bool unpause = false)
@@ -50,7 +50,6 @@ namespace AppDevGame
         public void Execute()
         {
             this._windowManager.LoadWindow(this._targetWindow);
-
 
             // Check if the target window is the main menu
             if (_targetWindow is MainMenu)
@@ -71,7 +70,7 @@ namespace AppDevGame
 
     public class UnpauseCommand : ICommand
     {
-        public void Execute() 
+        public void Execute()
         {
             MainApp.GetInstance().TogglePause();
             Console.WriteLine("Game unpaused");
@@ -81,11 +80,13 @@ namespace AppDevGame
     public class RestartLevelCommand : ICommand
     {
         private LevelWindow _level;
+        private bool _fromGameOverScreen;
 
-        public RestartLevelCommand(LevelWindow level)
+        public RestartLevelCommand(LevelWindow level, bool fromGameOverScreen = false)
         {
             _level = level;
-            MainApp.Log($"RestartLevelCommand created with level: {_level}");
+            _fromGameOverScreen = fromGameOverScreen;
+            MainApp.Log($"RestartLevelCommand created with level: {_level}, fromGameOverScreen: {_fromGameOverScreen}");
         }
 
         public void Execute()
@@ -93,12 +94,11 @@ namespace AppDevGame
             MainApp.Log("Executing RestartLevelCommand...");
             if (_level != null)
             {
-                MainApp.Log("Restarting level...");
                 _level.Setup(); // Assuming Setup() resets the level
-                MainApp.GetInstance().LoadWindow(_level); // Use the new public method to load the level window to remove the GameOverScreen
-                if (MainApp.GetInstance().IsPaused)
+                WindowManager.GetInstance().LoadWindow(_level); // Ensure the level is reloaded
+                if (!_fromGameOverScreen)
                 {
-                    MainApp.GetInstance().TogglePause(); // Ensure the game is unpaused when restarting
+                    MainApp.GetInstance().TogglePause(); // Ensure the game is unpaused when restarting, but only if not from game over screen
                 }
             }
             else
@@ -107,9 +107,6 @@ namespace AppDevGame
             }
         }
     }
-
-
-
 
     public class StartNewGameCommand : ICommand
     {
@@ -128,23 +125,19 @@ namespace AppDevGame
             MainApp.Log("loading the level...");
             Level1 newLevel = new Level1(800, 600, 2372, 3063, MainApp.GetInstance()._imageLoader.GetResource("BackgroundLevel1"));
             MainApp.Log("loading the player...");
-            Player newPlayer = new Player(newLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), new Vector2(100, 100), MainApp.GetInstance().BackgroundTexture);
+            Texture2D playerRunTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Run");
+            Texture2D playerIdleTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Idle");
+            Player newPlayer = new Player(newLevel, playerRunTexture, playerIdleTexture, new Microsoft.Xna.Framework.Vector2(100, 100), MainApp.GetInstance().BackgroundTexture, 200f, 100);
             MainApp.Log("setting the player to the level...");
             newLevel.SetPlayer(newPlayer);
-            //might have to command the line below out
-            MainApp.GetInstance()._currentLevel = newLevel; // Set the current level
-
             MainApp.Log("loading the window...");
             _windowManager.LoadWindow(newLevel);
             MainApp.Log("saving the state...");
             SaveLoadManager.SaveToDevice(newPlayer, _saveSlot);
 
-           
-
             MainApp.GetInstance().PlayLevelMusic(); // Ensure level music is played
         }
     }
-
 
     public class LoadGameCommand : ICommand
     {
@@ -163,7 +156,9 @@ namespace AppDevGame
             if (gameState != null)
             {
                 Level1 loadedLevel = new Level1(800, 600, 2372, 3063, MainApp.GetInstance()._imageLoader.GetResource("BackgroundLevel1"));
-                Player loadedPlayer = new Player(loadedLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), gameState.playerPosition, MainApp.GetInstance().BackgroundTexture);
+                Texture2D playerRunTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Run");
+                Texture2D playerIdleTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Idle");
+                Player loadedPlayer = new Player(loadedLevel, playerRunTexture, playerIdleTexture, gameState.playerPosition, MainApp.GetInstance().BackgroundTexture, 200f, 100);
                 loadedPlayer.SetHealth(gameState.playerHealth);
                 loadedPlayer.SetCoins(gameState.coinsCollected);
                 loadedPlayer.SetCurrentLevel(gameState.currentLevel);
@@ -174,7 +169,6 @@ namespace AppDevGame
             }
         }
     }
-
 
     public class DeleteSaveCommand : ICommand
     {

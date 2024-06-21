@@ -37,33 +37,34 @@ namespace AppDevGame
             // Initialize entities and background specific to Level1
 
             // Example of adding entities to the level
-            Texture2D entityTexture = MainApp.GetInstance()._imageLoader.GetResource("Frog");
-            Texture2D entityTexture2 = MainApp.GetInstance()._imageLoader.GetResource("Ghost");
-            Texture2D playerTexture = MainApp.GetInstance()._imageLoader.GetResource("character");
+            Texture2D frogTexture = MainApp.GetInstance()._imageLoader.GetResource("frog_full_jumping");
+            Texture2D ghostTexture = MainApp.GetInstance()._imageLoader.GetResource("Ghost");
+            Texture2D playerRunTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Run");
+            Texture2D playerIdleTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Idle");
             Texture2D activePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalActive");
             Texture2D inactivePortalTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalInactive");
             Texture2D heartTexture = MainApp.GetInstance()._imageLoader.GetResource("Heart");
-            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
+            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("coin1");
             Texture2D litLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternLit");
             Texture2D unlitLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternUnlit");
             Texture2D bossTexture = MainApp.GetInstance()._imageLoader.GetResource("PlantBeast");
             _font = MainApp.GetInstance()._fontLoader.GetResource("Default");
 
-            if (entityTexture != null)
+            if (frogTexture != null)
             {
-                // Add entities at specified positions
-                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(850, 1100), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(700, 1300), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(1200, 450), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture2, new Vector2(600, 800), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture2, new Vector2(800, 500), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture2, new Vector2(1000, 450), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
+                // Add frogs at specified positions
+                AddEntity(new Frog(this, frogTexture, new Vector2(850, 1100), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Frog(this, frogTexture, new Vector2(700, 1300), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Frog(this, frogTexture, new Vector2(1200, 450), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Ghost(this, ghostTexture, new Vector2(600, 800), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
+                AddEntity(new Ghost(this, ghostTexture, new Vector2(800, 500), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
+                AddEntity(new Ghost(this, ghostTexture, new Vector2(1000, 450), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
             }
 
-            if (playerTexture != null)
+            if (playerRunTexture != null && playerIdleTexture != null)
             {
                 // Add player at the starting position
-                SetPlayer(new Player(this, playerTexture, new Vector2(700, 500), MainApp.GetInstance().BackgroundTexture, 200f, 100));
+                SetPlayer(new Player(this, playerRunTexture, playerIdleTexture, new Vector2(700, 500), MainApp.GetInstance().BackgroundTexture, 200f, 100));
             }
 
             if (activePortalTexture != null && inactivePortalTexture != null)
@@ -119,6 +120,7 @@ namespace AppDevGame
         private void AddCoin(Texture2D coinTexture, Vector2 position)
         {
             AddEntity(new Coin(this, coinTexture, position, scale: 2.0f)); // Ensure the scale value is provided
+            MainApp.Log($"Coin added at position: {position}");
         }
 
         private void AddLantern(Texture2D unlitTexture, Texture2D litTexture, Vector2 position)

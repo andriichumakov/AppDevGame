@@ -32,6 +32,7 @@ namespace AppDevGame
         public Texture2D BackgroundTexture => _backgroundTexture;
         public EscapeMenu EscapeMenu { get; private set; }
         public bool IsPaused => _isPaused;  // Public property to check if the game is paused
+        public TimeSpan TotalGameTime { get; private set; }
 
         private StartMenu _startMenu;
         private SelectSaveSlotMenu _selectSaveSlotMenu;
@@ -44,6 +45,9 @@ namespace AppDevGame
         private static readonly TimeSpan ActionDelay = TimeSpan.FromSeconds(1.5);
 
         private AudioManager _audioManager;
+
+        // Texture for the animated coin
+        private Texture2D _coinTexture;
 
         private MainApp()
         {
@@ -68,11 +72,11 @@ namespace AppDevGame
             _windowManager.LoadWindow(window);
         }
 
-        public void ShowGameOverScreen()
+        public void ShowGameOverScreen(LevelWindow currentLevel)
         {
-            if (_currentLevel != null)
+            if (currentLevel != null)
             {
-                _windowManager.LoadWindow(new GameOverScreen(800, 600, _backgroundTexture, _currentLevel));
+                _windowManager.LoadWindow(new GameOverScreen(800, 600, _backgroundTexture, currentLevel));
             }
             else
             {
@@ -121,7 +125,7 @@ namespace AppDevGame
             base.Initialize();
         }
 
-        protected override void LoadContent()
+       protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _imageLoader = new ImageLoader(GraphicsDevice);
@@ -134,7 +138,12 @@ namespace AppDevGame
 
             _imageLoader.LoadSpecificResource("Images/PortalActive.png", "PortalActive");
             _imageLoader.LoadSpecificResource("Images/PortalInactive.png", "PortalInactive");
-            _imageLoader.LoadSpecificResource("Images/coin.png", "Coin");
+            _imageLoader.LoadSpecificResource("Images/coin1.png", "coin1"); // Load the animated coin sprite sheet
+            _imageLoader.LoadSpecificResource("Images/ghost1_fly.png", "Ghost");
+            _imageLoader.LoadSpecificResource("Images/Gunner_Blue_Run.png", "Gunner_Blue_Run"); // Load the player run animation
+            _imageLoader.LoadSpecificResource("Images/Gunner_Blue_Idle.png", "Gunner_Blue_Idle"); // Load the player idle animation
+            _imageLoader.LoadSpecificResource("Images/frog_full_jumping.png", "frog_full_jumping");
+
 
             _audioManager = AudioManager.GetInstance(Content);
             _audioManager.PlaySong("background_music");
@@ -148,10 +157,14 @@ namespace AppDevGame
             _selectSaveSlotMenu = new SelectSaveSlotMenu(800, 600, _backgroundTexture, _windowManager, font);
             _loadSaveMenu = new LoadSaveMenu(800, 600, _backgroundTexture, _windowManager, font);
 
+            _coinTexture = _imageLoader.GetResource("coin1");
+
             _windowManager.LoadWindow(_mainMenu);
 
             base.LoadContent();
         }
+
+
 
         public void PlayMainMenuMusic()
         {
@@ -186,6 +199,8 @@ namespace AppDevGame
 
         protected override void Update(GameTime gameTime)
         {
+            TotalGameTime = gameTime.TotalGameTime;
+
             KeyboardState state = Keyboard.GetState();
 
             if (state.IsKeyDown(Keys.Escape) && !_isPaused)
@@ -257,5 +272,4 @@ namespace AppDevGame
             _audioManager.SetMasterVolume(volume);
         }
     }
-
 }

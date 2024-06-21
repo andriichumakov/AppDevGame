@@ -29,9 +29,9 @@ namespace AppDevGame
         private int _attackRange = 120;
         private Texture2D _healthFullTexture;
         private Texture2D _healthEmptyTexture;
+        private Dictionary<string, double> _lastSoundTimes = new Dictionary<string, double>();
 
         private float _heartScale = 2.0f; // Scale factor for the heart
-
         private float _playerScale = 2.0f; // Scale factor for the player
         private Texture2D _backgroundTexture; // Background texture
 
@@ -39,9 +39,13 @@ namespace AppDevGame
         private string _currentLevel;
         private double _lastShotTime;
         private Texture2D _projectileTexture;
+        private AnimatedSprite _runningAnimation;
+        private AnimatedSprite _idleAnimation;
+        private bool _isRunning;
+        private SpriteEffects _spriteEffect;
 
-        public Player(LevelWindow level, Texture2D texture, Vector2 position, Texture2D backgroundTexture, float speed = 200f, int maxHealth = 100)
-         : base(level, texture, position, EntityType.Player)
+        public Player(LevelWindow level, Texture2D runningTexture, Texture2D idleTexture, Vector2 position, Texture2D backgroundTexture, float speed = 200f, int maxHealth = 100)
+            : base(level, runningTexture, position, EntityType.Player)
         {
             _speed = speed;
             _maxHealth = maxHealth;
@@ -53,12 +57,18 @@ namespace AppDevGame
             _projectileTexture = MainApp.GetInstance()._imageLoader.GetResource("Projectile");
             SetCollidableTypes(EntityType.Item, EntityType.Obstacle, EntityType.Enemy, EntityType.Lantern);
 
-            int hitboxWidth = (int)(texture.Width * _playerScale);
-            int hitboxHeight = (int)(texture.Height * _playerScale);
+            int hitboxWidth = (int)(runningTexture.Width * _playerScale / 6);
+            int hitboxHeight = (int)(runningTexture.Height * _playerScale);
             _hitbox = new Rectangle((int)position.X, (int)position.Y, hitboxWidth, hitboxHeight);
 
             _currentLevel = "Level1";
             _lastShotTime = -1; // Initialize to -1 so the player can shoot immediately at the start
+
+            // Reduce frameTime to speed up animations
+            _runningAnimation = new AnimatedSprite(runningTexture, 6, 0.2);
+            _idleAnimation = new AnimatedSprite(idleTexture, 5, 0.25);
+            _isRunning = false;
+            _spriteEffect = SpriteEffects.None;
         }
 
         public int CoinsCollected => _coinsCollected;
@@ -82,16 +92,15 @@ namespace AppDevGame
         public void TakeDamage(int damage)
         {
             _currentHealth -= damage;
-            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_damage");
+            PlaySoundWithDelay("player_damage");
 
             if (_currentHealth <= 0)
             {
                 _currentHealth = 0; // Ensure health doesn't go below zero
-                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_die");
-                MainApp.GetInstance().ShowGameOverScreen();
+                PlaySoundWithDelay("player_die");
+                MainApp.GetInstance().ShowGameOverScreen(_level); // Pass the current level
             }
         }
-
 
         public void Heal(int amount)
         {
@@ -107,28 +116,35 @@ namespace AppDevGame
 
                 Vector2 movement = Vector2.Zero;
                 KeyboardState state = Keyboard.GetState();
+                _isRunning = false;
 
                 if (state.IsKeyDown(Keys.W))
                 {
                     movement.Y -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     _lastDirection = Direction.Up;
+                    _isRunning = true;
                 }
                 if (state.IsKeyDown(Keys.S))
                 {
                     movement.Y += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     _lastDirection = Direction.Down;
+                    _isRunning = true;
                 }
                 if (state.IsKeyDown(Keys.A))
                 {
                     movement.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     _lastDirection = Direction.Left;
+                    _isRunning = true;
+                    _spriteEffect = SpriteEffects.FlipHorizontally;
                 }
                 if (state.IsKeyDown(Keys.D))
                 {
                     movement.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     _lastDirection = Direction.Right;
+                    _isRunning = true;
+                    _spriteEffect = SpriteEffects.None;
                 }
-                
+
                 // Check for diagonal movement
                 if (state.IsKeyDown(Keys.W) && state.IsKeyDown(Keys.D))
                 {
@@ -175,12 +191,21 @@ namespace AppDevGame
                         MainApp.Log("Lantern lit up");
                     }
                 }
+
+                if (_isRunning)
+                {
+                    _runningAnimation.Update(gameTime);
+                }
+                else
+                {
+                    _idleAnimation.Update(gameTime);
+                }
             }
         }
 
         private void AttackEnemies()
         {
-            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("player_attack");
+            PlaySoundWithDelay("player_attack");
             var entitiesInRange = _level.GetEntitiesInRange(_position, _attackRange);
 
             foreach (var entity in entitiesInRange)
@@ -189,6 +214,16 @@ namespace AppDevGame
                 {
                     enemy.TakeDamage(_attackDamage);
                 }
+            }
+        }
+
+        private void PlaySoundWithDelay(string soundName)
+        {
+            double currentTime = MainApp.GetInstance().TotalGameTime.TotalSeconds;
+            if (!_lastSoundTimes.ContainsKey(soundName) || currentTime - _lastSoundTimes[soundName] >= 1)
+            {
+                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect(soundName);
+                _lastSoundTimes[soundName] = currentTime;
             }
         }
 
@@ -259,7 +294,14 @@ namespace AppDevGame
         {
             try
             {
-                spriteBatch.Draw(_texture, _position - offset, null, Color.White, 0f, Vector2.Zero, _playerScale, SpriteEffects.None, 0f);
+                if (_isRunning)
+                {
+                    _runningAnimation.Draw(spriteBatch, _position - offset, _playerScale, _spriteEffect);
+                }
+                else
+                {
+                    _idleAnimation.Draw(spriteBatch, _position - offset, _playerScale, _spriteEffect);
+                }
 
                 int heartWidth = (int)(_healthFullTexture.Width * _heartScale);
                 int heartHeight = (int)(_healthFullTexture.Height * _heartScale);
@@ -279,19 +321,17 @@ namespace AppDevGame
             }
             catch (Exception ex)
             {
-                // Texture2D texture = i < heartsToDraw ? _healthFullTexture : _healthEmptyTexture;
-                // Vector2 position = new Vector2(
-                //     MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
-                //     spacing);
-
-                // // Draw heart
-                // spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
+                MainApp.Log($"Error during Player.Draw: {ex.Message}");
             }
         }
 
         public override void OnCollision(Entity other)
         {
             base.OnCollision(other);
+            if (other is Frog frog)
+            {
+                TakeDamage(frog.Damage);
+            }
         }
 
         public override void ResolveCollision(Entity other)
@@ -308,9 +348,10 @@ namespace AppDevGame
                 }
                 base.ResolveCollision(other);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MainApp.Log($"Error during Player.ResolveCollision: {ex.Message}");
-             }
+            }
         }
 
         public List<EntityState> GetEntityStates()

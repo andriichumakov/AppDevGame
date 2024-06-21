@@ -1,16 +1,18 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace AppDevGame
 {
     public abstract class Enemy : Entity
     {
-        private int _maxHealth;
-        private int _currentHealth;
+        protected int _maxHealth;
+        protected int _currentHealth;
         private int _damage;
-        private Texture2D _healthBarTexture;
+        protected Texture2D _healthBarTexture;  // Changed to protected
+        private Dictionary<string, double> _lastSoundTimes = new Dictionary<string, double>();
         private bool _hasDroppedCoin = false; // Track if coin has been dropped
-        private float _scale;
+        protected float _scale;
 
         public Enemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float scale = 1.5f)
             : base(level, texture, position, EntityType.Enemy)
@@ -33,13 +35,12 @@ namespace AppDevGame
 
         public virtual void TakeDamage(int damage)
         {
-            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("enemy_damage");
-
+            PlaySoundWithDelay("enemy_damage");
             _currentHealth -= damage;
             if (_currentHealth <= 0)
             {
                 _currentHealth = 0;
-                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("enemy_die");
+                PlaySoundWithDelay("enemy_die");
                 if (!_hasDroppedCoin)
                 {
                     DropCoin();
@@ -50,7 +51,7 @@ namespace AppDevGame
 
         private void DropCoin()
         {
-            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("Coin");
+            Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("coin1");
             if (coinTexture != null)
             {
                 _level.AddEntity(new Coin(_level, coinTexture, _position));
@@ -83,7 +84,7 @@ namespace AppDevGame
             DrawHealthBar(spriteBatch, drawPosition);
         }
 
-        protected void DrawHealthBar(SpriteBatch spriteBatch, Vector2 drawPosition)
+        protected virtual void DrawHealthBar(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
             int barWidth = (int)(_hitbox.Width * _scale);
             int barHeight = 5;
@@ -99,6 +100,16 @@ namespace AppDevGame
         }
 
         public abstract void Attack(Entity target);
+
+        protected void PlaySoundWithDelay(string soundName)
+        {
+            double currentTime = MainApp.GetInstance().TotalGameTime.TotalSeconds;
+            if (!_lastSoundTimes.ContainsKey(soundName) || currentTime - _lastSoundTimes[soundName] >= 1)
+            {
+                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect(soundName);
+                _lastSoundTimes[soundName] = currentTime;
+            }
+        }
 
         public override void OnCollision(Entity other)
         {

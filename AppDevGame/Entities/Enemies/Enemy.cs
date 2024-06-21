@@ -6,8 +6,8 @@ namespace AppDevGame
 {
     public abstract class Enemy : Entity
     {
-        protected int _maxHealth;
-        protected int _currentHealth;
+        private int _maxHealth;
+        private int _currentHealth;
         private int _damage;
         protected Texture2D _healthBarTexture;  // Changed to protected
         private Dictionary<string, double> _lastSoundTimes = new Dictionary<string, double>();

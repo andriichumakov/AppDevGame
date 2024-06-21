@@ -1,1 +1,18 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/AppDevGame/AppDevGame/Content/Audio/background_music.mp3","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/background_music.xnb","SongProcessor","SongContent",3472124,134,2.1223035
+"C:/AppDevGame/AppDevGame/Content/Audio/button_click.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/button_click.xnb","SoundEffectProcessor","SoundEffectContent",56296,37537,0.1433168
+"C:/AppDevGame/AppDevGame/Content/Audio/coin_collect.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/coin_collect.xnb","SoundEffectProcessor","SoundEffectContent",163918,163945,0.1380276
+"C:/AppDevGame/AppDevGame/Content/Audio/enemy_attack.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/enemy_attack.xnb","SoundEffectProcessor","SoundEffectContent",243082,162061,0.1444152
+"C:/AppDevGame/AppDevGame/Content/Audio/enemy_damage.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/enemy_damage.xnb","SoundEffectProcessor","SoundEffectContent",312238,208165,0.1457685
+"C:/AppDevGame/AppDevGame/Content/Audio/enemy_die.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/enemy_die.xnb","SoundEffectProcessor","SoundEffectContent",365080,243393,0.1430875
+"C:/AppDevGame/AppDevGame/Content/Audio/heart_collect.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/heart_collect.xnb","SoundEffectProcessor","SoundEffectContent",290894,290921,0.1625561
+"C:/AppDevGame/AppDevGame/Content/Audio/lantern_lit.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/lantern_lit.xnb","SoundEffectProcessor","SoundEffectContent",1136020,757353,0.1551608
+"C:/AppDevGame/AppDevGame/Content/Audio/level_music.mp3","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/level_music.xnb","SongProcessor","SongContent",2766817,129,1.6064866
+"C:/AppDevGame/AppDevGame/Content/Audio/plantbeast_attack.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/plantbeast_attack.xnb","SoundEffectProcessor","SoundEffectContent",170224,113489,0.160824
+"C:/AppDevGame/AppDevGame/Content/Audio/plantbeast_damage.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/plantbeast_damage.xnb","SoundEffectProcessor","SoundEffectContent",165142,110101,0.1678314
+"C:/AppDevGame/AppDevGame/Content/Audio/plantbeast_die.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/plantbeast_die.xnb","SoundEffectProcessor","SoundEffectContent",466618,311085,0.1623314
+"C:/AppDevGame/AppDevGame/Content/Audio/player_attack.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/player_attack.xnb","SoundEffectProcessor","SoundEffectContent",304420,202953,0.1595402
+"C:/AppDevGame/AppDevGame/Content/Audio/player_damage.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/player_damage.xnb","SoundEffectProcessor","SoundEffectContent",343174,228789,0.1482753
+"C:/AppDevGame/AppDevGame/Content/Audio/player_die.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/player_die.xnb","SoundEffectProcessor","SoundEffectContent",548674,365789,0.1643745
+"C:/AppDevGame/AppDevGame/Content/Audio/portal_activate.wav","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Audio/portal_activate.xnb","SoundEffectProcessor","SoundEffectContent",247624,165089,0.158154
+"C:/AppDevGame/AppDevGame/Content/Fonts/Default.spritefont","C:/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Fonts/Default.xnb","FontDescriptionProcessor","SpriteFontContent",2073,21535,0.1102269

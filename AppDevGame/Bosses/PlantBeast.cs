@@ -19,15 +19,8 @@ namespace AppDevGame
             base.Update(gameTime);
             _walkAnimation.Update(gameTime);
             FollowPlayer(gameTime);
+            AttackIfInRange(); // Check if the player is in range to attack
             UpdateHitbox();  // Ensure the hitbox is updated based on the current position
-        }
-
-        private void FollowPlayer(GameTime gameTime)
-        {
-            Vector2 playerPosition = _level.GetPlayer().Position;
-            Vector2 direction = playerPosition - _position;
-            direction.Normalize();
-            _position += direction * _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         protected override void UpdateHitbox()
@@ -49,30 +42,6 @@ namespace AppDevGame
         {
             _walkAnimation.Draw(spriteBatch, _position - offset, _scale, SpriteEffects.None);
             DrawHealthBar(spriteBatch, _position - offset);  // Drawing the health bar at the adjusted size
-        }
-
-        public override void Attack(Entity target)
-        {
-            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("plantbeast_attack");
-            if (target is Player player)
-            {
-                player.TakeDamage(Damage);
-            }
-        }
-
-        public override void TakeDamage(int damage)
-        {
-            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("plantbeast_damage");
-            base.TakeDamage(damage);
-        }
-
-        public override void ResolveCollision(Entity other)
-        {
-            if (CurrentHealth <= 0)
-            {
-                AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("plantbeast_die");
-            }
-            base.ResolveCollision(other);
         }
     }
 }

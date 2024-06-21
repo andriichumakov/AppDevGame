@@ -81,7 +81,7 @@ namespace AppDevGame
             if (heartTexture != null)
             {
                 // Add hearts at specified positions
-                AddHeart(heartTexture, new Vector2(1200, 500));
+                AddHeart(heartTexture, new Vector2(890, 500));
                 AddHeart(heartTexture, new Vector2(900, 400));
                 AddHeart(heartTexture, new Vector2(700, 600));
             }

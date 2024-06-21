@@ -57,9 +57,10 @@ namespace AppDevGame
             _projectileTexture = MainApp.GetInstance()._imageLoader.GetResource("Projectile");
             SetCollidableTypes(EntityType.Item, EntityType.Obstacle, EntityType.Enemy, EntityType.Lantern);
 
-            int hitboxWidth = (int)(runningTexture.Width * _playerScale / 6);
-            int hitboxHeight = (int)(runningTexture.Height * _playerScale);
+            int hitboxWidth = (int)(runningTexture.Width * _playerScale / 6 * 0.5f); // Adjust as needed
+            int hitboxHeight = (int)(runningTexture.Height * _playerScale * 0.5f); // Adjust as needed
             _hitbox = new Rectangle((int)position.X, (int)position.Y, hitboxWidth, hitboxHeight);
+
 
             _currentLevel = "Level1";
             _lastShotTime = -1; // Initialize to -1 so the player can shoot immediately at the start

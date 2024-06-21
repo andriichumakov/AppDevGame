@@ -18,14 +18,31 @@ namespace AppDevGame
         {
             base.Update(gameTime);
             _walkAnimation.Update(gameTime);
+            FollowPlayer(gameTime);
+            UpdateHitbox();  // Ensure the hitbox is updated based on the current position
         }
 
-        protected void UpdateHitbox()
+        private void FollowPlayer(GameTime gameTime)
         {
-            // Manually adjust hitbox size here
-            int hitboxWidth = (int)(_walkAnimation.FrameWidth * _scale * 0.5f);  // 0.5f is an example scaling factor
-            int hitboxHeight = (int)(_walkAnimation.FrameHeight * _scale * 0.5f); // 0.5f is an example scaling factor
-            _hitbox = new Rectangle((int)(_position.X - hitboxWidth / 2), (int)(_position.Y - hitboxHeight / 2), hitboxWidth, hitboxHeight);
+            Vector2 playerPosition = _level.GetPlayer().Position;
+            Vector2 direction = playerPosition - _position;
+            direction.Normalize();
+            _position += direction * _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+
+        protected override void UpdateHitbox()
+        {
+            // Set hitbox dimensions
+            int hitboxWidth = 58; // Width of the hitbox in pixels
+            int hitboxHeight = 44; // Height of the hitbox in pixels
+            
+            // Center the hitbox based on the current position
+            _hitbox = new Rectangle(
+                (int)(_position.X - hitboxWidth / 2), 
+                (int)(_position.Y - hitboxHeight / 2), 
+                hitboxWidth, 
+                hitboxHeight
+            );
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)
@@ -37,8 +54,10 @@ namespace AppDevGame
         public override void Attack(Entity target)
         {
             AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("plantbeast_attack");
-            // Implement specific attack logic for PlantBeast
-            base.Attack(target);
+            if (target is Player player)
+            {
+                player.TakeDamage(Damage);
+            }
         }
 
         public override void TakeDamage(int damage)

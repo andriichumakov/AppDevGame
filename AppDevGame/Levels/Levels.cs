@@ -24,19 +24,15 @@ namespace AppDevGame
         {
             MainApp.Log("Setting up Level1...");
             base.Setup();
-            // Clear existing entities before setting up the level again
             _entities.Clear();
             _entitiesToAdd.Clear();
             _entitiesToRemove.Clear();
             _currentHeartCount = 0;
             _totalLanterns = 0;
             _litLanterns = 0;
-            _player = null;  // Reset the player
-            _bossSpawned = false; // Reset boss spawned state
+            _player = null;
+            _bossSpawned = false;
 
-            // Initialize entities and background specific to Level1
-
-            // Example of adding entities to the level
             Texture2D frogTexture = MainApp.GetInstance()._imageLoader.GetResource("frog_full_jumping");
             Texture2D ghostTexture = MainApp.GetInstance()._imageLoader.GetResource("Ghost");
             Texture2D playerRunTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Run");
@@ -52,7 +48,6 @@ namespace AppDevGame
 
             if (frogTexture != null)
             {
-                // Add frogs at specified positions
                 AddEntity(new Frog(this, frogTexture, new Vector2(850, 1100), maxHealth: 100, damage: 1, scale: 2.0f));
                 AddEntity(new Frog(this, frogTexture, new Vector2(700, 1300), maxHealth: 100, damage: 1, scale: 2.0f));
                 AddEntity(new Frog(this, frogTexture, new Vector2(1200, 450), maxHealth: 100, damage: 1, scale: 2.0f));
@@ -63,20 +58,17 @@ namespace AppDevGame
 
             if (playerRunTexture != null && playerIdleTexture != null)
             {
-                // Add player at the starting position
                 SetPlayer(new Player(this, playerRunTexture, playerIdleTexture, new Vector2(700, 500), MainApp.GetInstance().BackgroundTexture, 200f, 100));
             }
 
             if (activePortalTexture != null && inactivePortalTexture != null)
             {
-                // Add inactive portal at the desired position (update the coordinates accordingly)
                 _portal = new Portal(this, activePortalTexture, inactivePortalTexture, new Vector2(1225, 65), scale: 5.0f, isActive: false);
                 AddEntity(_portal);
             }
 
             if (heartTexture != null)
             {
-                // Add hearts at specified positions
                 AddHeart(heartTexture, new Vector2(1200, 500));
                 AddHeart(heartTexture, new Vector2(900, 400));
                 AddHeart(heartTexture, new Vector2(700, 600));
@@ -84,7 +76,6 @@ namespace AppDevGame
 
             if (coinTexture != null)
             {
-                // Add coins at specified positions
                 AddCoin(coinTexture, new Vector2(1200, 200));
                 AddCoin(coinTexture, new Vector2(700, 500));
                 AddCoin(coinTexture, new Vector2(800, 700));
@@ -92,7 +83,6 @@ namespace AppDevGame
 
             if (litLanternTexture != null && unlitLanternTexture != null)
             {
-                // Add lanterns at specified positions
                 AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(800, 550));
                 AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(1350, 600));
                 AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(1500, 800));
@@ -100,13 +90,14 @@ namespace AppDevGame
 
             if (bossTexture != null)
             {
-                // Initialize the boss but do not add it yet
                 _boss = new PlantBeast(this, bossTexture, _portal.Position, maxHealth: 300, damage: 10, speed: 100f, scale: 3.0f);
             }
 
-            MainApp.GetInstance().PlayLevelMusic(); // Add this line
+            MainApp.GetInstance().PlayLevelMusic();
             MainApp.Log("Level1 setup complete.");
         }
+
+
 
         private void AddHeart(Texture2D heartTexture, Vector2 position)
         {

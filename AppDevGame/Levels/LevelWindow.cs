@@ -33,6 +33,11 @@ namespace AppDevGame
             _random = new Random();
         }
 
+        public Player GetPlayer()
+        {
+            return _player;
+        }
+        
         public void AddEntity(Entity entity)
         {
             _entities.Add(entity);

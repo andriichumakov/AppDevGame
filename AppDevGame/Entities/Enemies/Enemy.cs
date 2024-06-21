@@ -64,11 +64,10 @@ namespace AppDevGame
             return _currentHealth <= 0;
         }
 
-        protected void UpdateHitbox()
+        protected virtual void UpdateHitbox()
         {
-            // Adjust hitbox size manually
-            int hitboxWidth = (int)(_texture.Width * _scale * 0.5f);  // 0.5f is an example scaling factor
-            int hitboxHeight = (int)(_texture.Height * _scale * 0.5f); // 0.5f is an example scaling factor
+            int hitboxWidth = (int)(_texture.Width * _scale * 0.5f); // Adjust as needed
+            int hitboxHeight = (int)(_texture.Height * _scale * 0.5f); // Adjust as needed
             _hitbox = new Rectangle((int)(_position.X - hitboxWidth / 2), (int)(_position.Y - hitboxHeight / 2), hitboxWidth, hitboxHeight);
         }
 
@@ -87,7 +86,7 @@ namespace AppDevGame
 
         protected virtual void DrawHealthBar(SpriteBatch spriteBatch, Vector2 drawPosition)
         {
-            int barWidth = (int)(_hitbox.Width * 0.5f);  // Adjust to make the health bar half the size
+            int barWidth = (int)(_hitbox.Width * 0.5); // Adjusted scale for health bar width
             int barHeight = 5;
             int barYOffset = 10;
             float healthPercentage = (float)_currentHealth / _maxHealth;

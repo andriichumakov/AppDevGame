@@ -47,7 +47,8 @@ namespace AppDevGame
             Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("coin1");
             Texture2D litLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternLit");
             Texture2D unlitLanternTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternUnlit");
-            Texture2D bossTexture = MainApp.GetInstance()._imageLoader.GetResource("PlantBeast");
+            Texture2D plantBeastWalkTexture = MainApp.GetInstance()._imageLoader.GetResource("PlantBeast_Walk");
+            Texture2D plantBeastAttackTexture = MainApp.GetInstance()._imageLoader.GetResource("PlantBeast_Attack");
             _font = MainApp.GetInstance()._fontLoader.GetResource("Default");
 
             if (frogTexture != null)
@@ -98,10 +99,10 @@ namespace AppDevGame
                 AddLantern(unlitLanternTexture, litLanternTexture, new Vector2(1500, 800));
             }
 
-            if (bossTexture != null)
+            if (plantBeastWalkTexture != null && plantBeastAttackTexture != null)
             {
                 // Initialize the boss but do not add it yet
-                _boss = new PlantBeast(this, bossTexture, Vector2.Zero, maxHealth: 300, damage: 10, speed: 100f, scale: 3.0f);
+                _boss = new PlantBeast(this, plantBeastWalkTexture, plantBeastAttackTexture, _portal.Position, maxHealth: 300, damage: 10, speed: 100f, scale: 3.0f);
             }
 
             MainApp.GetInstance().PlayLevelMusic(); // Add this line

@@ -65,8 +65,8 @@ namespace AppDevGame
             _lastShotTime = -1; // Initialize to -1 so the player can shoot immediately at the start
 
             // Reduce frameTime to speed up animations
-            _runningAnimation = new AnimatedSprite(runningTexture, 6, 0.2);
-            _idleAnimation = new AnimatedSprite(idleTexture, 5, 0.25);
+            _runningAnimation = new AnimatedSprite(runningTexture, 6, 0.1);
+            _idleAnimation = new AnimatedSprite(idleTexture, 5, 0.2);
             _isRunning = false;
             _spriteEffect = SpriteEffects.None;
         }

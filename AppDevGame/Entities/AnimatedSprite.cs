@@ -12,8 +12,9 @@ namespace AppDevGame
         private int _currentFrame;
         private double _timePerFrame;
         private double _totalElapsed;
+        private bool _loop;
 
-        public AnimatedSprite(Texture2D texture, int frameCount, double frameTime)
+        public AnimatedSprite(Texture2D texture, int frameCount, double frameTime, bool loop = true)
         {
             _texture = texture;
             _frameCount = frameCount;
@@ -22,7 +23,10 @@ namespace AppDevGame
             _currentFrame = 0;
             _timePerFrame = frameTime;
             _totalElapsed = 0;
+            _loop = loop;
         }
+
+        public bool IsComplete => !_loop && _currentFrame >= _frameCount - 1;
 
         public void Update(GameTime gameTime)
         {
@@ -31,7 +35,14 @@ namespace AppDevGame
             if (_totalElapsed > _timePerFrame)
             {
                 _currentFrame++;
-                _currentFrame = _currentFrame % _frameCount;
+                if (_loop)
+                {
+                    _currentFrame = _currentFrame % _frameCount;
+                }
+                else if (_currentFrame >= _frameCount)
+                {
+                    _currentFrame = _frameCount - 1; // Stay on the last frame
+                }
                 _totalElapsed -= _timePerFrame;
             }
         }

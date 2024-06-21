@@ -37,7 +37,7 @@ namespace AppDevGame
             // Initialize entities and background specific to Level1
 
             // Example of adding entities to the level
-            Texture2D entityTexture = MainApp.GetInstance()._imageLoader.GetResource("Frog");
+            Texture2D frogTexture = MainApp.GetInstance()._imageLoader.GetResource("frog_full_jumping");
             Texture2D ghostTexture = MainApp.GetInstance()._imageLoader.GetResource("Ghost");
             Texture2D playerRunTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Run");
             Texture2D playerIdleTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Idle");
@@ -50,12 +50,12 @@ namespace AppDevGame
             Texture2D bossTexture = MainApp.GetInstance()._imageLoader.GetResource("PlantBeast");
             _font = MainApp.GetInstance()._fontLoader.GetResource("Default");
 
-            if (entityTexture != null)
+            if (frogTexture != null)
             {
-                // Add entities at specified positions
-                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(850, 1100), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(700, 1300), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new MeleeAttackEnemy(this, entityTexture, new Vector2(1200, 450), maxHealth: 100, damage: 1, scale: 2.0f));
+                // Add frogs at specified positions
+                AddEntity(new Frog(this, frogTexture, new Vector2(850, 1100), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Frog(this, frogTexture, new Vector2(700, 1300), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Frog(this, frogTexture, new Vector2(1200, 450), maxHealth: 100, damage: 1, scale: 2.0f));
                 AddEntity(new Ghost(this, ghostTexture, new Vector2(600, 800), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
                 AddEntity(new Ghost(this, ghostTexture, new Vector2(800, 500), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));
                 AddEntity(new Ghost(this, ghostTexture, new Vector2(1000, 450), maxHealth: 100, damage: 1, scale: 2.0f, selfDestruct: true));

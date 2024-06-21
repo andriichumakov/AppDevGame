@@ -205,6 +205,8 @@ namespace AppDevGame
         {
             Vector2 direction = Vector2.Zero;
 
+            MainApp.Log(this._hitbox.X + ", " + this._hitbox.Y);
+
             switch (_lastDirection)
             {
                 case Direction.Up:

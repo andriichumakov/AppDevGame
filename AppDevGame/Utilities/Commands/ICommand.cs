@@ -125,7 +125,7 @@ namespace AppDevGame
         {
             MainApp.Log("trying to actually create a save file...");
             MainApp.Log("loading the level...");
-            Level1 newLevel = new Level1(800, 600, 2372, 3063, MainApp.GetInstance()._imageLoader.GetResource("BackgroundLevel1"));
+            Level1 newLevel = new Level1(800, 600, 2640, 3467, MainApp.GetInstance()._imageLoader.GetResource("Level1"));
             MainApp.Log("loading the player...");
             Player newPlayer = new Player(newLevel, MainApp.GetInstance()._imageLoader.GetResource("character"), new Vector2(100, 100), MainApp.GetInstance().BackgroundTexture);
             MainApp.Log("setting the player to the level...");

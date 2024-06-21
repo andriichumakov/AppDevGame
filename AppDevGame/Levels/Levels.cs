@@ -74,7 +74,7 @@ namespace AppDevGame
             if (activePortalTexture != null && inactivePortalTexture != null)
             {
                 // Add inactive portal at the desired position (update the coordinates accordingly)
-                _portal = new Portal(this, activePortalTexture, inactivePortalTexture, new Vector2(1225, 65), scale: 5.0f, isActive: false);
+                _portal = new Portal(this, activePortalTexture, inactivePortalTexture, new Vector2(1385, 85), scale: 5.0f, isActive: false);
                 AddEntity(_portal);
             }
 
@@ -107,6 +107,91 @@ namespace AppDevGame
                 // Initialize the boss but do not add it yet
                 _boss = new PlantBeast(this, bossTexture, Vector2.Zero, maxHealth: 300, damage: 10, speed: 100f, scale: 3.0f);
             }
+
+            // hidden obstacles
+
+            // Maze walls
+            AddEntity(new OnMapBounds(this, new Rectangle(645, 370, 10, 356))); // wall
+            AddEntity(new OnMapBounds(this, new Rectangle(648, 360, 480, 10))); // wall
+            AddEntity(new OnMapBounds(this, new Rectangle(1130, 165, 10, 200))); // wall
+            AddEntity(new OnMapBounds(this, new Rectangle(1130, 165, 100, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1230, 65, 10, 100)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1230, 65, 390, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1595, 165, 100, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1595, 65, 10, 100)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1695, 165, 10, 200)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1705, 365, 200, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1905, 365, 10, 300)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1905, 665, 210, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(2100, 665, 10, 300)));
+
+            // room NW
+            AddEntity(new OnMapBounds(this, new Rectangle(1810, 955, 390, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1810, 955, 10, 500)));
+            AddEntity(new OnMapBounds(this, new Rectangle(2190, 955, 10, 600)));
+
+            AddEntity(new OnMapBounds(this, new Rectangle(2190, 1455, 400, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(2590, 1455, 10, 700)));
+
+            AddEntity(new OnMapBounds(this, new Rectangle(2190, 1555, 200, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(2390, 1555, 10, 480)));
+
+            AddEntity(new OnMapBounds(this, new Rectangle(2200, 2155, 390, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(2200, 1755, 10, 900)));
+            AddEntity(new OnMapBounds(this, new Rectangle(2000, 1955, 10, 700)));
+            AddEntity(new OnMapBounds(this, new Rectangle(2200, 2535, 200, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(2400, 2535, 10, 500)));
+            AddEntity(new OnMapBounds(this, new Rectangle(2000, 2655, 200, 10)));
+
+            AddEntity(new OnMapBounds(this, new Rectangle(2000, 3035, 400, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(2000, 3035, 200, 10)));
+            
+            AddEntity(new OnMapBounds(this, new Rectangle(1250, 3200, 750, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1250, 3020, 10, 200)));
+            AddEntity(new OnMapBounds(this, new Rectangle(2000, 3020, 10, 200)));
+            AddEntity(new OnMapBounds(this, new Rectangle(50, 3000, 1200, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(70, 2500, 10, 500)));
+
+            AddEntity(new OnMapBounds(this, new Rectangle(1810, 1445, 200, 190)));
+
+            // Stone wall around the staircase
+            AddEntity(new OnMapBounds(this, new Rectangle(1505, 365, 200, 190)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1130, 365, 200, 190)));
+
+            AddEntity(new OnMapBounds(this, new Rectangle(335, 750, 550, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(335, 750, 10, 300)));
+            AddEntity(new OnMapBounds(this, new Rectangle(920, 750, 10, 300)));
+
+            AddEntity(new OnMapBounds(this, new Rectangle(335, 1060, 200, 200)));
+            AddEntity(new OnMapBounds(this, new Rectangle(735, 1060, 200, 200)));
+
+            AddEntity(new OnMapBounds(this, new Rectangle(250, 950, 100, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(250, 950, 10, 1700)));
+
+            AddEntity(new OnMapBounds(this, new Rectangle(80, 2545, 100, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(370, 2620, 10, 150)));
+            AddEntity(new OnMapBounds(this, new Rectangle(540, 2620, 10, 150)));
+            AddEntity(new OnMapBounds(this, new Rectangle(550, 2620, 1180, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1710, 2440, 10, 150)));
+            AddEntity(new OnMapBounds(this, new Rectangle(630, 2440, 1100, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1840, 1755, 10, 500)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1850, 1730, 180, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1600, 970, 10, 500)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1330, 1470, 270, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(810, 1450, 10, 270)));
+            AddEntity(new OnMapBounds(this, new Rectangle(810, 1450, 270, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1100, 1450, 10, 300)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1300, 1450, 10, 300)));
+            AddEntity(new OnMapBounds(this, new Rectangle(425, 1650, 10, 600)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1100, 1450, 10, 300)));
+            AddEntity(new OnMapBounds(this, new Rectangle(425, 1650, 350, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(640, 2226, 10, 200)));
+            AddEntity(new OnMapBounds(this, new Rectangle(1100, 1450, 10, 300)));
+            AddEntity(new OnMapBounds(this, new Rectangle(440, 2220, 150, 10)));
+            AddEntity(new OnMapBounds(this, new Rectangle(260, 2640, 70, 10)));
+
+            AddEntity(new OnMapBounds(this, new Rectangle(930, 975, 650, 10)));
+
 
             MainApp.GetInstance().PlayLevelMusic(); // Add this line
             MainApp.Log("Level1 setup complete.");

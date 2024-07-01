@@ -15,7 +15,28 @@ namespace AppDevGame
         Projectile
     }
 
-    public class Entity : Sprite
+    public class Entity
+    {
+        protected Rectangle _hitbox;
+        protected Vector2 _position;
+
+        protected EntityType _entityType; // used to categorize different entities in groups for collision detection purposes
+        protected Dictionary<string, Sprite> _sprites = new Dictionary<string, Sprite>();
+        protected HashSet<EntityType> _collidesWith = new HashSet<EntityType>();
+
+        protected bool _canMove; // immovable entities should not be pushed away by a collision
+
+        public Entity()
+        {
+            
+        }
+
+
+
+    }
+
+    /*
+    public class Entity
     {
         protected Rectangle _hitbox;
         protected LevelWindow _level;
@@ -122,4 +143,5 @@ namespace AppDevGame
             _hitbox.Location = _position.ToPoint();
         }
     }
+    */
 }

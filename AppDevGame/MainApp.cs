@@ -143,6 +143,7 @@ namespace AppDevGame
             _imageLoader.LoadSpecificResource("Images/Gunner_Blue_Run.png", "Gunner_Blue_Run"); // Load the player run animation
             _imageLoader.LoadSpecificResource("Images/Gunner_Blue_Idle.png", "Gunner_Blue_Idle"); // Load the player idle animation
             _imageLoader.LoadSpecificResource("Images/frog_full_jumping.png", "frog_full_jumping");
+            _imageLoader.LoadSpecificResource("Levels/Level1.png", "Level1");
 
 
 

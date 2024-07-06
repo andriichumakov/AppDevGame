@@ -3,19 +3,22 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AppDevGame
 {
+    // TODO: Test new functionality
     public class OnMapBounds : Entity
     {
         private static bool _debugMode = true;
         private static Texture2D _debugTexture;
 
         public OnMapBounds(LevelWindow level, Rectangle hitbox)
-            : base(level, null, hitbox.Location.ToVector2(), EntityType.Obstacle)
+            : base(level, hitbox.Location.ToVector2(), EntityType.Obstacle, false)
         {
             _hitbox = hitbox;
-            _movable = false;
+            _canMove = false; // Set movability from the base class
 
             // Setting collidable types
-            SetCollidableTypes(EntityType.Player, EntityType.Enemy, EntityType.Projectile);
+            AddCollidableType(EntityType.Player);
+            AddCollidableType(EntityType.Enemy);
+            AddCollidableType(EntityType.Projectile);
 
             // Create a debug texture if it doesn't exist
             if (_debugTexture == null)
@@ -42,42 +45,42 @@ namespace AppDevGame
 
         public override void ResolveCollision(Entity other)
         {
-            if (other.Type == EntityType.Projectile)
+            if (other.GetEntityType() == EntityType.Projectile)
             {
                 // Destroy the projectile
                 _level.RemoveEntity(other);
                 return;
             }
 
-            Rectangle intersection = Rectangle.Intersect(_hitbox, other.Hitbox);
+            Rectangle intersection = Rectangle.Intersect(_hitbox, other.GetHitbox());
             if (intersection.IsEmpty)
                 return;
 
             Vector2 displacement = Vector2.Zero;
             if (intersection.Width < intersection.Height)
             {
-                if (_hitbox.Left < other.Hitbox.Left)
+                if (_hitbox.Left < other.GetHitbox().Left)
                     displacement.X = intersection.Width;
                 else
                     displacement.X = -intersection.Width;
             }
             else
             {
-                if (_hitbox.Top < other.Hitbox.Top)
+                if (_hitbox.Top < other.GetHitbox().Top)
                     displacement.Y = intersection.Height;
                 else
                     displacement.Y = -intersection.Height;
             }
 
-            other.Move(displacement);
+            other.MoveBy(displacement);
 
             // Check for further collision and resolve if necessary
-            if (Rectangle.Intersect(_hitbox, other.Hitbox) != Rectangle.Empty)
+            if (Rectangle.Intersect(_hitbox, other.GetHitbox()) != Rectangle.Empty)
             {
                 if (displacement.X != 0)
-                    other.Move(new Vector2(displacement.X, 0));
+                    other.MoveBy(new Vector2(displacement.X, 0));
                 else
-                    other.Move(new Vector2(0, displacement.Y));
+                    other.MoveBy(new Vector2(0, displacement.Y));
             }
         }
     }

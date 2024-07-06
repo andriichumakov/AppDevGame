@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,11 +10,13 @@ namespace AppDevGame
         protected Texture2D _texture;
         protected SpriteEffects _spriteEffects = SpriteEffects.None; // responsible for the horizontal flip of the image
         protected char _originalDirection;
+        protected float _scale;
 
-        public Sprite(Texture2D texture, char originalDirection = 'R')
+        public Sprite(Texture2D texture, char originalDirection = 'R', float scale = 1.0f)
         {
             _texture = texture;
             _originalDirection = originalDirection;
+            _scale = scale;
         }
 
         public virtual void Update(GameTime gameTime)
@@ -21,7 +24,7 @@ namespace AppDevGame
             // override in subclasses
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch, Vector2 position, float scale)
+        public virtual void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
             // Default origin to the top-left corner of the texture
             Vector2 origin = new Vector2(0, 0);
@@ -33,7 +36,7 @@ namespace AppDevGame
                 Color.White,
                 0f, // rotation
                 origin,
-                scale, // scale
+                _scale, // scale
                 _spriteEffects,
                 0f // layerDepth
             );

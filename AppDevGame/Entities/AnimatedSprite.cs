@@ -42,7 +42,7 @@ namespace AppDevGame
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch, Vector2 position, float scale)
+        public override void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
             int frameWidth = _texture.Width / _frameCount;
             Rectangle sourceRectangle = new Rectangle(frameWidth * _currentFrame, 0, frameWidth, _texture.Height);

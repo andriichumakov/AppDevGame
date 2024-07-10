@@ -47,7 +47,7 @@ namespace AppDevGame
             return _texture;
         }
 
-        public void setDirection(char desiredDirection)
+        public void SetDirection(char desiredDirection)
         {
             _spriteEffects = desiredDirection == _originalDirection ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
         }

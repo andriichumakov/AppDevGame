@@ -1,19 +1,21 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace AppDevGame
 {
     public enum EntityType
     {
         Obstacle,
+        Wall,
         Player,
         Enemy,
-        HiddenObstacle,
-        Item,
         Lantern,
-        Projectile
+        Interactable,
+        Projectile,
     }
+
 
     public class Entity
     {
@@ -103,6 +105,33 @@ namespace AppDevGame
             GetCurrentSprite().Update(gameTime);
             _hitbox.Location = _position.ToPoint();
         }
+        
+        public void UpdateSpriteDirections(Direction newDirection)
+        {
+            char val;
+            // TODO Ensure that the Sprite uses the common direction system
+            switch (newDirection)
+            {
+                case Direction.Left:
+                    val = 'L';
+                    break;
+                case Direction.Right:
+                    val = 'R';
+                    break;
+                default:
+                    return;
+            }            
+            foreach (Sprite sprite in _sprites)
+            {
+                sprite.SetDirection(val);
+            }
+        }
+
+        public void SelfDestruct()
+        // removes the entity from the level
+        {
+            _level.RemoveEntity(this);
+        }
 
         public void MoveTo(Vector2 pos)
         {
@@ -110,7 +139,17 @@ namespace AppDevGame
         }
         public void MoveBy(Vector2 delta)
         {
+            // physically move a sprite to a new position
             _position += delta;
+            // update the all the sprites to make sure they are facing towards the correct direction
+            if (delta.X < 0) 
+            {
+                UpdateSpriteDirections(Direction.Left);
+            }
+            else if (delta.X > 0)
+            {
+                UpdateSpriteDirections(Direction.Right);
+            }
         }
 
         public virtual void OnCollision(Entity other)

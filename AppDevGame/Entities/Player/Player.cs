@@ -19,76 +19,61 @@ namespace AppDevGame
         DownLeft
     }
 
-    public class Player : Entity
+    public class Player : LiveEntity
     {
-        private float _speed;
-        private int _maxHealth;
-        private int _currentHealth;
-        private int _coinsCollected = 0;
-        private int _attackDamage = 2;
-        private int _attackRange = 120;
-        private Texture2D _healthFullTexture;
-        private Texture2D _healthEmptyTexture;
+        private Texture2D _idleTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Idle");
+        private Texture2D _runTexture = MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Run");
+
+        private Texture2D _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
+        private Texture2D _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
+        private Texture2D _projectileTexture = MainApp.GetInstance()._imageLoader.GetResource("Projectile");
+
+        protected int _coinCount = 0;
+
         private Dictionary<string, double> _lastSoundTimes = new Dictionary<string, double>();
 
         private float _heartScale = 2.0f; // Scale factor for the heart
         private float _playerScale = 2.0f; // Scale factor for the player
-        private Texture2D _backgroundTexture; // Background texture
 
         private Direction _lastDirection;
-        private string _currentLevel;
         private double _lastShotTime;
-        private Texture2D _projectileTexture;
         private AnimatedSprite _runningAnimation;
         private AnimatedSprite _idleAnimation;
         private bool _isRunning;
-        private SpriteEffects _spriteEffect;
 
-        public Player(LevelWindow level, Texture2D runningTexture, Texture2D idleTexture, Vector2 position, Texture2D backgroundTexture, float speed = 200f, int maxHealth = 100)
-            : base(level, runningTexture, position, EntityType.Player)
+        public Player(LevelWindow level, Texture2D runningTexture, Texture2D idleTexture, Vector2 position, float speed = 200f, int maxHealth = 3)
+            : base(level, position, EntityType.Player, maxHealth, 2, speed)
         {
             _speed = speed;
             _maxHealth = maxHealth;
             _currentHealth = maxHealth;
-            _backgroundTexture = backgroundTexture;
-
-            _healthFullTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_full");
-            _healthEmptyTexture = MainApp.GetInstance()._imageLoader.GetResource("Health_empty");
-            _projectileTexture = MainApp.GetInstance()._imageLoader.GetResource("Projectile");
-            SetCollidableTypes(EntityType.Item, EntityType.Obstacle, EntityType.Enemy, EntityType.Lantern);
+            
+            AddCollidableType(EntityType.Item);
+            AddCollidableType(EntityType.Obstacle);
+            AddCollidableType(EntityType.Enemy);
+            AddCollidableType(EntityType.Lantern);
 
             int hitboxWidth = (int)(runningTexture.Width * _playerScale / 6);
             int hitboxHeight = (int)(runningTexture.Height * _playerScale);
             _hitbox = new Rectangle((int)position.X, (int)position.Y, hitboxWidth, hitboxHeight);
 
-            _currentLevel = "Level1";
             _lastShotTime = -1; // Initialize to -1 so the player can shoot immediately at the start
 
-            _runningAnimation = new AnimatedSprite(runningTexture, 6, 0.2);
-            _idleAnimation = new AnimatedSprite(idleTexture, 5, 0.25);
+            _runningAnimation = new AnimatedSprite(_runTexture, 6, 0.2);
+            _idleAnimation = new AnimatedSprite(_idleTexture, 5, 0.25);
+            AddSprite(_runningAnimation);
+            AddSprite(_idleAnimation);
             _isRunning = false;
-            _spriteEffect = SpriteEffects.None; // Initialize to -1 so the player can shoot immediately at the start
-        }
-
-        public int CoinsCollected => _coinsCollected;
-        public string CurrentLevel => _currentLevel;
-
-        public void SetCurrentLevel(string level)
-        {
-            _currentLevel = level;
         }
 
         public void CollectCoin()
         {
-            _coinsCollected++;
-            MainApp.Log("Coin collected. Total coins: " + _coinsCollected);
+            _coinCount++;
+            MainApp.Log("Coin collected. Total coins: " + _coinCount);
             AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("coin_collect");
         }
 
-        public int CurrentHealth => _currentHealth;
-        public int MaxHealth => _maxHealth;
-
-        public void TakeDamage(int damage)
+        public override void TakeDamage(int damage)
         {
             _currentHealth -= damage;
             PlaySoundWithDelay("player_damage");
@@ -101,7 +86,7 @@ namespace AppDevGame
             }
         }
 
-        public void Heal(int amount)
+        public override void Heal(int amount)
         {
             _currentHealth = Math.Min(_currentHealth + amount, _maxHealth);
             AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("heart_collect");
@@ -116,30 +101,35 @@ namespace AppDevGame
                 Vector2 movement = Vector2.Zero;
                 KeyboardState state = Keyboard.GetState();
                 _isRunning = false;
+                _currentSprite = 0;
 
                 if (state.IsKeyDown(Keys.W))
                 {
                     movement.Y -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     _lastDirection = Direction.Up;
                     _isRunning = true;
+                    _currentSprite = 1;
                 }
                 if (state.IsKeyDown(Keys.S))
                 {
                     movement.Y += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     _lastDirection = Direction.Down;
                     _isRunning = true;
+                    _currentSprite = 1;
                 }
                 if (state.IsKeyDown(Keys.A))
                 {
                     movement.X -= _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     _lastDirection = Direction.Left;
                     _isRunning = true;
+                    _currentSprite = 1;
                 }
                 if (state.IsKeyDown(Keys.D))
                 {
                     movement.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     _lastDirection = Direction.Right;
                     _isRunning = true;
+                    _currentSprite = 1;
                 }
                 
                 // Check for diagonal movement
@@ -178,37 +168,20 @@ namespace AppDevGame
                     _lastShotTime = gameTime.TotalGameTime.TotalSeconds;
                 }
 
-                var lanterns = _level.GetEntitiesInRange(_position, _hitbox.Width).OfType<Lantern>().ToList();
-                foreach (var lantern in lanterns)
-                {
-                    if (!lantern.IsLit)
-                    {
-                        lantern.IsLit = true;
-                        ((Level1)_level).IncrementLitLanterns();
-                        MainApp.Log("Lantern lit up");
-                    }
-                }
-                if (_isRunning)
-                {
-                    _runningAnimation.Update(gameTime);
-                }
-                else
-                {
-                    _idleAnimation.Update(gameTime);
-                }
+                base.Update(gameTime);
             }
         }
 
         private void AttackEnemies()
         {
             PlaySoundWithDelay("player_attack");
-            var entitiesInRange = _level.GetEntitiesInRange(_position, _attackRange);
+            var entitiesInRange = _level.GetEntitiesInRange(_position, 120);
 
             foreach (var entity in entitiesInRange)
             {
                 if (entity is Enemy enemy && IsInAttackDirection(enemy))
                 {
-                    enemy.TakeDamage(_attackDamage);
+                    enemy.TakeDamage(_damage);
                 }
             }
         }
@@ -268,21 +241,21 @@ namespace AppDevGame
             switch (_lastDirection)
             {
                 case Direction.Up:
-                    return entity.Position.Y < _position.Y;
+                    return entity.GetPosition().Y < _position.Y;
                 case Direction.Down:
-                    return entity.Position.Y > _position.Y;
+                    return entity.GetPosition().Y > _position.Y;
                 case Direction.Left:
-                    return entity.Position.X < _position.X;
+                    return entity.GetPosition().X < _position.X;
                 case Direction.Right:
-                    return entity.Position.X > _position.X;
+                    return entity.GetPosition().X > _position.X;
                 case Direction.UpRight:
-                    return entity.Position.X > _position.X && entity.Position.Y < _position.Y;
+                    return entity.GetPosition().X > _position.X && entity.GetPosition().Y < _position.Y;
                 case Direction.UpLeft:
-                    return entity.Position.X < _position.X && entity.Position.Y < _position.Y;
+                    return entity.GetPosition().X < _position.X && entity.GetPosition().Y < _position.Y;
                 case Direction.DownRight:
-                    return entity.Position.X > _position.X && entity.Position.Y > _position.Y;
+                    return entity.GetPosition().X > _position.X && entity.GetPosition().Y > _position.Y;
                 case Direction.DownLeft:
-                    return entity.Position.X < _position.X && entity.Position.Y > _position.Y;
+                    return entity.GetPosition().X < _position.X && entity.GetPosition().Y > _position.Y;
                 default:
                     return false;
             }
@@ -292,15 +265,9 @@ namespace AppDevGame
         {
             try
             {
-                if (_isRunning)
-                {
-                    _runningAnimation.Draw(spriteBatch, _position - offset, _playerScale, _spriteEffect);
-                }
-                else
-                {
-                    _idleAnimation.Draw(spriteBatch, _position - offset, _playerScale, _spriteEffect);
-                }
-                // spriteBatch.Draw(_texture, _position - offset, null, Color.White, 0f, Vector2.Zero, _playerScale, SpriteEffects.None, 0f);
+                base.Draw(spriteBatch, offset);
+                MainApp.Log("No crash yet");
+                //spriteBatch.Draw(_texture, _position - offset, null, Color.White, 0f, Vector2.Zero, _playerScale, SpriteEffects.None, 0f);
 
                 int heartWidth = (int)(_healthFullTexture.Width * _heartScale);
                 int heartHeight = (int)(_healthFullTexture.Height * _heartScale);
@@ -310,6 +277,7 @@ namespace AppDevGame
 
                 for (int i = 0; i < totalHearts; i++)
                 {
+                    MainApp.Log("No crash yet 2");
                     Texture2D texture = i < heartsToDraw ? _healthFullTexture : _healthEmptyTexture;
                     Vector2 position = new Vector2(
                         MainApp.GetInstance().GetGraphicsManager().PreferredBackBufferWidth - (heartWidth + spacing) * (totalHearts - i),
@@ -317,6 +285,7 @@ namespace AppDevGame
 
                     spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, _heartScale, SpriteEffects.None, 0f);
                 }
+                MainApp.Log("No crash yet 3");
             }
             catch (Exception ex)
             {
@@ -365,7 +334,12 @@ namespace AppDevGame
 
         public void SetCoins(int coins)
         {
-            _coinsCollected = coins;
+            _coinCount = coins;
+        }
+
+        public int GetCoins()
+        {
+            return _coinCount;
         }
     }
 }

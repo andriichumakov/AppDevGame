@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace AppDevGame
 {
-    public abstract class LevelWindow : BaseWindow
+     public abstract class LevelWindow : BaseWindow
     {
         protected List<Entity> _entities;
         protected List<Entity> _entitiesToAdd;
@@ -71,23 +71,23 @@ namespace AppDevGame
                     int newFrameY = _frameSize.Y;
 
                     // Adjust the frame horizontally based on the player's position
-                    if (_player.Position.X < _frameSize.X + _margin)
+                    if (_player.GetPosition().X < _frameSize.X + _margin)
                     {
-                        newFrameX = (int)Math.Max(0, _player.Position.X - _margin);
+                        newFrameX = (int)Math.Max(0, _player.GetPosition().X - _margin);
                     }
-                    else if (_player.Position.X + _player.Hitbox.Width > _frameSize.X + _frameSize.Width - _margin)
+                    else if (_player.GetPosition().X + _player.GetHitbox().Width > _frameSize.X + _frameSize.Width - _margin)
                     {
-                        newFrameX = (int)Math.Min(_actualSize.Width - _frameSize.Width, _player.Position.X + _player.Hitbox.Width - _frameSize.Width + _margin);
+                        newFrameX = (int)Math.Min(_actualSize.Width - _frameSize.Width, _player.GetPosition().X + _player.GetHitbox().Width - _frameSize.Width + _margin);
                     }
 
                     // Adjust the frame vertically based on the player's position
-                    if (_player.Position.Y < _frameSize.Y + _margin)
+                    if (_player.GetPosition().Y < _frameSize.Y + _margin)
                     {
-                        newFrameY = (int)Math.Max(0, _player.Position.Y - _margin);
+                        newFrameY = (int)Math.Max(0, _player.GetPosition().Y - _margin);
                     }
-                    else if (_player.Position.Y + _player.Hitbox.Height > _frameSize.Y + _frameSize.Height - _margin)
+                    else if (_player.GetPosition().Y + _player.GetHitbox().Height > _frameSize.Y + _frameSize.Height - _margin)
                     {
-                        newFrameY = (int)Math.Min(_actualSize.Height - _frameSize.Height, _player.Position.Y + _player.Hitbox.Height - _frameSize.Height + _margin);
+                        newFrameY = (int)Math.Min(_actualSize.Height - _frameSize.Height, _player.GetPosition().Y + _player.GetHitbox().Height - _frameSize.Height + _margin);
                     }
 
                     // Move the frame by the calculated deltas
@@ -117,7 +117,7 @@ namespace AppDevGame
 
                 foreach (var entity in _entities.ToList()) // Use ToList() to avoid modifying the collection while iterating
                 {
-                    if (_frameSize.Contains(entity.Hitbox) || _frameSize.Intersects(entity.Hitbox))
+                    if (_frameSize.Contains(entity.GetHitbox()) || _frameSize.Intersects(entity.GetHitbox()))
                     {
                         entity.Update(gameTime);
                     }
@@ -169,7 +169,7 @@ namespace AppDevGame
 
                 foreach (var entity in _entities)
                 {
-                    if (_frameSize.Contains(entity.Hitbox) || _frameSize.Intersects(entity.Hitbox))
+                    if (_frameSize.Contains(entity.GetHitbox()) || _frameSize.Intersects(entity.GetHitbox()))
                     {
                         // Offset the entity's drawing position by the frame's position
                         entity.Draw(spriteBatch, new Vector2(_frameSize.X, _frameSize.Y));
@@ -184,7 +184,7 @@ namespace AppDevGame
 
             if (_player != null)
             {
-                string coinText = "Coins: " + _player.CoinsCollected;
+                string coinText = "Coins: " + _player.GetCoins();
                 SpriteFont font = MainApp.GetInstance()._fontLoader.GetResource("Default");
                 if (font != null)
                 {
@@ -200,14 +200,14 @@ namespace AppDevGame
                 var entities = _entities.ToList();
                 for (int i = 0; i < entities.Count; i++)
                 {
-                    if (!_frameSize.Contains(entities[i].Hitbox) && !_frameSize.Intersects(entities[i].Hitbox))
+                    if (!_frameSize.Contains(entities[i].GetHitbox()) && !_frameSize.Intersects(entities[i].GetHitbox()))
                     {
                         continue;
                     }
 
                     for (int j = i + 1; j < entities.Count; j++)
                     {
-                        if (entities[i].Hitbox.Intersects(entities[j].Hitbox))
+                        if (entities[i].GetHitbox().Intersects(entities[j].GetHitbox()))
                         {
                             entities[i].OnCollision(entities[j]);
                             entities[j].OnCollision(entities[i]);
@@ -231,7 +231,7 @@ namespace AppDevGame
 
                 foreach (var entity in _entities)
                 {
-                    float distanceSquared = Vector2.DistanceSquared(position, entity.Position);
+                    float distanceSquared = Vector2.DistanceSquared(position, entity.GetPosition());
                     if (distanceSquared <= rangeSquared)
                     {
                         entitiesInRange.Add(entity);
@@ -276,7 +276,7 @@ namespace AppDevGame
                 for (int i = 0; i < numberOfCoins; i++)
                 {
                     Vector2 position = GenerateRandomPosition();
-                    AddEntity(new Coin(this, coinTexture, position));
+                    AddEntity(new Coin(this, position));
                 }
             }
         }

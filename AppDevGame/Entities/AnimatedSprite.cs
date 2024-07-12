@@ -19,8 +19,8 @@ namespace AppDevGame
         private double _timePerFrame;
         private double _totalElapsed;
 
-        public AnimatedSprite(Texture2D texture, int frameCount, double frameTime, char facingDirection = 'L') 
-            : base(texture, facingDirection)
+        public AnimatedSprite(Texture2D texture, int frameCount, double frameTime, char facingDirection = 'R', float scale = 1.0f) 
+            : base(texture, facingDirection, scale)
         {
             _frameCount = frameCount;
             _frameWidth = _texture.Width / frameCount;
@@ -28,6 +28,11 @@ namespace AppDevGame
             _currentFrame = 0;
             _timePerFrame = frameTime;
             _totalElapsed = 0;
+        }
+
+        public override Vector2 GetSize()
+        {
+            return new Vector2(_frameWidth * _scale, _frameHeight * _scale);
         }
 
         public override void Update(GameTime gameTime)
@@ -55,7 +60,7 @@ namespace AppDevGame
                 Color.White,
                 0f,
                 origin,
-                scale,
+                _scale,
                 _spriteEffects,
                 0f
             );

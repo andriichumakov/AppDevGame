@@ -131,8 +131,7 @@ namespace AppDevGame
                 newLevel,
                 MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Run"),
                 MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Idle"),
-                new Vector2(100, 100),
-                MainApp.GetInstance().BackgroundTexture
+                new Vector2(100, 100)
             );
             MainApp.Log("setting the player to the level...");
             newLevel.SetPlayer(newPlayer);
@@ -167,12 +166,10 @@ namespace AppDevGame
                     loadedLevel,
                     MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Run"),
                     MainApp.GetInstance()._imageLoader.GetResource("Gunner_Blue_Idle"),
-                    gameState.playerPosition,
-                    MainApp.GetInstance().BackgroundTexture
+                    gameState.playerPosition
                 );
                 loadedPlayer.SetHealth(gameState.playerHealth);
                 loadedPlayer.SetCoins(gameState.coinsCollected);
-                loadedPlayer.SetCurrentLevel(gameState.currentLevel);
                 loadedLevel.SetPlayer(loadedPlayer);
                 _windowManager.LoadWindow(loadedLevel);
 

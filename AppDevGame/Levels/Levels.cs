@@ -53,22 +53,22 @@ namespace AppDevGame
             if (frogTexture != null)
             {
                 // Add entities at specified positions
-                AddEntity(new Frog(this, frogTexture, new Vector2(850, 1100), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new Frog(this, frogTexture, new Vector2(700, 1300), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new Frog(this, frogTexture, new Vector2(1200, 450), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Frog(this, new Vector2(850, 1100), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Frog(this, new Vector2(700, 1300), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Frog(this,  new Vector2(1200, 450), maxHealth: 100, damage: 1, scale: 2.0f));
             }
 
             if (ghostTexture != null)
             {
                 // Add ghosts at specified positions
-                AddEntity(new Ghost(this, ghostTexture, new Vector2(600, 800), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new Ghost(this, ghostTexture, new Vector2(800, 500), maxHealth: 100, damage: 1, scale: 2.0f));
-                AddEntity(new Ghost(this, ghostTexture, new Vector2(1000, 450), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Ghost(this, new Vector2(600, 800), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Ghost(this, new Vector2(800, 500), maxHealth: 100, damage: 1, scale: 2.0f));
+                AddEntity(new Ghost(this, new Vector2(1000, 450), maxHealth: 100, damage: 1, scale: 2.0f));
             }
 
             if (playerRunTexture != null && playerIdleTexture != null)
             {
-                SetPlayer(new Player(this, playerRunTexture, playerIdleTexture, new Vector2(700, 500), MainApp.GetInstance().BackgroundTexture, 200f, 100));
+                SetPlayer(new Player(this, playerRunTexture, playerIdleTexture, new Vector2(700, 500), 200f, 100));
             }
 
             if (activePortalTexture != null && inactivePortalTexture != null)
@@ -105,7 +105,7 @@ namespace AppDevGame
             if (bossTexture != null)
             {
                 // Initialize the boss but do not add it yet
-                _boss = new PlantBeast(this, bossTexture, Vector2.Zero, maxHealth: 300, damage: 10, speed: 100f, scale: 3.0f);
+                _boss = new PlantBeast(this, Vector2.Zero, maxHealth: 300, damage: 10, speed: 100f, scale: 3.0f);
             }
 
             // hidden obstacles
@@ -201,20 +201,20 @@ namespace AppDevGame
         {
             if (_currentHeartCount < _maxHearts)
             {
-                AddEntity(new Heart(this, heartTexture, position, scale: 2.0f)); // Ensure the scale value is provided
+                AddEntity(new Heart(this, heartTexture, position)); // Ensure the scale value is provided
                 _currentHeartCount++;
             }
         }
 
         private void AddCoin(Texture2D coinTexture, Vector2 position)
         {
-            AddEntity(new Coin(this, coinTexture, position, scale: 2.0f)); // Ensure the scale value is provided
+            AddEntity(new Coin(this, position)); // Ensure the scale value is provided
             MainApp.Log($"Coin added at position: {position}");
         }
 
         private void AddLantern(Texture2D unlitTexture, Texture2D litTexture, Vector2 position)
         {
-            AddEntity(new Lantern(this, litTexture, unlitTexture, position));
+            AddEntity(new Lantern(this, position));
             _totalLanterns++;
         }
 
@@ -239,7 +239,7 @@ namespace AppDevGame
                 if (!_bossSpawned && _boss != null)
                 {
                     // Spawn the boss near the portal
-                    _boss.SpawnNearPortal(_portal.Position);
+                    _boss.SpawnNearPortal(_portal.GetPosition());
                     AddEntity(_boss);
                     _bossSpawned = true;
                 }
@@ -288,7 +288,7 @@ namespace AppDevGame
             // Draw the boss health bar if the boss is present
             if (_boss != null && !_boss.IsDead())
             {
-                string bossHealthText = $"Boss: {_boss.Name} Health: {_boss.CurrentHealth} / {_boss.MaxHealth}";
+                string bossHealthText = $"Boss: {_boss.GetName()} Health: {_boss.GetCurrentHealth()} / {_boss.GetMaxHealth()}";
                 spriteBatch.DrawString(_font, bossHealthText, new Vector2(10, 100), Color.Green);
             }
         }

@@ -7,12 +7,12 @@ namespace AppDevGame
     {
         private float _scale;
         public bool IsActive { get; set; }
-        private Texture2D _inactiveTexture;
-        private Texture2D _activeTexture;
+        private Texture2D _inactiveTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalInactive");
+        private Texture2D _activeTexture = MainApp.GetInstance()._imageLoader.GetResource("PortalActive");
         private bool _hasPlayedActivationSound;
 
         public Portal(LevelWindow level, Texture2D activeTexture, Texture2D inactiveTexture, Vector2 position, float scale = 1.5f, bool isActive = false)
-            : base(level, inactiveTexture, position, EntityType.Obstacle)
+            : base(level, position, EntityType.Obstacle)
         {
             _activeTexture = activeTexture;
             _inactiveTexture = inactiveTexture;
@@ -30,7 +30,6 @@ namespace AppDevGame
             {
                 // Update hitbox position
                 _hitbox.Location = _position.ToPoint();
-                _texture = _activeTexture; // Set the active texture
 
                 // Play activation sound only once
                 if (!_hasPlayedActivationSound)
@@ -40,7 +39,7 @@ namespace AppDevGame
                 }
 
                 // Check for collision with the player
-                if (Hitbox.Intersects(_level.Player.Hitbox))
+                if (_hitbox.Intersects(_level.Player.GetHitbox()))
                 {
                     // Teleport player to main menu
                     new LoadWindowCommand(WindowManager.GetInstance(), MainApp.GetInstance().MainMenu).Execute();
@@ -48,14 +47,9 @@ namespace AppDevGame
             }
             else
             {
-                _texture = _inactiveTexture; // Set the inactive texture
+                
                 _hasPlayedActivationSound = false; // Reset the flag if the portal becomes inactive
             }
-        }
-
-        public override void Draw(SpriteBatch spriteBatch, Vector2 offset)
-        {
-            spriteBatch.Draw(_texture, _position - offset, null, Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 0f);
         }
     }
 }

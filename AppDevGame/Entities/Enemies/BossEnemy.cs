@@ -7,20 +7,30 @@ namespace AppDevGame
     public abstract class BossEnemy : Enemy
     {
         private string _name;
-        private float _speed;
         private Random _random;
         private bool _isSpawned;
 
-        public BossEnemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float speed, float scale, string name)
-            : base(level, texture, position, maxHealth, damage, scale)
+        private Sprite _bossSprite = new Sprite(MainApp.GetInstance()._imageLoader.GetResource("PlantBeast"));
+
+        public BossEnemy(LevelWindow level, Vector2 position, int maxHealth, int damage, float speed, float scale, string name)
+            : base(level, position, EntityType.Enemy, maxHealth, damage, scale)
         {
             _speed = speed;
             _name = name;
             _random = new Random();
-            _isSpawned = false;
+
+            AddSprite(_bossSprite);
+            Vector2 spriteSize = _bossSprite.GetSize();
+            _hitbox = new Rectangle(0, 0, (int) spriteSize.X, (int) spriteSize.Y);
+
+            AddCollidableType(EntityType.Player);
+            AddCollidableType(EntityType.Obstacle);
         }
 
-        public string Name => _name;
+        public string GetName()
+        {
+            return _name;
+        }
 
         public virtual void SpawnNearPortal(Vector2 portalPosition)
         {
@@ -54,14 +64,6 @@ namespace AppDevGame
             base.Update(gameTime);
         }
 
-        private void MoveTowardsPlayer(GameTime gameTime)
-        {
-            Vector2 direction = _level.Player.Position - _position;
-            direction.Normalize();
-            _position += direction * _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            _hitbox.Location = _position.ToPoint();
-        }
-
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)
         {
             base.Draw(spriteBatch, offset);
@@ -82,19 +84,6 @@ namespace AppDevGame
                 Attack(other);
             }
             base.OnCollision(other);
-        }
-
-        public override void Attack(Entity target)
-        {
-            // Default attack logic
-            AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("enemy_attack");
-            if (Hitbox.Intersects(target.Hitbox))
-            {
-                if (target is Player player)
-                {
-                    player.TakeDamage(Damage);
-                }
-            }
         }
     }
 }

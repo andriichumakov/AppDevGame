@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,17 +10,21 @@ namespace AppDevGame
         private float _speed = 800f; // Set the desired speed for the projectile
 
         public Projectile(LevelWindow level, Texture2D texture, Vector2 position, Vector2 direction)
-            : base(level, texture, position, EntityType.Projectile)
+            : base(level, position, EntityType.Projectile)
         {
             _direction = direction;
             _direction.Normalize(); // Normalize the direction vector to ensure it moves correctly in all directions
 
             // Set the hitbox to be 10 times larger
+            Sprite sprite = new Sprite(texture);
+            AddSprite(sprite);
+            _hitbox = new Rectangle(0, 0, (int) sprite.GetSize().X, (int) sprite.GetSize().Y);
+
             int hitboxWidth = texture.Width * 5;
             int hitboxHeight = texture.Height * 5;
             _hitbox = new Rectangle((int)position.X, (int)position.Y, hitboxWidth, hitboxHeight);
 
-            SetCollidableTypes(EntityType.Enemy);
+            AddCollidableType(EntityType.Enemy);
         }
 
         public override void Update(GameTime gameTime)
@@ -35,11 +40,6 @@ namespace AppDevGame
             }
 
             base.Update(gameTime);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch, Vector2 offset)
-        {
-            spriteBatch.Draw(_texture, _position - offset, Color.White);
         }
 
         public override void OnCollision(Entity other)

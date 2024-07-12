@@ -1,1 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?><PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><SourceFile>F:/AppDevGame/AppDevGame/AppDevGame/Content/Fonts/Default.spritefont</SourceFile><SourceTime>2024-06-21T00:30:23.9271982+02:00</SourceTime><DestFile>F:/AppDevGame/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Fonts/Default.xnb</DestFile><DestTime>2024-06-21T00:32:40.3892809+02:00</DestTime><Importer>FontDescriptionImporter</Importer><ImporterTime>2022-07-26T13:44:56+02:00</ImporterTime><Processor>FontDescriptionProcessor</Processor><ProcessorTime>2022-07-26T13:44:56+02:00</ProcessorTime><Parameters><Key>PremultiplyAlpha</Key><Value>True</Value></Parameters><Parameters><Key>TextureFormat</Key><Value>Compressed</Value></Parameters><Dependencies /><BuildAsset /><BuildOutput /></PipelineBuildEvent>
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/anast/OneDrive/Desktop/andriiko/school work/App Dev/AppDevGame/AppDevGame/Content/Fonts/Default.spritefont</SourceFile>
+  <SourceTime>2024-06-21T16:25:24.9562333+02:00</SourceTime>
+  <DestFile>C:/Users/anast/OneDrive/Desktop/andriiko/school work/App Dev/AppDevGame/AppDevGame/Content/bin/DesktopGL/Content/Fonts/Default.xnb</DestFile>
+  <DestTime>2024-07-10T11:26:50.1600132+02:00</DestTime>
+  <Importer>FontDescriptionImporter</Importer>
+  <ImporterTime>2022-07-26T13:44:56+02:00</ImporterTime>
+  <Processor>FontDescriptionProcessor</Processor>
+  <ProcessorTime>2022-07-26T13:44:56+02:00</ProcessorTime>
+  <Parameters>
+    <Key>PremultiplyAlpha</Key>
+    <Value>True</Value>
+  </Parameters>
+  <Parameters>
+    <Key>TextureFormat</Key>
+    <Value>Compressed</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

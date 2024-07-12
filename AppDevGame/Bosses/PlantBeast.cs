@@ -5,8 +5,8 @@ namespace AppDevGame
 {
     public class PlantBeast : BossEnemy
     {
-        public PlantBeast(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float speed, float scale)
-            : base(level, texture, position, maxHealth, damage, speed, scale, "PlantBeast")
+        public PlantBeast(LevelWindow level, Vector2 position, int maxHealth, int damage, float speed, float scale)
+            : base(level, position, maxHealth, damage, speed, scale, "PlantBeast")
         {
         }
 
@@ -25,7 +25,7 @@ namespace AppDevGame
 
         public override void ResolveCollision(Entity other)
         {
-            if (CurrentHealth <= 0)
+            if (_currentHealth <= 0)
             {
                 AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("plantbeast_die");
             }

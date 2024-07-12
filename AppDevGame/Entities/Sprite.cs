@@ -19,6 +19,16 @@ namespace AppDevGame
             _scale = scale;
         }
 
+        public void SetScale(float scale)
+        {
+            _scale = scale;
+        }
+
+        public virtual Vector2 GetSize()
+        {
+            return new Vector2(_texture.Width * _scale, _texture.Height * _scale);
+        }
+
         public virtual void Update(GameTime gameTime)
         {
             // override in subclasses

@@ -11,7 +11,7 @@ namespace AppDevGame
         protected Color _backgroundColor;
         protected Color _textColor;
         protected string _text;
-        private bool _isVisible;
+        protected bool _isVisible;
 
         protected UIElement(Rectangle bounds, Texture2D texture, Color backgroundColor, Color textColor, string text)
         {

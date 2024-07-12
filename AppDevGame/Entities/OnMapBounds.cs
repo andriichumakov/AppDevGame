@@ -6,7 +6,7 @@ namespace AppDevGame
     // TODO: Test new functionality
     public class OnMapBounds : Entity
     {
-        private static bool _debugMode = true;
+        private static bool _debugMode = false;
         private static Texture2D _debugTexture;
 
         public OnMapBounds(LevelWindow level, Rectangle hitbox)

@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -12,19 +13,19 @@ namespace AppDevGame
         Player,
         Enemy,
         Lantern,
-        Interactable,
+        Item,
         Projectile,
     }
 
 
-    public class Entity
+    public abstract class Entity
     {
         protected LevelWindow _level;
         protected Rectangle _hitbox;
         protected Vector2 _position;
 
         protected EntityType _entityType; // used to categorize different entities in groups for collision detection purposes
-        protected List<Sprite> _sprites = new List<Sprite>(); // sprite array allows our entities to use multiple sprites at once
+        protected List<Sprite> _sprites = new List<Sprite>(); // sprite array allows our entities to use multiple sprites
         protected int _currentSprite = -1; // -1 means that there is no sprite to display
         
         protected HashSet<EntityType> _collidesWith = new HashSet<EntityType>();
@@ -34,6 +35,7 @@ namespace AppDevGame
 
         public static Rectangle GetNewHitbox()
         {
+            // overload for correct hitbox sizes
             return new Rectangle(0, 0, 100, 100);
         }
 
@@ -45,15 +47,36 @@ namespace AppDevGame
             _canMove = canMove;
             _moveSpeed = moveSpeed;
             _hitbox = GetNewHitbox();
+
+        }
+        
+        public EntityType GetEntityType() 
+        {
+            return _entityType;
         }
 
-        public void AddSprite(Sprite sprite)
+        public Vector2 GetPosition()
+        {
+            return _position;
+        }
+
+        public virtual void AddSprite(Sprite sprite)
         {
             _sprites.Add(sprite);
             if (_currentSprite == -1)
             {
                 _currentSprite = 0; // we are now using a sprite
             }
+        }
+
+        public LevelWindow GetLevel()
+        {
+            return _level;
+        }
+
+        public void SetLevel(LevelWindow level)
+        {
+            _level = level;
         }
 
         public void SetCurrentSprite(int spriteIndex)
@@ -73,11 +96,6 @@ namespace AppDevGame
             return _sprites[_currentSprite];
         }
 
-        public EntityType GetEntityType()
-        {
-            return _entityType;
-        }
-
         public Rectangle GetHitbox()
         {
             return _hitbox;
@@ -95,7 +113,6 @@ namespace AppDevGame
             {
                 return;
             }
-
             Vector2 drawPosition = _position - offset;
             drawSprite.Draw(spriteBatch, drawPosition);
         }
@@ -141,6 +158,7 @@ namespace AppDevGame
         {
             // physically move a sprite to a new position
             _position += delta;
+            _hitbox.Location += delta.ToPoint();
             // update the all the sprites to make sure they are facing towards the correct direction
             if (delta.X < 0) 
             {
@@ -193,55 +211,6 @@ namespace AppDevGame
                 }
             }
         }
-
-        public class LiveEntity : Entity
-        {
-            //differs from the normal entity with the fact that it has health and can be killed
-            protected int _maxHealth;
-            protected int _currentHealth;
-            protected int _damage;
-
-            public LiveEntity(LevelWindow level, Vector2 pos, EntityType type, int maxHealth, int damage=1) : base(level, pos, type)
-            {
-                _maxHealth = maxHealth;
-                _currentHealth = maxHealth;
-                _damage = damage;
-            }
-
-            public void RestoreHealth()
-            {
-                _currentHealth = _maxHealth;
-            }
-
-            public void Heal(int hearts)
-            {
-                _currentHealth += hearts;
-                if (_currentHealth > _maxHealth)
-                {
-                    RestoreHealth();
-                }
-            }
-
-            public void TakeDamage(int damage)
-            {
-                _currentHealth -= damage;
-            }
-
-            public bool isDead()
-            {
-                return _currentHealth <= 0;
-            }
-
-            public override void Update(GameTime gameTime)
-            {
-                if (isDead())
-                {
-                    _level.RemoveEntity(this);
-                }
-                base.Update(gameTime);
-            }
-        }
-
 
 
     }

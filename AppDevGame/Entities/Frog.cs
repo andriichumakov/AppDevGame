@@ -7,16 +7,15 @@ namespace AppDevGame
     public class Frog : Enemy
     {
         private AnimatedSprite _jumpingAnimation;
-        private float _speed;
         private Random _random;
         private SpriteEffects _spriteEffect;
         private double _attackCooldown;
         private const double AttackCooldownDuration = 1.0; // 1 second cooldown
 
-        public Frog(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float speed = 100f, float scale = 1.5f)
-            : base(level, texture, position, maxHealth, damage, scale)
+        public Frog(LevelWindow level, Vector2 position, int maxHealth, int damage, float speed = 100f, float scale = 1.5f)
+            : base(level, position, EntityType.Enemy, maxHealth, damage, scale)
         {
-            _jumpingAnimation = new AnimatedSprite(texture, 4, 0.1); // 4 frames, 0.1 seconds per frame
+            _jumpingAnimation = new AnimatedSprite(MainApp.GetInstance()._imageLoader.GetResource("frog_full_jumping"), 4, 0.1); // 4 frames, 0.1 seconds per frame
             _speed = speed;
             _random = new Random();
             _spriteEffect = SpriteEffects.None;
@@ -31,7 +30,7 @@ namespace AppDevGame
             _jumpingAnimation.Update(gameTime);
             _attackCooldown -= gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (_attackCooldown <= 0 && Hitbox.Intersects(_level.Player.Hitbox))
+            if (_attackCooldown <= 0 && _hitbox.Intersects(_level.Player.GetHitbox()))
             {
                 Attack(_level.Player);
                 _attackCooldown = AttackCooldownDuration;
@@ -41,7 +40,7 @@ namespace AppDevGame
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)
         {
             Vector2 drawPosition = _position - offset;
-            _jumpingAnimation.Draw(spriteBatch, drawPosition, _scale, _spriteEffect);
+            base.Draw(spriteBatch, offset);
             DrawHealthBar(spriteBatch, drawPosition);
         }
 
@@ -50,17 +49,17 @@ namespace AppDevGame
             // Implement attack logic
             if (target is Player player)
             {
-                player.TakeDamage(Damage);
+                player.TakeDamage(_damage);
                 PlaySoundWithDelay("frog_attack"); // Make sure the sound is defined and loaded
             }
         }
 
-        private void MoveTowardsPlayer(GameTime gameTime)
+        public override void MoveTowardsPlayer(GameTime gameTime)
         {
             Player player = _level.Player;
             if (player != null)
             {
-                Vector2 direction = player.Position - _position;
+                Vector2 direction = player.GetPosition() - _position;
                 direction.Normalize();
                 _position += direction * _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -76,19 +75,5 @@ namespace AppDevGame
             }
         }
 
-        protected override void DrawHealthBar(SpriteBatch spriteBatch, Vector2 drawPosition)
-        {
-            int barWidth = (int)(_hitbox.Width * 0.5); // Half width for smaller health bar
-            int barHeight = 5;
-            int barYOffset = 10;
-            float healthPercentage = (float)_currentHealth / _maxHealth;
-
-            Vector2 healthBarPosition = drawPosition + new Vector2(-barWidth / 2, -(_hitbox.Height / 2 + barYOffset));
-            Rectangle healthBarBackground = new Rectangle((int)healthBarPosition.X, (int)healthBarPosition.Y, barWidth, barHeight);
-            Rectangle healthBarForeground = new Rectangle((int)healthBarPosition.X, (int)healthBarPosition.Y, (int)(barWidth * healthPercentage), barHeight);
-
-            spriteBatch.Draw(_healthBarTexture, healthBarBackground, Color.Red);
-            spriteBatch.Draw(_healthBarTexture, healthBarForeground, Color.Yellow);
-        }
     }
 }

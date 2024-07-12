@@ -6,38 +6,33 @@ namespace AppDevGame
     public class Lantern : Entity
     {
         private bool _isLit;
-        private Texture2D _litTexture;
-        private Texture2D _unlitTexture;
+        private Texture2D _litTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternLit");
+        private Texture2D _unlitTexture = MainApp.GetInstance()._imageLoader.GetResource("LanternUnlit");
 
-        public Lantern(LevelWindow level, Texture2D litTexture, Texture2D unlitTexture, Vector2 position, bool isLit = false)
-            : base(level, unlitTexture, position, EntityType.Lantern)
+        public Lantern(LevelWindow level, Vector2 position, bool isLit = false)
+            : base(level, position, EntityType.Lantern)
         {
-            _litTexture = litTexture;
-            _unlitTexture = unlitTexture;
+            AddSprite(new Sprite(_unlitTexture));
+            AddSprite(new Sprite(_litTexture));
             _isLit = isLit;
-            _hitbox = new Rectangle((int)position.X, (int)position.Y, unlitTexture.Width, unlitTexture.Height);
+            Vector2 spriteSize = GetCurrentSprite().GetSize();
+            _hitbox = new Rectangle(0, 0, (int) spriteSize.X, (int) spriteSize.Y);
+
+            AddCollidableType(EntityType.Player);
         }
 
-        public bool IsLit
+        public bool isLit()
         {
-            get => _isLit;
-            set
-            {
-                _isLit = value;
-                _texture = _isLit ? _litTexture : _unlitTexture;
-                if (_isLit)
-                {
-                    AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("lantern_lit");
-                }
-            }
+            return _isLit;
         }
 
         public override void OnCollision(Entity other)
         {
             if (other is Player && !_isLit)
             {
-                IsLit = true;
+                _isLit = true;
                 ((Level1)_level).IncrementLitLanterns();
+                SetCurrentSprite(1);
                 MainApp.Log("Lantern lit up!");
             }
         }

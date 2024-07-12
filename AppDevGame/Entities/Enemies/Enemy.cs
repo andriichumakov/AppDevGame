@@ -4,84 +4,77 @@ using System.Collections.Generic;
 
 namespace AppDevGame
 {
-    public abstract class Enemy : Entity
+    public abstract class Enemy : LiveEntity
     {
-        public int _maxHealth;
-        public int _currentHealth;
-        private int _damage;
-        protected Texture2D _healthBarTexture;  // Changed to protected
+        protected Texture2D _healthBarTexture;
         private Dictionary<string, double> _lastSoundTimes = new Dictionary<string, double>();
-        private bool _hasDroppedCoin = false; // Track if coin has been dropped
         protected float _scale;
 
-        public Enemy(LevelWindow level, Texture2D texture, Vector2 position, int maxHealth, int damage, float scale = 1.5f)
-            : base(level, texture, position, EntityType.Enemy)
+        protected int visionRange;
+        protected int attackRange;
+
+        protected LiveEntity target = null;
+
+        public Enemy(LevelWindow level, Vector2 position, EntityType type, int maxHealth, int damage, float scale = 1.5f)
+            : base(level, position, type, maxHealth, damage)
         {
-            _maxHealth = maxHealth;
-            _currentHealth = maxHealth;
-            _damage = damage;
             _scale = scale;
             _healthBarTexture = new Texture2D(MainApp.GetInstance().GraphicsDevice, 1, 1);
             _healthBarTexture.SetData(new[] { Color.White });
-            SetCollidableTypes(EntityType.Player, EntityType.Obstacle);
+
+            // make sure that the enemies cannot go through the walls and through the player
+            AddCollidableType(EntityType.Player);
+            AddCollidableType(EntityType.Obstacle);
+
+            // uncomment this to allow the enemies to collide with each other
+            //SetCollidableTypes(EntityType.Enemy);
 
             // Initialize the hitbox to match the scaled size of the enemy image
-            UpdateHitbox();
+            GetNewHitbox();
         }
 
-        public int CurrentHealth => _currentHealth;
-        public int MaxHealth => _maxHealth;
-        public int Damage => _damage;
+        public static new Rectangle GetNewHitbox()
+        {
+            return new Rectangle(0, 0, 0, 0);
+        }
 
-        public virtual void TakeDamage(int damage)
+        public override void AddSprite(Sprite sprite)
+        {
+            sprite.SetScale(_scale);
+            base.AddSprite(sprite);
+        }
+
+        public override void TakeDamage(int damage)
         {
             PlaySoundWithDelay("enemy_damage");
-            _currentHealth -= damage;
-            if (_currentHealth <= 0)
-            {
-                _currentHealth = 0;
-                PlaySoundWithDelay("enemy_die");
-                if (!_hasDroppedCoin)
-                {
-                    DropCoin();
-                    _hasDroppedCoin = true;
-                }
-            }
+            base.TakeDamage(damage);
         }
 
-        private void DropCoin()
+        public void DropCoin()
         {
             Texture2D coinTexture = MainApp.GetInstance()._imageLoader.GetResource("coin1");
             if (coinTexture != null)
             {
-                _level.AddEntity(new Coin(_level, coinTexture, _position));
+                _level.AddEntity(new Coin(_level, _position));
                 AudioManager.GetInstance(MainApp.GetInstance().Content).PlaySoundEffect("coin_collect");
             }
         }
 
-        public bool IsDead()
-        {
-            return _currentHealth <= 0;
-        }
-
-        private void UpdateHitbox()
-        {
-            int hitboxWidth = (int)(_texture.Width * _scale);
-            int hitboxHeight = (int)(_texture.Height * _scale);
-            _hitbox = new Rectangle((int)(_position.X - hitboxWidth / 2), (int)(_position.Y - hitboxHeight / 2), hitboxWidth, hitboxHeight);
-        }
-
         public override void Update(GameTime gameTime)
         {
+            if (IsDead())
+            {
+                DropCoin();
+            }
             base.Update(gameTime);
-            UpdateHitbox();
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 offset)
         {
             Vector2 drawPosition = _position - offset;
-            spriteBatch.Draw(_texture, drawPosition, null, Color.White, 0f, new Vector2(_texture.Width / 2, _texture.Height / 2), _scale, SpriteEffects.None, 0f);
             DrawHealthBar(spriteBatch, drawPosition);
+            //spriteBatch.Draw(_texture, drawPosition, null, Color.White, 0f, new Vector2(_texture.Width / 2, _texture.Height / 2), _scale, SpriteEffects.None, 0f);
+            base.Draw(spriteBatch, offset);
         }
 
         protected virtual void DrawHealthBar(SpriteBatch spriteBatch, Vector2 drawPosition)
@@ -99,7 +92,13 @@ namespace AppDevGame
             spriteBatch.Draw(_healthBarTexture, healthBarForeground, Color.Yellow);
         }
 
-        public abstract void Attack(Entity target);
+        public virtual void Attack(Entity target)
+        {
+            if (target is LiveEntity attackTarget && _hitbox.Intersects(target.GetHitbox()))
+            {
+                attackTarget.TakeDamage(_damage);
+            }
+        }
 
         protected void PlaySoundWithDelay(string soundName)
         {
@@ -111,6 +110,13 @@ namespace AppDevGame
             }
         }
 
+        public virtual void MoveTowardsPlayer(GameTime gameTime)
+        {
+            Vector2 direction = _level.Player.GetPosition() - _position;
+            direction.Normalize();
+            _position += direction * _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        }
+
         public override void OnCollision(Entity other)
         {
             base.OnCollision(other);
@@ -118,6 +124,10 @@ namespace AppDevGame
 
         public override void ResolveCollision(Entity other)
         {
+            if (other is Player player)
+            {
+                Attack(player);
+            }
             base.ResolveCollision(other);
         }
     }

@@ -33,10 +33,10 @@ namespace AppDevGame
                 string saveFilePath = Path.Combine(saveDirectory, $"savegame_{slot}.json");
                 var saveData = new GameState
                 {
-                    playerPosition = player.Position,
-                    playerHealth = player.CurrentHealth,
-                    coinsCollected = player.CoinsCollected,
-                    currentLevel = player.CurrentLevel,
+                    playerPosition = player.GetPosition(),
+                    playerHealth = player.GetCurrentHealth(),
+                    coinsCollected = player.GetCoins(),
+                    currentLevel = "1",
                     entities = player.GetEntityStates() // Assuming this method returns a list of entity states
                 };
 

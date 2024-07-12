@@ -21,6 +21,38 @@ gh repo clone andriichumakov/AppDevGame
 git clone https://github.com/andriichumakov/AppDevGame.git
 cd AppDevGame
 
+## Unblocking .NET Tools
+
+After cloning the repository, you need to unblock the dotnet-tools.json file:
+
+1. Navigate to the .config folder.
+2. Right-click on the dotnet-tools.json file and select Properties.
+3. In the Properties window, check the Unblock checkbox and apply the changes.
+
+## Restoring .NET Tools
+Open a terminal in the project directory and run the following command to restore .NET tools:
+
+```
+dotnet restore
+```
+
+## Building the Solution
+Run the following command to build the project:
+
+```
+dotnet build
+```
+Ensure that there are no build errors.
+
+## Running the Project
+Run the following command to start the project:
+
+```
+dotnet run
+```
+
+If the program does not run, try reopening the project in Visual Studio Code and running `dotnet run` again.
+
 ## In order to run the project in Visual studio, do the following steps
 
 Open the Project in Visual Studio:

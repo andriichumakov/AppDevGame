@@ -1,6 +1,8 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace AppDevGame
 {
@@ -12,61 +14,6 @@ namespace AppDevGame
         private SpriteFont _font;
         private ICommand _onClick;
 
-        public Toggle(Rectangle bounds, Texture2D toggledTexture, Texture2D untoggledTexture, Color backgroundColor, Color textColor, string text, SpriteFont font, ICommand onClick)
-            : base(bounds, untoggledTexture, backgroundColor, textColor, text)
-        {
-            _toggledTexture = toggledTexture;
-            _untoggledTexture = untoggledTexture;
-            _isToggled = false;
-            _font = font;
-            _onClick = onClick;
-        }
-
-        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
-        {
-            base.LoadContent(graphicsDevice, content);
-
-            if (_toggledTexture == null)
-            {
-                _toggledTexture = new Texture2D(graphicsDevice, 1, 1);
-                _toggledTexture.SetData(new[] { Color.Green });
-            }
-
-            if (_untoggledTexture == null)
-            {
-                _untoggledTexture = new Texture2D(graphicsDevice, 1, 1);
-                _untoggledTexture.SetData(new[] { Color.Red });
-            }
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            if (/* Check for input to toggle */ false) // Replace with your input handling logic
-            {
-                _isToggled = !_isToggled;
-                _texture = _isToggled ? _toggledTexture : _untoggledTexture;
-                _onClick.Execute();
-            }
-
-            base.Update(gameTime);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            base.Draw(spriteBatch);
-
-            if (_font != null)
-            {
-                var textSize = _font.MeasureString(_text);
-                var textPosition = new Vector2(_bounds.X + (_bounds.Width - textSize.X) / 2, _bounds.Y + (_bounds.Height - textSize.Y) / 2);
-                spriteBatch.DrawString(_font, _text, textPosition, _textColor);
-            }
-            else
-            {
-                MainApp.Log("Error: Font not loaded.");
-            }
-        }
-
         public bool IsToggled
         {
             get { return _isToggled; }
@@ -74,6 +21,56 @@ namespace AppDevGame
             {
                 _isToggled = value;
                 _texture = _isToggled ? _toggledTexture : _untoggledTexture;
+            }
+        }
+
+        public Toggle(GraphicsDevice graphicsDevice, Rectangle bounds, Color toggledColor, Color untoggledColor, Color backgroundColor, Color textColor, string text, SpriteFont font, ICommand onClick)
+            : base(bounds, new Texture2D(graphicsDevice, 1, 1), backgroundColor, textColor, text)
+        {
+            _toggledTexture = new Texture2D(graphicsDevice, 1, 1);
+            _toggledTexture.SetData(new[] { toggledColor });
+
+            _untoggledTexture = new Texture2D(graphicsDevice, 1, 1);
+            _untoggledTexture.SetData(new[] { untoggledColor });
+
+            _texture = _untoggledTexture;
+            _font = font;
+            _onClick = onClick;
+            IsToggled = false;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed && _bounds.Contains(Mouse.GetState().Position))
+            {
+                IsToggled = !IsToggled;
+                _onClick?.Execute();
+                Console.WriteLine($"Toggle state changed to: {_isToggled}");
+            }
+
+            base.Update(gameTime);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (_texture == null)
+            {
+                Console.WriteLine("Error: Toggle texture is null.");
+                return;
+            }
+
+            spriteBatch.Draw(_texture, _bounds, Color.White);
+
+            if (_font != null)
+            {
+                var textSize = _font.MeasureString(_text);
+                var textPosition = new Vector2(_bounds.X + (_bounds.Width - textSize.X) / 2, _bounds.Y + (_bounds.Height - textSize.Y) / 2);
+                spriteBatch.DrawString(_font, _isToggled ? "On" : "Off", textPosition, _textColor);
+                Console.WriteLine("Drawing Toggle");
+            }
+            else
+            {
+                MainApp.Log("Error: Font not loaded.");
             }
         }
     }

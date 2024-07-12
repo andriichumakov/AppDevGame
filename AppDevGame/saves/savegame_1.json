@@ -1,0 +1,7 @@
+{
+  "playerPosition": {},
+  "playerHealth": 100,
+  "coinsCollected": 0,
+  "currentLevel": "Level1",
+  "entities": []
+}

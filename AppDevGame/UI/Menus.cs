@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System;
 using System.Collections.Generic;
 
 namespace AppDevGame
@@ -248,68 +249,59 @@ namespace AppDevGame
     {
         private WindowManager _windowManager;
         private SpriteFont _font;
+        private GraphicsDevice _graphicsDevice;
         public Toggle _toggleAll;
         private List<Checkbox> _modCheckboxes;
         private Button _goBackButton;
-        private Texture2D _checkboxTexture;
-        private Texture2D _uncheckedTexture;
-        private Texture2D _toggleOnTexture;
-        private Texture2D _toggleOffTexture;
+        private const int debounceTime = 300; // 300 milliseconds debounce time
+        private DateTime lastClickTime;
 
-        public ModMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font)
+        public ModMenu(int width, int height, Texture2D background, WindowManager windowManager, SpriteFont font, GraphicsDevice graphicsDevice)
             : base(width, height, background)
         {
             _windowManager = windowManager;
             _font = font;
+            _graphicsDevice = graphicsDevice;
             _modCheckboxes = new List<Checkbox>();
+            lastClickTime = DateTime.MinValue;
         }
 
+        // Setup the elements in the mod menu
         public override void Setup()
         {
             base.Setup();
 
-            int buttonWidth = 200;
-            int buttonHeight = 50;
-            int toggleWidth = 100;
-            int toggleHeight = 50;
+            int buttonSize = 50;
             int spacing = 10;
-            int textOffset = 20;  // Amount to shift text to the left
+            int textOffset = 20;
 
             // Go Back button
-            _goBackButton = new Button(new Rectangle(10, 10, buttonWidth, buttonHeight), Color.Gray, Color.White, "GoBack", new LoadWindowCommand(_windowManager, MainApp.GetInstance().SettingsMenu), _font);
+            _goBackButton = new Button(new Rectangle(10, 10, buttonSize * 4, buttonSize), Color.Gray, Color.White, "GoBack", new LoadWindowCommand(_windowManager, MainApp.GetInstance().SettingsMenu), _font);
             AddElement(_goBackButton);
 
             // Toggle all mods button
-            _toggleAll = new Toggle(new Rectangle(_width - toggleWidth - spacing - textOffset, spacing, toggleWidth, toggleHeight), _toggleOnTexture, _toggleOffTexture, Color.Gray, Color.Black, "Toggle All", _font, new ToggleAllModsCommand(this));
+            _toggleAll = new Toggle(_graphicsDevice, new Rectangle(_width - buttonSize - spacing, spacing, buttonSize, buttonSize), Color.Green, Color.Red, Color.Gray, Color.Black, "Toggle All", _font, new ToggleAllModsCommand(this));
             AddElement(_toggleAll);
 
             // Calculate the start position for the mod checkboxes
-            int startX = (_width - buttonWidth) / 3 - textOffset;
-            int startY = (_height - (3 * buttonHeight + 2 * spacing)) / 2;
+            int startX = (_width - buttonSize) / 3 - textOffset;
+            int startY = (_height - (3 * buttonSize + 2 * spacing)) / 2;
 
             // Individual mod checkboxes
             for (int i = 0; i < 3; i++)
             {
-                var checkbox = new Checkbox(new Rectangle(startX, startY + i * (buttonHeight + spacing), buttonWidth, buttonHeight), _checkboxTexture, _uncheckedTexture, Color.Gray, Color.Black, $"Mod {i + 1}", _font, new ToggleModCommand(this, i));
+                var checkbox = new Checkbox(_graphicsDevice, new Rectangle(startX + buttonSize + spacing, startY + i * (buttonSize + spacing), buttonSize, buttonSize), Color.Green, Color.Red, Color.Gray, Color.Black, $"Mod {i + 1}", _font, new ToggleModCommand(this, i));
                 _modCheckboxes.Add(checkbox);
                 AddElement(checkbox);
+                // Add text next to checkbox
+                AddElement(new TextElement(new Rectangle(startX, startY + i * (buttonSize + spacing), buttonSize * 4, buttonSize), $"Mod {i + 1}", _font, Color.White));
             }
         }
 
+        // Load content for the mod menu
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
             base.LoadContent(graphicsDevice, content);
-
-            // Create textures for checkbox and toggle elements
-            _checkboxTexture = new Texture2D(graphicsDevice, 1, 1);
-            _checkboxTexture.SetData(new[] { Color.Green });
-            _uncheckedTexture = new Texture2D(graphicsDevice, 1, 1);
-            _uncheckedTexture.SetData(new[] { Color.Red });
-            _toggleOnTexture = new Texture2D(graphicsDevice, 1, 1);
-            _toggleOnTexture.SetData(new[] { Color.Green });
-            _toggleOffTexture = new Texture2D(graphicsDevice, 1, 1);
-            _toggleOffTexture.SetData(new[] { Color.Red });
-
             foreach (var element in _uiElements)
             {
                 element.LoadContent(graphicsDevice, content);
@@ -327,6 +319,23 @@ namespace AppDevGame
         public bool[] GetModStates()
         {
             return _modCheckboxes.ConvertAll(cb => cb.IsChecked).ToArray();
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            // Add debounce logic
+            if ((DateTime.Now - lastClickTime).TotalMilliseconds < debounceTime)
+            {
+                return;
+            }
+
+            MouseState mouseState = Mouse.GetState();
+            if (mouseState.LeftButton == ButtonState.Pressed)
+            {
+                lastClickTime = DateTime.Now;
+            }
+
+            base.Update(gameTime);
         }
     }
 

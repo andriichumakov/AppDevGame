@@ -125,7 +125,7 @@ namespace AppDevGame
             _settingsMenu = new SettingsMenu(800, 600, _backgroundTexture, _windowManager, font);
             _languageMenu = new LanguageMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);
             _soundMenu = new SoundMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice);
-            _modMenu = new ModMenu(800, 600, _backgroundTexture, _windowManager, font);
+            _modMenu = new ModMenu(800, 600, _backgroundTexture, _windowManager, font, GraphicsDevice); // Pass GraphicsDevice here
             _mainMenu = new MainMenu(800, 600, _backgroundTexture, _windowManager, _settingsMenu, font);
             _startMenu = new StartMenu(800, 600, _backgroundTexture, _windowManager, font);
             _selectSaveSlotMenu = new SelectSaveSlotMenu(800, 600, _backgroundTexture, _windowManager, font);

@@ -364,7 +364,7 @@ namespace AppDevGame
 
             AddElement(new Button(new Rectangle(x, y, buttonWidth, buttonHeight), Color.Green, Color.White, MainApp.GetInstance().LocLoader.GetString("NewGame"), new LoadWindowCommand(_windowManager, MainApp.GetInstance().SelectSaveSlotMenu), _font));
             AddElement(new Button(new Rectangle(x, (y + buttonHeight + buttonSpacing), buttonWidth, buttonHeight), Color.Green, Color.White, MainApp.GetInstance().LocLoader.GetString("LoadGame"), new LoadWindowCommand(_windowManager, MainApp.GetInstance().LoadSaveMenu), _font));
-            AddElement(new Button(new Rectangle(x, (y + 2 * (buttonHeight + buttonSpacing)), buttonWidth, buttonHeight), Color.Green, Color.White, MainApp.GetInstance().LocLoader.GetString("Quit"), new QuitCommand(), _font));
+            AddElement(new Button(new Rectangle(x, (y + 2 * (buttonHeight + buttonSpacing)), buttonWidth, buttonHeight), Color.Green, Color.White, MainApp.GetInstance().LocLoader.GetString("Back"), new LoadWindowCommand(_windowManager, MainApp.GetInstance().MainMenu), _font)); 
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)

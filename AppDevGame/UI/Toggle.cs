@@ -63,9 +63,10 @@ namespace AppDevGame
 
             if (_font != null)
             {
-                var textSize = _font.MeasureString(_text);
+                string displayText = IsToggled ? "On" : "Off";
+                var textSize = _font.MeasureString(displayText);
                 var textPosition = new Vector2(_bounds.X + (_bounds.Width - textSize.X) / 2, _bounds.Y + (_bounds.Height - textSize.Y) / 2);
-                spriteBatch.DrawString(_font, _isToggled ? "On" : "Off", textPosition, _textColor);
+                spriteBatch.DrawString(_font, displayText, textPosition, _textColor);
                 Console.WriteLine("Drawing Toggle");
             }
             else

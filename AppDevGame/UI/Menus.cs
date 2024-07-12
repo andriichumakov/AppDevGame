@@ -277,7 +277,7 @@ namespace AppDevGame
             int textOffset = 20;
 
             // Go Back button
-            _goBackButton = new Button(new Rectangle(10, 10, buttonWidth * 2, buttonHeight), Color.Gray, Color.White, "GoBack", new LoadWindowCommand(_windowManager, MainApp.GetInstance().SettingsMenu), _font);
+            _goBackButton = new Button(new Rectangle(10, 10, buttonWidth * 2, buttonHeight), Color.Green, Color.White, "GoBack", new LoadWindowCommand(_windowManager, MainApp.GetInstance().SettingsMenu), _font);
             AddElement(_goBackButton);
 
             // Toggle all mods button
@@ -285,7 +285,7 @@ namespace AppDevGame
             AddElement(_toggleAll);
 
             // Add text next to Toggle All button
-            AddElement(new TextElement(new Rectangle(_width - buttonWidth - spacing * 2 - textOffset, spacing, buttonWidth * 2, buttonHeight), "Toggle All", _font, Color.White));
+            AddElement(new TextElement(new Rectangle(_width - buttonWidth - spacing - 120, spacing, buttonWidth * 2, buttonHeight), "Toggle All", _font, Color.Black));
 
             // Calculate the start position for the mod checkboxes
             int startX = (_width - buttonWidth * 2) / 3 - textOffset;
@@ -298,7 +298,7 @@ namespace AppDevGame
                 _modCheckboxes.Add(checkbox);
                 AddElement(checkbox);
                 // Add text next to checkbox
-                AddElement(new TextElement(new Rectangle(startX, startY + i * (buttonHeight + spacing), buttonWidth * 2, buttonHeight), $"Mod {i + 1}", _font, Color.White));
+                AddElement(new TextElement(new Rectangle(startX, startY + i * (buttonHeight + spacing), buttonWidth * 2, buttonHeight), $"Mod {i + 1}", _font, Color.Black));
             }
         }
 
